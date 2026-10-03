@@ -1,0 +1,24 @@
+.env
+
+# python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# local data
+*.db
+*.db-shm
+*.db-wal
+
+# os
+.DS_Store
+
+# private: personal data and paid program content (repo is public; D10)
+athlete/
+data/logs/*.jsonl
+data/checkins/
+program/source/*
+!program/source/README.md
+program/private/
