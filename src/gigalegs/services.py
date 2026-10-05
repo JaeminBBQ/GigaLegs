@@ -2,8 +2,8 @@
 
 import json
 from collections import defaultdict
-from dataclasses import dataclass, field, replace
-from datetime import date, datetime, timedelta
+from dataclasses import asdict, dataclass, field, replace
+from datetime import UTC, date, datetime, timedelta
 from functools import lru_cache
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -14,10 +14,12 @@ from sqlalchemy.orm import Session as Db
 from . import engine as E
 from .config import get_settings
 from .db import LOCAL_USER_ID, utcnow
+from .engine import badges as B
+from .engine import streaks as ST
 from .engine import xp as X
 from .engine.program import HEAVY_CATEGORIES
 from .engine.shorthand import ParseResult
-from .models import DayLog, Metric, PhaseState, Ride, Session, SetLog, User, XpEvent
+from .models import Badge, DayLog, Metric, PhaseState, Ride, Session, SetLog, User, XpEvent
 
 SQUAT_KEYS = ("high_bar_paused_squat", "back_squat")
 DEADLIFT_KEYS = ("deadlift", "deficit_deadlift")
@@ -321,6 +323,7 @@ def resolve_gate(db: Db, uid: int, soreness: int) -> str | None:
         reasons.append("pain was flagged")
     if not ok:
         reasons.append("some sets were over the cap, short on reps, or had form flags")
+    award_badges(db, uid)
     return f"Repeating on-ramp week {old} ({', '.join(reasons)}). Smart call: +{X.GATED_ADJUSTMENT} XP."
 
 
@@ -501,7 +504,9 @@ def finish_session(db: Db, uid: int, sess: Session) -> SessionSummary:
         msgs.append(
             "Some sets weren't logged, so no session bonus. That's fine if you cut it short on purpose."
         )
+    badges = award_badges(db, uid)
     db.commit()
+    msgs.extend(f"Badge earned: {B.BADGES[k][0]}" for k in badges)
     return SessionSummary(sess, summarize(sess), xp, msgs)
 
 
@@ -554,6 +559,7 @@ def log_ride(
     db.add(r)
     db.flush()
     xp = add_xp(db, uid, "ride", E.ride_xp(miles, commute is not None, zone), f"ride-{r.id}")
+    award_badges(db, uid)
     db.commit()
     return xp
 
@@ -562,6 +568,7 @@ def log_day(db: Db, uid: int, d: date, kind: str, minutes: int | None, note: str
     db.add(DayLog(user_id=uid, date=d, kind=kind, minutes=minutes, note=note, created_at=utcnow()))
     amount = {"recovery": X.RECOVERY_DAY, "smart_rest": X.SMART_REST}.get(kind, 0)
     xp = add_xp(db, uid, kind, amount, d.isoformat())
+    award_badges(db, uid)
     db.commit()
     return xp
 
@@ -752,6 +759,7 @@ def insights(db: Db, uid: int, d: date) -> dict:
             "Squat": best_e1rm(db, uid, SQUAT_KEYS),
             "Deadlift": best_e1rm(db, uid, DEADLIFT_KEYS),
         },
+        "streak": asdict(streak(db, uid)),
     }
 
 
@@ -822,6 +830,188 @@ def commute_checkpoints(db: Db, uid: int, st: PhaseState) -> list[tuple[str, boo
         ("Veterans Pkwy", any(r.commute in ("in", "out") for r in rides), "first one-way commute"),
         ("South Meadows", any(r.commute == "round" for r in rides), "first round-trip commute"),
         ("Commuter", st.bike_stage >= 5, "reach stage 5 and hold it"),
+    ]
+
+
+# ---------- streaks and badges ----------
+
+
+def first_activity_date(db: Db, uid: int) -> date | None:
+    dates = [
+        d
+        for d in (
+            db.scalar(
+                select(func.min(Session.date)).where(
+                    Session.user_id == uid, Session.status == "done"
+                )
+            ),
+            db.scalar(select(func.min(Ride.date)).where(Ride.user_id == uid)),
+            db.scalar(select(func.min(DayLog.date)).where(DayLog.user_id == uid)),
+        )
+        if d
+    ]
+    return min(dates) if dates else None
+
+
+def _local_date(ts: datetime) -> date:
+    return ts.replace(tzinfo=UTC).astimezone(ZoneInfo(get_settings().timezone)).date()
+
+
+def week_facts(db: Db, uid: int, start: date, end: date) -> list[ST.WeekFacts]:
+    """One WeekFacts per local Mon–Sun week overlapping [start, end] (inclusive),
+    counting only rows whose date falls inside [start, end]. Facts only; the engine
+    decides what counts."""
+    w0 = start - timedelta(days=start.weekday())
+    out: list[ST.WeekFacts] = []
+    while w0 <= end:
+        w1 = w0 + timedelta(days=7)
+        lo, hi = max(start, w0), min(end + timedelta(days=1), w1)
+        lift_dates = set(
+            db.scalars(
+                select(Session.date).where(
+                    Session.user_id == uid,
+                    Session.status == "done",
+                    Session.date >= lo,
+                    Session.date < hi,
+                )
+            )
+        )
+        active_days = set(lift_dates)
+        active_days.update(
+            db.scalars(
+                select(Ride.date).where(Ride.user_id == uid, Ride.date >= lo, Ride.date < hi)
+            )
+        )
+        active_days.update(
+            db.scalars(
+                select(DayLog.date).where(
+                    DayLog.user_id == uid,
+                    DayLog.kind == "recovery",
+                    DayLog.date >= lo,
+                    DayLog.date < hi,
+                )
+            )
+        )
+        smart_rests = (
+            db.scalar(
+                select(func.count(DayLog.id)).where(
+                    DayLog.user_id == uid,
+                    DayLog.kind == "smart_rest",
+                    DayLog.date >= lo,
+                    DayLog.date < hi,
+                )
+            )
+            or 0
+        )
+        gated_repeats = sum(
+            lo <= _local_date(ts) < hi
+            for ts in db.scalars(
+                select(XpEvent.ts).where(XpEvent.user_id == uid, XpEvent.source == "gated_repeat")
+            )
+        )
+        out.append(
+            ST.WeekFacts(len(lift_dates), len(active_days), smart_rests > 0 or gated_repeats > 0)
+        )
+        w0 = w1
+    return out
+
+
+@dataclass(frozen=True)
+class StreakInfo:
+    weeks: int
+    freezes_used: int
+    freezes_left: int
+    total_weeks: int
+
+
+def streak(db: Db, uid: int) -> StreakInfo:
+    """Streak over finished weeks; the current, unfinished week is excluded."""
+    first = first_activity_date(db, uid)
+    if first is None:
+        return StreakInfo(0, 0, 0, 0)
+    this_monday = today() - timedelta(days=today().weekday())
+    weeks = week_facts(db, uid, first, this_monday - timedelta(days=1))
+    total_weeks = (this_monday - (first - timedelta(days=first.weekday()))).days // 7 + 1
+    available = ST.freezes_available(total_weeks, 0)
+    n, used = ST.weekly_streak(weeks, available)
+    return StreakInfo(n, used, ST.freezes_available(total_weeks, used), total_weeks)
+
+
+def award_badges(db: Db, uid: int) -> list[str]:
+    """Insert any newly earned badges and return their keys (catalog order)."""
+    st = ensure_user(db, uid)
+    facts = B.BadgeFacts(
+        # Earned by passing the gate out of week C, not by skipping ahead on the Path page.
+        finished_onramp=st.phase != "onramp"
+        and (
+            db.scalar(
+                select(func.count(Session.id)).where(
+                    Session.user_id == uid,
+                    Session.status == "done",
+                    Session.phase == "onramp",
+                    Session.week == "C",
+                )
+            )
+            or 0
+        )
+        >= 3,
+        finished_sessions=(
+            db.scalar(
+                select(func.count(Session.id)).where(
+                    Session.user_id == uid, Session.status == "done"
+                )
+            )
+            or 0
+        ),
+        commute_miles=round(
+            db.scalar(
+                select(func.coalesce(func.sum(Ride.miles), 0)).where(
+                    Ride.user_id == uid, Ride.commute.is_not(None)
+                )
+            )
+            or 0,
+            1,
+        ),
+        gated_repeats=(
+            db.scalar(
+                select(func.count(XpEvent.id)).where(
+                    XpEvent.user_id == uid, XpEvent.source == "gated_repeat"
+                )
+            )
+            or 0
+        ),
+        smart_rests=(
+            db.scalar(
+                select(func.count(DayLog.id)).where(
+                    DayLog.user_id == uid, DayLog.kind == "smart_rest"
+                )
+            )
+            or 0
+        ),
+        best_squat_e1rm=best_e1rm(db, uid, SQUAT_KEYS),
+        bike_stage=st.bike_stage,
+    )
+    have = set(db.scalars(select(Badge.key).where(Badge.user_id == uid)))
+    new = [k for k in B.BADGES if k in B.earned(facts) and k not in have]
+    for k in new:
+        db.add(Badge(user_id=uid, key=k, earned_on=utcnow()))
+    db.commit()
+    return new
+
+
+def badge_catalog(db: Db, uid: int) -> list[dict]:
+    rows = {
+        k: e for k, e in db.execute(select(Badge.key, Badge.earned_on).where(Badge.user_id == uid))
+    }
+    return [
+        {
+            "key": k,
+            "name": name,
+            "how": how,
+            "earned": k in rows,
+            "earned_on": _local_date(rows[k]) if k in rows else None,
+        }
+        for k, (name, how) in B.BADGES.items()
     ]
 
 

@@ -7,6 +7,7 @@
   <div class="tile"><div class="label">Best deadlift e1RM</div><div class="value">{{ data.best.Deadlift|round|int if data.best.Deadlift else '—' }}{% if data.best.Deadlift %} <small>lb</small>{% endif %}</div></div>
   <div class="tile"><div class="label">Active days, last 28</div><div class="value">{{ data.totals.active_days_28 }}</div></div>
   <div class="tile"><div class="label">Ride miles, all time</div><div class="value">{{ data.totals.ride_miles }}</div></div>
+  <div class="tile"><div class="label">Week streak</div><div class="value">🔥 {{ data.streak.weeks }} <small>{{ data.streak.freezes_left }} freezes left</small></div></div>
 </div>
 
 <section class="card">

@@ -219,3 +219,9 @@ details summary { cursor: pointer; color: var(--text-2); font-size: .85rem; marg
 .checks li.got .dot { background: var(--good); border-color: var(--good); }
 #map { height: 340px; border-radius: 12px; border: 1px solid var(--line); }
 pre.cheat { background: var(--surface-2); border-radius: 10px; padding: 10px; overflow-x: auto; font-size: .82rem; }
+.badges { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-top: 10px; }
+.badge-card { background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; }
+.badge-card b { display: block; margin-bottom: 2px; font-weight: 650; }
+.badge-card small { color: var(--muted); }
+.badge-card.on { background: var(--good-bg); border-color: var(--good); }
+.badge-card.on b { color: var(--good); }

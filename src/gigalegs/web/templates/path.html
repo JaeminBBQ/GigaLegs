@@ -43,6 +43,19 @@
   <p><small>{{ ride_miles }} mi ridden so far.</small></p>
 </section>
 
+<section class="card">
+  <div class="kicker">Badges · {{ badges|selectattr('earned')|list|length }} of {{ badges|length }} earned</div>
+  <div class="badges">
+    {% for b in badges %}
+    <div class="badge-card {{ 'on' if b.earned }}">
+      <b>{% if b.earned %}★ {% endif %}{{ b.name }}</b>
+      <small>{{ 'Earned ' ~ b.earned_on.strftime('%b %-d, %Y') if b.earned else b.how }}</small>
+    </div>
+    {% endfor %}
+  </div>
+  <p><small>Badges are earned once and never taken away. They're worth no XP — they mark the journey.</small></p>
+</section>
+
 {% if has_route %}
 <section class="card">
   <div class="kicker">Recommended route{% if route_miles %} · ~{{ route_miles }} mi{% endif %}</div>

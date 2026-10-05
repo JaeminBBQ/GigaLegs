@@ -2,7 +2,18 @@
 
 from datetime import date, datetime
 
-from sqlalchemy import JSON, Boolean, Date, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Date,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+)
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -121,3 +132,14 @@ class XpEvent(Base):
     amount: Mapped[int] = mapped_column(Integer)
     ref: Mapped[str] = mapped_column(String(60), default="")
     detail: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+
+
+class Badge(Base):
+    """Earned-once badges (GAMIFICATION.md). Awarded once, never revoked."""
+
+    __tablename__ = "badges"
+    __table_args__ = (UniqueConstraint("user_id", "key", name="uq_badges_user_key"),)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    key: Mapped[str] = mapped_column(String(40))
+    earned_on: Mapped[datetime] = mapped_column(DateTime)

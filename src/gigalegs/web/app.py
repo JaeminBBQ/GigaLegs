@@ -98,6 +98,7 @@ def today_page(request: Request, db: Db = Depends(get_db), uid: int = Depends(cu
         morning=S.morning(db, uid, d),
         program_missing=S.get_program() is None,
         recent=S.history(db, uid, days=3),
+        streak=S.streak(db, uid),
     )
 
 
@@ -377,6 +378,7 @@ def path_page(request: Request, db: Db = Depends(get_db), uid: int = Depends(cur
         route_miles=route_miles(),
         checkpoints=S.commute_checkpoints(db, uid, st),
         ride_miles=S.total_ride_miles(db, uid),
+        badges=S.badge_catalog(db, uid),
         n_weeks=n_weeks,
     )
 
@@ -402,6 +404,7 @@ def set_bike_stage(
     st = S.ensure_user(db, uid)
     st.bike_stage = max(1, min(5, stage))
     db.commit()
+    S.award_badges(db, uid)
     return RedirectResponse("/path", status_code=303)
 
 
