@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Session · GigaLegs{% endblock %}
+{% block main %}
+<div class="row" style="margin-bottom:10px">
+  <div class="grow">
+    <div class="kicker">{{ sess.date.strftime('%a %b %-d') }} · soreness {{ sess.soreness }}/10</div>
+    <h1>{{ 'On-ramp ' ~ sess.week if sess.phase == 'onramp' else sess.phase|pretty ~ ' week ' ~ sess.week }} · Day {{ sess.day }}</h1>
+  </div>
+</div>
+{% if note %}<div class="notice">{{ note }}</div>{% endif %}
+<p><small>Fill in what you actually did and tap ✓ after each set. RPE: 10 = nothing left, 8 = 2–3 left, 6 = easy.</small></p>
+
+{% for key, sets in groups.items() %}
+{% set ex = notes.get(key) %}
+<section class="card exercise">
+  <h3>{{ ex.name if ex else key|pretty }}</h3>
+  <small>
+    {% if ex %}{{ ex.sets }} × {{ 'hold' if ex.kind == 'hold' else ex.reps }}
+      {% if ex.weight_lb %} @ {{ ex.weight_lb|round|int }} lb ({{ plates(ex.weight_lb) }}){% endif %}
+      {% if ex.rpe_range %} · target RPE {{ ex.rpe_range[0]|num }}–{{ ex.rpe_range[1]|num }}{% endif %}
+      {% if sets[0].rpe_cap %} · cap {{ sets[0].rpe_cap|num }}{% endif %}
+      {% if ex.note %}<br>{{ ex.note }}{% endif %}
+    {% endif %}
+  </small>
+  <div class="setrow" aria-hidden="true" style="border:0;padding-bottom:0">
+    <span></span><span class="mini">{{ 'sec' if is_hold(key) else 'lb' }}</span><span class="mini">{{ '' if is_hold(key) else 'reps' }}</span><span class="mini">RPE</span><span></span>
+  </div>
+  {% for s in sets %}{% include "_set_row.html" %}{% endfor %}
+</section>
+{% endfor %}
+
+<form class="card" method="post" action="/session/{{ sess.id }}/finish">
+  <label for="note">Notes (optional)</label>
+  <textarea id="note" name="note" style="min-height:70px" placeholder="How did it feel? Anything to tell Claude?">{{ sess.note }}</textarea>
+  <button class="btn block" style="margin-top:10px">Finish session</button>
+</form>
+<form method="post" action="/session/{{ sess.id }}/discard" onsubmit="return confirm('Discard this session? Logged sets will be deleted.')">
+  <button class="btn danger block small">Discard session</button>
+</form>
+{% endblock %}

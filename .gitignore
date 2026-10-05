@@ -22,3 +22,8 @@ data/checkins/
 program/source/*
 !program/source/README.md
 program/private/
+
+# ios
+ios/**/*.xcodeproj
+ios/**/xcuserdata/
+DerivedData/

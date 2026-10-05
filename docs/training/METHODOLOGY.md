@@ -23,12 +23,26 @@ Every logged working set records the RPE actually felt. RPE 10 is only allowed o
 ## 3. Load progression ("linear-ish")
 Applied per exercise, per week, by the engine:
 
-1. **Hit target, form solid, RPE at or below target** → next prescribed weight as written (on RPE-based lifts: +10 lb for deadlift-pattern lifts, +5 lb for everything else).
-2. **Hit target but RPE ≥ 1 above target** → repeat the same weight next time.
+1. **Hit the reps, form solid, RPE at or under the cap** → next prescribed weight as written (on RPE-based lifts: +10 lb for deadlift-pattern lifts, +5 lb for everything else).
+2. **Hit the reps but went over the RPE cap** (the program's max RPE, or the on-ramp cap) → repeat the same weight next time. An unrated set counts as over the cap.
 3. **Missed reps, or form broke down noticeably** → repeat the weight; if that happens twice in a row, drop 10% and rebuild.
 4. **Never** increase weight when technique breaks down (program rule; also the engine can't see form, so the athlete's "form OK?" toggle on each set gates progression).
 
 e1RM is estimated from top sets with the RPE-adjusted Epley formula: `e1RM = weight × (1 + (reps + (10 − RPE)) / 30)`. Only sets with RPE ≥ 7 count (lower RPE estimates are unreliable).
+
+## 3b. Flexible scheduling (D20)
+No fixed weekdays: the athlete trains by feel and availability and wants to do *something* most days.
+- **The program is a queue, not a calendar.** Day 1 → Day 2 → Day 3 → (next week) Day 1… A program/on-ramp "week" is complete when its Day 3 is done, however many calendar days that took.
+- **Heavy leg days are Day 1 and Day 3** (squat + deadlift pattern). Day 2 is rows/core/back work.
+- **Spacing rules** (the program says to spread sessions apart):
+  - ≥ 48 h between two heavy leg sessions (72 h preferred).
+  - ≥ 20 h between any two lifting sessions.
+  - At most 3 program sessions in any rolling 7 days.
+- **Every other day is a ride, recovery, or rest.**
+  - *Recovery* = 20–40 min walk, mobility, or an easy spin under 30 min. It counts as "doing something".
+  - At least one rest or recovery day per rolling 7 days.
+  - Never two hard days back to back, where hard = a heavy leg session or a ride over 60 min.
+- **Daily recommendation (engine):** the app suggests one of: Lift (next queued day, if the spacing rules and readiness allow), Easy ride (Zone 1–2, length from the bike stage), Recovery, or Rest. Each suggestion comes with its reasons. It's a suggestion: the athlete can pick something else, and logging works the same either way.
 
 ## 4. Readiness and recovery gates
 Before each lifting session the athlete answers 3 quick questions (0–10): **leg soreness**, **sleep quality**, **overall energy**.
@@ -40,10 +54,13 @@ Before each lifting session the athlete answers 3 quick questions (0–10): **le
 | **Sharp/joint pain** (not muscle soreness) | Stop that exercise. Log it. Substitute a pain-free close variant or skip. Coach raises it at check-in. Pain that persists >1 week → see a professional. |
 | Sleep ≤ 3 and energy ≤ 3 | Optional: swap to a light day or rest. Logged as "smart rest" (still keeps the streak — see GAMIFICATION). |
 
+**Oura data is advisory for now (D17).** Readiness score, HRV vs. baseline, resting HR, and temperature deviation are shown next to the check-in, but they don't change loads automatically. After ~4 weeks of paired data (Oura + subjective scores + session RPEs), Claude reviews whether an Oura-based rule earns a place here (e.g. "Oura readiness < 60 *and* soreness ≥ 5 → treat as soreness ≥ 7"). How you feel and how the bar moves stay primary.
+
 ## 5. Cardio / bike interference
 The program says cardio is fine and encouraged if **low intensity**, and should taper toward the end of the program so you peak.
 
 - **Commute rides are Zone 1–2** (conversational; can speak full sentences). Hills: gear down, don't hammer.
+- **Heart-rate zones (when the watch recorded HR, D13):** HRmax = measured value if known, else `208 − 0.7 × age`. Zone 1 < 60% HRmax, Zone 2 = 60–70%, Zone 3+ > 70%. A ride counts as **easy** (XP-eligible as Zone 1–2) if **≥ 80% of its HR-recorded time is ≤ 70% HRmax**. The 20% allowance covers the steep finish of the ride home. Without HR, the athlete's self-reported zone is used.
 - **Don't ride hard the day before a heavy lower session.** A short easy spin the day before is fine.
 - Prefer commuting on **non-lifting days** or after lifting, not hours before a heavy squat/deadlift session.
 - Weekly ride volume grows ≤ ~15–20% per week (see BIKE_COMMUTE_PLAN).

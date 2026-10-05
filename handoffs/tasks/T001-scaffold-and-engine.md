@@ -1,5 +1,7 @@
 # T001: Scaffold and pure engine core
 
+> **Cancelled (D21).** Claude built this as part of the MVP on 2026-10-04. Kept for history.
+
 - **Owner:** DeepSeek
 - **Depends on:** none
 - **Size:** moderate

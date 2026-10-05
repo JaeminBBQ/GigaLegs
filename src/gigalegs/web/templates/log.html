@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Quick log · GigaLegs{% endblock %}
+{% block main %}
+<section class="card">
+  <div class="row"><h1 class="grow">Quick log</h1><a class="btn ghost small" href="/ride">Ride form</a></div>
+  <p><small>Type it like you'd text Claude. Preview checks it; Save logs it and gives XP.</small></p>
+  <form hx-post="/log/preview" hx-target="#preview" hx-trigger="input changed delay:600ms from:textarea, submit">
+    <textarea name="text" id="text" spellcheck="false" autocapitalize="off" autocomplete="off"
+      placeholder="lift&#10;ready 2 7 8&#10;psq 100x7x2 @5&#10;rdl 160x10x2 @6&#10;plank 60s x2&#10;&#10;ride 8.5mi 42min z2&#10;sore 3&#10;bw 180.6"></textarea>
+    <div class="grid2" style="margin-top:10px">
+      <button class="btn ghost" type="submit">Preview</button>
+      <button class="btn" type="button" hx-post="/log/save" hx-include="#text" hx-target="#preview">Save</button>
+    </div>
+  </form>
+</section>
+<div id="preview"></div>
+<details class="card">
+  <summary>Cheat sheet</summary>
+<pre class="cheat">lift [date] [onramp A|B|C | week N] [day N]
+ready &lt;soreness&gt; &lt;sleep&gt; &lt;energy&gt;     (0-10 each)
+psq 100x7x2 @5                 weight x reps x sets @RPE
+rdl 160x10 @5, 160x10 @6       sets that differ
+situp x10x3 @7                 bodyweight
+plank 60s x2                   timed holds
+... !form   ... !pain left knee   ... amrap
+note anything
+
+ride [date] 12mi 55min [z1|z2|z3] [in|home|round] [+300ft] [note ...]
+sore [date] 3         bw [date] 180.6
+dates: today, yesterday, mon..sun, 10/5, 2026-10-05</pre>
+<p><small>Aliases: psq paused squat · sq back squat · dl deadlift · ddl deficit deadlift · rdl Romanian deadlift · row / prow barbell / Pendlay row · situp / dsitup · bext / pbext back extension · plank · splank side plank · hipdrop. Lift day and week default to what's next in your queue.</small></p>
+</details>
+{% endblock %}

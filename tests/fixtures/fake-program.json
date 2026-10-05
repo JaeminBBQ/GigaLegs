@@ -1,0 +1,20 @@
+{
+ "id": "fake-3wk", "name": "Made-up test program", "visibility": "public", "days_per_week": 3,
+ "weeks": [
+  {"week": 1, "days": [
+   {"day": 1, "exercises": [
+    {"key": "back_squat", "name": "Back Squat", "category": "squat", "sets": 4, "reps": 5, "load": {"type": "weight", "lb": 225}, "rpe_min": 7, "rpe_max": 8},
+    {"key": "plank", "name": "Plank", "category": "accessory", "sets": 2, "reps": 1, "load": {"type": "hold_alap"}}]},
+   {"day": 2, "exercises": [
+    {"key": "barbell_row", "name": "Barbell Row", "category": "accessory", "sets": 5, "reps": 10, "load": {"type": "rpe", "min": 8, "max": 8}}]},
+   {"day": 3, "exercises": [
+    {"key": "deadlift", "name": "Deadlift", "category": "deadlift", "sets": 3, "reps": 5, "load": {"type": "weight", "lb": 315}, "rpe_min": 7, "rpe_max": 9}]}]},
+  {"week": 2, "days": [
+   {"day": 1, "exercises": [
+    {"key": "back_squat", "name": "Back Squat", "category": "squat", "sets": 4, "reps": 5, "load": {"type": "weight", "lb": 235}, "rpe_min": 7, "rpe_max": 8}]},
+   {"day": 2, "exercises": [
+    {"key": "barbell_row", "name": "Barbell Row", "category": "accessory", "sets": 5, "reps": 10, "load": {"type": "rpe", "min": 8, "max": 8}}]},
+   {"day": 3, "exercises": [
+    {"key": "deadlift", "name": "Deadlift", "category": "deadlift", "sets": 3, "reps": 5, "load": {"type": "test", "rm": 5}}]}]}
+ ]
+}

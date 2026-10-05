@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111110">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="GigaLegs">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/static/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/static/icon.svg">
+  <link rel="stylesheet" href="/static/style.css">
+  <title>{% block title %}GigaLegs{% endblock %}</title>
+  <script src="/static/htmx.min.js" defer></script>
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="/">GigaLegs</a>
+      <div class="lvl">
+        <div><b>Lv {{ lvl.level }}</b> · {{ lvl.title }} · {{ lvl.total }} XP</div>
+        <div class="xpbar" role="progressbar" aria-valuenow="{{ lvl.pct }}" aria-valuemin="0" aria-valuemax="100" aria-label="Progress to next level"><i style="width: {{ lvl.pct }}%"></i></div>
+      </div>
+    </div>
+  </header>
+  <main class="wrap">
+    {% block main %}{% endblock %}
+  </main>
+  {% set path = request.url.path %}
+  <nav class="tabs" aria-label="Main">
+    <div class="wrap">
+      <a href="/" class="{{ 'on' if path == '/' or path.startswith('/session') }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12h18M6 8v8M18 8v8M2 10v4M22 10v4"/></svg>Today</a>
+      <a href="/log" class="{{ 'on' if path.startswith('/log') or path.startswith('/ride') }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4"/></svg>Log</a>
+      <a href="/insights" class="{{ 'on' if path.startswith('/insights') }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19V5M4 19h16M8 15l4-5 3 3 5-6"/></svg>Insights</a>
+      <a href="/path" class="{{ 'on' if path.startswith('/path') }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 19c0-6 12-4 12-10a3 3 0 0 0-6 0M6 19a2 2 0 1 0 0 .01M18 9a2 2 0 1 0 0 .01"/></svg>Path</a>
+      <a href="/history" class="{{ 'on' if path.startswith('/history') }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 7v5l3 2M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg>History</a>
+    </div>
+  </nav>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

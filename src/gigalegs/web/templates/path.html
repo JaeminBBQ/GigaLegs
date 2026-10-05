@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Path · GigaLegs{% endblock %}
+{% block head %}
+{% if has_route %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+{% endif %}
+{% endblock %}
+{% block main %}
+<h1>Path</h1>
+
+<section class="card">
+  <div class="kicker">Training path · goal: squat heavy</div>
+  <h2>{{ 'On-ramp ' ~ st.week if st.phase == 'onramp' else st.phase|pretty ~ ' week ' ~ st.week }}, next: Day {{ st.day }}</h2>
+  <div class="timeline" id="tl">
+    {% for t in timeline %}<div class="{{ t.state }}" {{ 'id=cur' if t.state == 'current' }}>{{ t.label }}{% if t.eta %}<small>{{ 'now' if t.state == 'current' else '~' ~ t.eta.strftime('%b %-d') }}</small>{% endif %}</div>{% endfor %}
+  </div>
+  <p><small>No fixed days: a week ends when its Day 3 is done. Dates are estimates at ~1 week per week.</small></p>
+  <details><summary>Adjust position (if the app got out of sync)</summary>
+    <form method="post" action="/path/position" class="grid3" style="margin-top:8px">
+      <select name="phase" aria-label="Phase">{% for p in ['onramp', 'program', 'deload', 'squat_block'] %}<option value="{{ p }}" {{ 'selected' if st.phase == p }}>{{ p|pretty }}</option>{% endfor %}</select>
+      <input name="week" value="{{ st.week }}" aria-label="Week (A/B/C or 1-{{ n_weeks }})">
+      <select name="day" aria-label="Day">{% for d in [1, 2, 3] %}<option {{ 'selected' if st.day == d }}>{{ d }}</option>{% endfor %}</select>
+      <button class="btn ghost small" style="grid-column:1/-1">Set position</button>
+    </form>
+  </details>
+</section>
+
+<section class="card">
+  <div class="kicker">Commute path · bike stage {{ st.bike_stage }} of 5</div>
+  <ol class="stages">
+    {% for n, name, target in stages %}<li class="{{ 'on' if n == st.bike_stage }}"><b>{{ name }}</b>: {{ target }}</li>{% endfor %}
+  </ol>
+  <p><small>Move up after 2 weeks at a stage without it hurting your lifting (soreness ≤ 5, lift RPEs on target). Winter weather can hold a stage; that's not a failure.</small></p>
+  <form method="post" action="/path/bike-stage" class="row">
+    <select name="stage" class="grow" aria-label="Bike stage">{% for n, name, _ in stages %}<option value="{{ n }}" {{ 'selected' if n == st.bike_stage }}>Stage {{ n }}: {{ name }}</option>{% endfor %}</select>
+    <button class="btn ghost small">Update</button>
+  </form>
+  <h3 style="margin-top:14px">Checkpoints</h3>
+  <ul class="checks">
+    {% for name, got, how in checkpoints %}<li class="{{ 'got' if got }}"><span class="dot"></span><span><b>{{ name }}</b> <small>{{ how }}</small></span></li>{% endfor %}
+  </ul>
+  <p><small>{{ ride_miles }} mi ridden so far.</small></p>
+</section>
+
+{% if has_route %}
+<section class="card">
+  <div class="kicker">Recommended route{% if route_miles %} · ~{{ route_miles }} mi{% endif %}</div>
+  <div id="map" role="img" aria-label="Map of the recommended commute route"></div>
+  <ul class="reasons" style="margin-top:10px">
+    <li>Sparks Blvd: on-road bike lane all the way. At I-80, cars cross the bike lane for the ramps; look back, signal, and cross the ramp lanes at a right angle.</li>
+    <li>Take the <b>Erica Greif Memorial Bikeway</b> (the path beside Veterans), not the 55 mph roadway.</li>
+    <li>South Meadows Pkwy has bike lanes. The last mile on Veterans before it: check it on the recon ride.</li>
+    <li>Homebound, the last ~1.7 mi climbs ~370 ft (up to ~7%). Easiest gears, seated, conversational.</li>
+  </ul>
+  <p><small>Route line is approximate (OpenStreetMap routing).</small></p>
+</section>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+<script>
+document.getElementById('cur')?.scrollIntoView({ inline: 'center', block: 'nearest' });
+</script>
+{% if has_route %}
+<script>
+fetch('/route.geojson').then(r => r.json()).then(gj => {
+  const map = L.map('map', { scrollWheelZoom: false });
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18, attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
+  const color = getComputedStyle(document.documentElement).getPropertyValue('--series-1').trim();
+  const layer = L.geoJSON(gj, { style: { color, weight: 5, opacity: .85 } });
+  map.fitBounds(layer.getBounds(), { padding: [16, 16] });
+  layer.addTo(map);
+  const c = gj.features[0].geometry.coordinates;
+  L.circleMarker([c[0][1], c[0][0]], { radius: 7, color: '#fff', weight: 2, fillColor: color, fillOpacity: 1 }).addTo(map).bindTooltip('Home');
+  L.circleMarker([c[c.length-1][1], c[c.length-1][0]], { radius: 7, color: '#fff', weight: 2, fillColor: getComputedStyle(document.documentElement).getPropertyValue('--series-2').trim(), fillOpacity: 1 }).addTo(map).bindTooltip('Work');
+}).catch((e) => { console.error('map', e); document.getElementById('map').outerHTML = '<p class="empty">Map unavailable (needs internet for map tiles).</p>'; });
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block main %}
+{% if program_missing %}
+<div class="notice">Program file not found (<code>program/private/deadlift-program.json</code>). Lifting plans need it; rides and logging still work.</div>
+{% endif %}
+
+{% if 'soreness' not in morning %}
+<form class="card" method="post" action="/morning">
+  <div class="kicker">Morning check-in · +5 XP</div>
+  <h2>How sore are your legs?</h2>
+  <div class="chips" role="radiogroup" aria-label="Leg soreness 0 to 10">
+    {% for v in range(0, 11) %}
+    <input type="radio" id="sore{{ v }}" name="soreness" value="{{ v }}">
+    <label for="sore{{ v }}">{{ v }}</label>
+    {% endfor %}
+  </div>
+  <p><small>0 = nothing · 5 = noticeable on stairs · 8+ = hurts to sit down</small></p>
+  <div class="row">
+    <div class="grow"><label for="bw">Bodyweight (optional)</label>
+      <input id="bw" name="bodyweight" type="number" step="0.1" inputmode="decimal" placeholder="lb"></div>
+    <div style="align-self:flex-end"><button class="btn">Save</button></div>
+  </div>
+</form>
+{% endif %}
+
+<section class="card hero">
+  <div class="row">
+    <span class="badge {{ 'lift' if rec.kind == 'lift' }}">{{ rec.kind }}</span>
+    <span class="kicker">Today's suggestion</span>
+  </div>
+  <h1 style="margin-top:8px">{% if rec.kind == 'lift' and plan %}Lift: {{ 'On-ramp ' ~ st.week if st.phase == 'onramp' else st.phase|pretty ~ ' week ' ~ st.week }} · Day {{ st.day }}{% else %}{{ rec.title }}{% endif %}</h1>
+  <ul class="reasons">{% for r in rec.reasons %}<li>{{ r }}</li>{% endfor %}</ul>
+  {% if ctx.open_pain %}
+  <form method="post" action="/pain/clear" style="margin:6px 0 10px"><button class="btn ghost small">Pain's gone, clear it</button></form>
+  {% endif %}
+  {% if rec.also_ok %}<p><small>Also fine: {{ rec.also_ok|join(' · ') }}</small></p>{% endif %}
+  {% if 'soreness' in morning %}<p><small>Soreness this morning: {{ morning.soreness|int }}/10{% if 'bodyweight' in morning %} · {{ morning.bodyweight }} lb{% endif %}</small></p>{% endif %}
+</section>
+
+{% if plan and plan.exercises %}
+<section class="card">
+  <div class="kicker">Next in your queue{% if plan.heavy %} · heavy legs{% endif %}</div>
+  <h2>{{ 'On-ramp ' ~ st.week if st.phase == 'onramp' else st.phase|pretty ~ ' week ' ~ st.week }} · Day {{ st.day }}</h2>
+  {% if st.gate_pending %}<div class="notice">Week {{ st.week }} is done. Starting this session checks the gate: soreness ≤ 5, no pain, and clean sets → week {{ 'B' if st.week == 'A' else 'C' if st.week == 'B' else '1' }}. Otherwise you repeat week {{ st.week }} (+50 XP for the smart call).</div>{% endif %}
+  <div class="scroll-x"><table>
+    <thead><tr><th>Exercise</th><th>Sets</th><th class="num">Load</th><th>Cap</th></tr></thead>
+    <tbody>
+    {% for e in plan.exercises if e.kind != 'off' %}
+      <tr>
+        <td>{{ e.name }}{% if e.note %}<br><small>{{ e.note }}</small>{% endif %}</td>
+        <td>{{ e.sets }} × {{ e.reps if e.kind not in ('hold',) else 'hold' }}</td>
+        <td class="num">{% if e.weight_lb %}{{ e.weight_lb|round|int }} lb<br><small>{{ plates(e.weight_lb) }}</small>{% elif e.kind == 'rpe' %}by feel{% else %}—{% endif %}</td>
+        <td>{% if e.rpe_cap %}RPE ≤ {{ e.rpe_cap|num }}{% endif %}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  <details {{ 'open' if rec.kind == 'lift' }}>
+    <summary>{{ 'Start this session' if rec.kind == 'lift' else 'Lift anyway' }}</summary>
+    <form method="post" action="/session/start" style="margin-top:10px">
+      <div class="grid3">
+        <div><label for="s-sore">Soreness</label>
+          <select id="s-sore" name="soreness">{% for v in range(0,11) %}<option {{ 'selected' if (morning.soreness|default(2))|int == v }}>{{ v }}</option>{% endfor %}</select></div>
+        <div><label for="s-sleep">Sleep</label>
+          <select id="s-sleep" name="sleep">{% for v in range(0,11) %}<option {{ 'selected' if v == 7 }}>{{ v }}</option>{% endfor %}</select></div>
+        <div><label for="s-energy">Energy</label>
+          <select id="s-energy" name="energy">{% for v in range(0,11) %}<option {{ 'selected' if v == 7 }}>{{ v }}</option>{% endfor %}</select></div>
+      </div>
+      <p><small>0–10. Soreness ≥ 7 makes today 10% lighter automatically.</small></p>
+      <button class="btn block">Start session · +10 XP</button>
+    </form>
+  </details>
+</section>
+{% elif st.phase in ('deload', 'squat_block') %}
+<section class="card"><h2>{{ st.phase|pretty }}</h2><p>Claude writes this block when you get here. Ask in chat.</p></section>
+{% endif %}
+
+<section class="card">
+  <div class="kicker">Something else today</div>
+  <div class="grid2" style="margin-top:8px">
+    <a class="btn ghost" href="/ride">Log a ride</a>
+    <a class="btn ghost" href="/log">Quick log</a>
+  </div>
+  <form method="post" action="/day" class="row" style="margin-top:10px">
+    <input type="hidden" name="kind" value="recovery">
+    <div class="grow"><input name="minutes" type="number" inputmode="numeric" placeholder="Recovery minutes (walk / mobility)" aria-label="Recovery minutes"></div>
+    <button class="btn ghost">Recovery · +15</button>
+  </form>
+  <form method="post" action="/day" style="margin-top:8px">
+    <input type="hidden" name="kind" value="{{ 'smart_rest' if rec.kind == 'rest' else 'rest' }}">
+    <button class="btn ghost block">Rest day{{ ' · +25 (smart rest)' if rec.kind == 'rest' }}</button>
+  </form>
+</section>
+
+{% if recent %}
+<section class="card">
+  <div class="kicker">Recent</div>
+  {% for d in recent %}
+    <h3 style="margin-top:8px">{{ d.date.strftime('%a %b %-d') }}</h3>
+    <ul class="reasons">{% for i in d['items'] %}<li>{{ i }}</li>{% endfor %}</ul>
+  {% endfor %}
+</section>
+{% endif %}
+{% endblock %}

@@ -33,9 +33,17 @@ What goes to DeepSeek: well-specified implementation with clear, runnable accept
 - `docs/training/ONRAMP.md`: 3-week lead-in before program Week 1
 - `docs/training/BIKE_COMMUTE_PLAN.md`: staged build-up to the commute
 - `docs/training/NUTRITION.md`: maintain through the program, slow cut after
+- `docs/LOGGING.md`: manual logging shorthand + what Claude does with a log message
+- `docs/WATCH_SYNC.md`, `docs/OURA_SYNC.md`: **deferred** (D19) wearable designs
+- `program/private/`: normalized purchased program + concrete on-ramp sessions (gitignored)
 - `athlete/PROFILE.md`: **private** personal data (address, bodyweight, maxes); gitignored
 - `program/source/`: the purchased program files (read-only)
 - `handoffs/BOARD.md`: task status; `handoffs/HUMAN.md`: what's needed from the user
+
+## Logging and coaching from the app's data
+- The web app (`uv run gigalegs serve`) is the main way to log. Its DB `data/gigalegs.db` is the source of truth.
+- When the user sends a session/ride in chat, convert it to the shorthand (`docs/LOGGING.md`) and save it with `uv run gigalegs log "<text>" --save`, so chat and app logs land in the same place. Reply with the prescribed-vs-done table, decisions, and XP the command prints. Never invent missing numbers: ask.
+- To coach (weekly check-in, questions), run `uv run gigalegs export` and read `data/logs/*.jsonl`.
 
 ## Hard rules
 - **Training safety beats game mechanics.** No feature may reward exceeding prescribed RPE, extra unprescribed volume, skipping deloads, or training through pain. If a game idea conflicts with METHODOLOGY, METHODOLOGY wins.
@@ -49,6 +57,8 @@ What goes to DeepSeek: well-specified implementation with clear, runnable accept
 
 ## Environment notes
 - Stack (D3): Python 3.12 via `uv`, FastAPI + Jinja2 + HTMX, SQLite + SQLAlchemy + Alembic, pytest, ruff. System Python is 3.9; always `uv run ...`.
+- Code map: `src/gigalegs/engine/` (pure rules), `services.py` (DB glue), `web/` (routes, templates, static), `cli.py`. Tests use `tests/fixtures/fake-program.json`, never the real program.
+- Port 8765 is used by LeagueApp; GigaLegs defaults to 8000.
 - Units: lb, miles, feet. Store raw; convert only in the UI.
 - DeepSeek runs inside Claude Code, so it also loads this file and the auto-memory; the redirect at the top matters.
 - Git: the user commits. Branch `main`.

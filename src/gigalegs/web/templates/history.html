@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}History · GigaLegs{% endblock %}
+{% block main %}
+<h1>History</h1>
+{% if not days %}<p class="empty">Nothing logged yet. Your first session shows up here.</p>{% endif %}
+{% for d in days %}
+<section class="card">
+  <div class="kicker">{{ d.date.strftime('%A %b %-d') }}</div>
+  <ul class="reasons">{% for i in d['items'] %}<li>{{ i }}</li>{% endfor %}</ul>
+</section>
+{% endfor %}
+{% endblock %}

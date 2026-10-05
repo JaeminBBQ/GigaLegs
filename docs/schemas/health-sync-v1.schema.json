@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gigalegs/health-sync-v1",
+  "title": "GigaLegs health sync payload v1 (see docs/WATCH_SYNC.md)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "client", "workouts", "deleted_workout_uuids", "body_mass", "sleep"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "client": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["app_version", "device_model"],
+      "properties": {"app_version": {"type": "string"}, "device_model": {"type": "string"}}
+    },
+    "workouts": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["uuid", "activity", "hk_activity_type", "start", "end", "duration_s", "active_kcal",
+                     "distance_mi", "elevation_ascended_ft", "indoor", "avg_hr", "max_hr", "hr_series", "source_name"],
+        "properties": {
+          "uuid": {"type": "string", "minLength": 1},
+          "activity": {"enum": ["strength", "cycling", "other"]},
+          "hk_activity_type": {"type": "string"},
+          "start": {"type": "string", "format": "date-time"},
+          "end": {"type": "string", "format": "date-time"},
+          "duration_s": {"type": "number", "minimum": 0},
+          "active_kcal": {"type": ["number", "null"], "minimum": 0},
+          "distance_mi": {"type": ["number", "null"], "minimum": 0},
+          "elevation_ascended_ft": {"type": ["number", "null"], "minimum": 0},
+          "indoor": {"type": ["boolean", "null"]},
+          "avg_hr": {"type": ["integer", "null"], "minimum": 20, "maximum": 250},
+          "max_hr": {"type": ["integer", "null"], "minimum": 20, "maximum": 250},
+          "hr_series": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "prefixItems": [{"type": "integer", "minimum": 0}, {"type": "number", "minimum": 20, "maximum": 250}],
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "source_name": {"type": "string"}
+        }
+      }
+    },
+    "deleted_workout_uuids": {"type": "array", "items": {"type": "string"}},
+    "body_mass": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["uuid", "measured_at", "lb"],
+        "properties": {
+          "uuid": {"type": "string"},
+          "measured_at": {"type": "string", "format": "date-time"},
+          "lb": {"type": "number", "exclusiveMinimum": 0}
+        }
+      }
+    },
+    "sleep": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["wake_date", "asleep_min"],
+        "properties": {
+          "wake_date": {"type": "string", "format": "date"},
+          "asleep_min": {"type": "integer", "minimum": 0, "maximum": 1440}
+        }
+      }
+    }
+  }
+}

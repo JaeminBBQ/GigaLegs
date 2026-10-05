@@ -1,5 +1,7 @@
 # Architecture
 
+Status: **MVP built** (D21), 2026-10-04. Run with `uv run gigalegs serve`; DB at `data/gigalegs.db`.
+
 ## Stack (D3)
 Python 3.12 via `uv` · FastAPI + Jinja2 server-rendered pages + HTMX for quick set logging · SQLite + SQLAlchemy 2 + Alembic · pytest · ruff. No JS build step. A PWA manifest so the app installs on the phone. Same shape as LeagueApp, which DeepSeek has already shipped successfully.
 
@@ -46,11 +48,29 @@ Runs local-only for one person today, but every choice keeps a public hosted ver
 | `bodyweight_logs` | user_id, date, weight_lb |
 | `sessions` | id, user_id, date, phase, week, day, soreness, sleep, energy, status (planned/done/adjusted/smart_rest) |
 | `set_logs` | session_id, exercise, category, set_index, prescribed_weight_lb, prescribed_reps, target_rpe, rpe_cap, weight_lb, reps, rpe, form_ok, pain, note |
-| `rides` | id, user_id, date, miles, minutes, elevation_ft, commute (null/in/out/round), zone, note |
+| `rides` | id, user_id, date, miles, minutes, elevation_ft, commute (null/in/out/round), zone, note, primary_activity_id |
 | `xp_events` | id, user_id, ts, source, amount, ref_id |
 | `badges` | user_id, key, earned_on |
 
 `data/logs/*.jsonl` (format in `data/logs/README.md`) is the import/export format. Before the app exists, the user can log there and Claude can coach from it.
+
+## Wearables (Apple Watch + Oura): deferred (D19)
+Not being built now; logging is manual via chat (`docs/LOGGING.md`). The design below is kept for later.
+
+Two inputs, one pipeline: **raw source records → pure merge in the engine → derived rides / session attachments / daily readiness.**
+- Apple Watch → native iOS app → `POST /api/v1/health/sync` (`docs/WATCH_SYNC.md`, T012 + T011).
+- Oura ring → server-side OAuth pull of the Oura API v2 (`docs/OURA_SYNC.md`, T014).
+- Merge rules (cluster by time overlap, source priority Watch > Oura > other HealthKit): `engine/merge.py` (T015, pure, D16).
+
+| Table | Fields |
+|---|---|
+| `external_activities` | id, user_id, source (healthkit/oura), source_name, external_id, kind (strength/cycling/other), start, end, duration_s, kcal, distance_mi, elevation_ft, hr_avg, hr_max, hr_series (JSON), deleted |
+| `sleep_nights` | user_id, source, wake_date, asleep_min, avg_hrv, lowest_hr, score |
+| `daily_readiness` | user_id, source (oura), date, score, hrv_balance, resting_hr_contrib, temperature_deviation |
+| `oauth_tokens` | user_id, provider (oura), access_token, refresh_token, expires_at, scopes |
+| `api_tokens` | user_id, token_hash, label, created_at (iOS pairing) |
+
+Rides gain `primary_activity_id` (nullable; null = manual).
 
 ## Coach agent
 - **Phase 1 (now):** Claude reads JSONL logs, runs the weekly check-in per METHODOLOGY, and writes `data/checkins/YYYY-Www.md`.

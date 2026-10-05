@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Log a ride · GigaLegs{% endblock %}
+{% block main %}
+<form class="card" method="post" action="/ride">
+  <h1>Log a ride</h1>
+  {% if route_miles %}
+  <div class="chips" style="margin:8px 0 12px" aria-label="Commute shortcuts">
+    <button type="button" class="btn ghost small" onclick="fill({{ route_miles }}, 'in')">Commute in · {{ route_miles }} mi</button>
+    <button type="button" class="btn ghost small" onclick="fill({{ route_miles }}, 'out')">Home · {{ route_miles }} mi</button>
+    <button type="button" class="btn ghost small" onclick="fill({{ (route_miles * 2)|round(1) }}, 'round')">Round trip · {{ (route_miles * 2)|round(1) }} mi</button>
+  </div>
+  {% endif %}
+  <div class="grid2">
+    <div><label for="miles">Miles</label><input id="miles" name="miles" type="number" step="0.1" inputmode="decimal" required></div>
+    <div><label for="minutes">Minutes</label><input id="minutes" name="minutes" type="number" inputmode="numeric" required></div>
+  </div>
+  <div style="margin-top:10px"><label>Effort</label>
+    <div class="chips">
+      <input type="radio" id="z1" name="zone" value="1"><label for="z1">Z1 very easy</label>
+      <input type="radio" id="z2" name="zone" value="2" checked><label for="z2">Z2 conversational</label>
+      <input type="radio" id="z3" name="zone" value="3"><label for="z3">Z3+ hard</label>
+    </div>
+    <p><small>Z1–2 earns XP; harder riding doesn't (it eats into leg recovery).</small></p>
+  </div>
+  <div style="margin-top:6px"><label>Commute?</label>
+    <div class="chips">
+      <input type="radio" id="c-no" name="commute" value="" checked><label for="c-no">No</label>
+      <input type="radio" id="c-in" name="commute" value="in"><label for="c-in">In</label>
+      <input type="radio" id="c-out" name="commute" value="out"><label for="c-out">Home</label>
+      <input type="radio" id="c-round" name="commute" value="round"><label for="c-round">Round trip</label>
+    </div>
+  </div>
+  <div class="grid2" style="margin-top:10px">
+    <div><label for="elev">Climb (ft, optional)</label><input id="elev" name="elevation_ft" type="number" inputmode="numeric"></div>
+    <div><label for="day">Date</label><input id="day" name="day" type="date" value="{{ today.isoformat() }}"></div>
+  </div>
+  <div style="margin-top:10px"><label for="rnote">Note</label><input id="rnote" name="note" placeholder="route, wind, how the legs felt"></div>
+  <button class="btn block" style="margin-top:14px">Save ride</button>
+</form>
+<script>
+function fill(mi, dir) {
+  document.getElementById('miles').value = mi;
+  document.getElementById('c-' + (dir === 'out' ? 'out' : dir)).checked = true;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Insights · GigaLegs{% endblock %}
+{% block main %}
+<h1>Insights</h1>
+<div class="tiles">
+  <div class="tile"><div class="label">Best squat e1RM</div><div class="value">{{ data.best.Squat|round|int if data.best.Squat else '—' }}{% if data.best.Squat %} <small>lb</small>{% endif %}</div></div>
+  <div class="tile"><div class="label">Best deadlift e1RM</div><div class="value">{{ data.best.Deadlift|round|int if data.best.Deadlift else '—' }}{% if data.best.Deadlift %} <small>lb</small>{% endif %}</div></div>
+  <div class="tile"><div class="label">Active days, last 28</div><div class="value">{{ data.totals.active_days_28 }}</div></div>
+  <div class="tile"><div class="label">Ride miles, all time</div><div class="value">{{ data.totals.ride_miles }}</div></div>
+</div>
+
+<section class="card">
+  <h2>Last 4 weeks</h2>
+  <div class="cal" role="img" aria-label="Activity calendar, last 28 days">
+    {% for c in data.calendar %}<div class="k-{{ c.kind }}" title="{{ c.date }}: {{ c.kind|replace('_', ' ') }}">{{ c.date[8:]|int }}</div>{% endfor %}
+  </div>
+  <div class="legend">
+    <span><i style="background:var(--series-1)"></i>Lift</span>
+    <span><i style="background:var(--series-2)"></i>Ride</span>
+    <span><i style="background:var(--series-3)"></i>Recovery</span>
+    <span><i style="border:2px solid var(--line)"></i>Rest</span>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Estimated 1RM</h2>
+  <p><small>From your hardest clean sets (RPE ≥ 7). Paused squats estimate lower than regular squats; that's expected.</small></p>
+  <div class="chart" id="c-e1rm"></div>
+  <div class="legend"><span><i style="background:var(--series-1)"></i>Squat</span><span><i style="background:var(--series-2)"></i>Deadlift</span></div>
+  <details><summary>Table</summary><table><thead><tr><th>Date</th><th>Lift</th><th class="num">e1RM</th></tr></thead><tbody>
+    {% for lift, pts in data.e1rm.items() %}{% for d, v in pts %}<tr><td>{{ d }}</td><td>{{ lift }}</td><td class="num">{{ v }}</td></tr>{% endfor %}{% endfor %}
+  </tbody></table></details>
+</section>
+
+<section class="card">
+  <h2>Weekly ride miles</h2>
+  <div class="chart" id="c-miles"></div>
+  <details><summary>Table</summary><table><thead><tr><th>Week of</th><th class="num">Miles</th></tr></thead><tbody>
+    {% for d, v in data.weekly_miles %}<tr><td>{{ d }}</td><td class="num">{{ v }}</td></tr>{% endfor %}
+  </tbody></table></details>
+</section>
+
+<section class="card">
+  <h2>Morning leg soreness</h2>
+  <p><small>The on-ramp gate wants ≤ 5 before moving up a week.</small></p>
+  <div class="chart" id="c-sore" style="height:160px"></div>
+</section>
+
+<section class="card">
+  <h2>Bodyweight</h2>
+  <p><small>Goal: hold steady through the program (7-day average); slow cut afterwards.</small></p>
+  <div class="chart" id="c-bw" style="height:160px"></div>
+  <div class="legend"><span><i style="background:var(--series-1)"></i>7-day average</span><span><i style="background:var(--series-1);opacity:.55;border-radius:50%"></i>Daily</span></div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="/static/charts.js"></script>
+<script>
+const D = {{ data_json|safe }};
+function draw() {
+  lineChart(document.getElementById('c-e1rm'), [
+    { name: 'Squat', color: '--series-1', points: D.e1rm.Squat },
+    { name: 'Deadlift', color: '--series-2', points: D.e1rm.Deadlift },
+  ], { unit: ' lb', empty: 'Log a few sets at RPE 7+ and your estimated maxes show up here.' });
+  columnChart(document.getElementById('c-miles'), D.weekly_miles, { unit: ' mi', empty: 'No rides yet.' });
+  lineChart(document.getElementById('c-sore'), [{ name: 'Soreness', color: '--series-1', points: D.soreness }],
+    { unit: '/10', yMin: 0, yMax: 10, empty: 'Log morning soreness on the Today page.' });
+  lineChart(document.getElementById('c-bw'), [
+    { name: 'Daily', color: '--series-1', points: D.bodyweight, dotsOnly: true },
+    { name: '7-day avg', color: '--series-1', points: D.bodyweight_avg },
+  ], { unit: ' lb', empty: 'Log bodyweight on the Today page.' });
+}
+draw();
+let t; addEventListener('resize', () => { clearTimeout(t); t = setTimeout(draw, 150); });
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
+</script>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% set hold = is_hold(s.exercise) %}
+{% set logged = s.reps is not none or s.seconds is not none %}
+<form class="setrow {{ 'done' if logged }}" hx-post="/session/{{ sess.id }}/set/{{ s.id }}" hx-swap="outerHTML">
+  <span class="idx">{{ s.set_index }}</span>
+  {% if hold %}
+    <input name="seconds" type="number" inputmode="numeric" placeholder="sec" value="{{ s.seconds if s.seconds is not none }}" aria-label="Seconds held, set {{ s.set_index }}">
+    <span></span>
+  {% else %}
+    <input name="weight" type="number" step="2.5" inputmode="decimal" placeholder="BW" value="{{ (s.weight_lb if s.weight_lb is not none else s.prescribed_weight_lb)|num }}" aria-label="Weight, set {{ s.set_index }}">
+    <input name="reps" type="number" inputmode="numeric" value="{{ s.reps if s.reps is not none else (s.prescribed_reps or '') }}" aria-label="Reps, set {{ s.set_index }}">
+  {% endif %}
+  <select name="rpe" aria-label="RPE, set {{ s.set_index }}">
+    <option value="">–</option>
+    {% for v in [5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10] %}
+    <option value="{{ v }}" {{ 'selected' if s.rpe == v }}>{{ v }}</option>
+    {% endfor %}
+  </select>
+  <button class="btn go" aria-label="Log set {{ s.set_index }}">{% if logged %}✓{% else %}Log{% endif %}</button>
+  <div class="extra">
+    <label style="margin:0;display:flex;gap:4px;align-items:center"><input type="checkbox" name="form_bad" value="1" {{ 'checked' if not s.form_ok }}> form broke</label>
+    <input type="text" name="pain" value="{{ s.pain or '' }}" placeholder="pain? where" aria-label="Pain location, set {{ s.set_index }}">
+    {% if logged %}
+      {% if s.pain %}<span class="badge bad">pain</span>{% endif %}
+      {% if s.xp %}<span class="xp">+{{ s.xp }} XP</span>
+      {% elif s.rpe and s.rpe_cap and s.rpe > s.rpe_cap %}<span class="badge warn">over cap · 0 XP</span>
+      {% elif not s.form_ok %}<span class="badge warn">form · 0 XP</span>
+      {% elif not s.rpe %}<small>add RPE for XP</small>{% endif %}
+    {% endif %}
+  </div>
+</form>

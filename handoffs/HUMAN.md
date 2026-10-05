@@ -4,15 +4,15 @@ Items Claude needs from the user. Claude adds items; the user answers inline or 
 **The repo is public:** keep answers with personal details in chat or in `athlete/PROFILE.md`, not in this file.
 
 ## Open
-### Training data (blocks T002: the real on-ramp numbers)
-- [ ] **The program's lb sheet.** `program/source/Deadlift.csv` has only the guide text (rules, RPE, FAQ); the weeks/days/sets/lb tab isn't in it. Export that tab (or every tab) as CSV, or drop in the original `.xlsx`, under `program/source/`. It's gitignored, so it won't be published.
-- [ ] **Current maxes:** squat and deadlift 1RM, or a recent heavy set (weight × reps, plus how hard it felt).
-- [ ] **Schedule:** how many lifting days per week, and which weekdays.
+### Start training (no app needed)
+- [ ] **Start the app:** `cd ~/Projects/GigaLegs && uv run gigalegs serve`. Open the printed phone URL in Safari (same Wi-Fi) → Share → Add to Home Screen. The Mac has to be awake with the server running.
+- [ ] Each morning, tap your soreness (0–10) on Today; it drives the on-ramp gate and the daily suggestion. Log lifts by tapping through the sets; log rides, recovery, and rest days from Today. Messaging Claude still works too.
 - [ ] **Injuries/pain:** anything in the knees, back, or hips Claude should know about?
 
-### Bike (blocks T006)
-- [ ] **Measure the route:** Google Maps → directions from home to work → bike icon → the Sparks Blvd / Veterans Pkwy option. Paste the miles and elevation gain in chat.
-- [ ] **Tune-up:** take the bike to a local shop for a basic tune-up + saddle-height check before Stage 2 (see "Bike basics" in BIKE_COMMUTE_PLAN).
+### Bike
+- [ ] **Recon ride** (a weekend, before Stage 3): Sparks Blvd → Erica Greif Memorial Bikeway (the path beside Veterans) → South Meadows Pkwy. Tell Claude about anything sketchy, especially the I-80 ramps and the last mile of Veterans.
+- [ ] On rides: if you're wearing the watch, start an **Outdoor Cycle** workout and read the miles/minutes off it when you log the ride.
+- [ ] **Tune-up** before Stage 2 (see "Bike basics" in BIKE_COMMUTE_PLAN).
 - [ ] Is there a shower or a place to change at work?
 - [ ] Which weekdays you'd eventually want to commute.
 
@@ -23,9 +23,13 @@ Items Claude needs from the user. Claude adds items; the user answers inline or 
   ```
 
 ## Done
+- [x] Web app MVP built (D21); no fixed training days (D20); Sparks Blvd bike lane confirmed on Street View (D22).
+- [x] Wearable sync deferred; logging is manual via chat for now (D19).
 - [x] Workflow: Claude orchestrates, DeepSeek implements, and you relay and commit (2026-10-03).
-- [x] Git repo created; local identity matches ChessCoach (JaeminBBQ). The remote `JaeminBBQ/GigaLegs` is **public** (D10).
+- [x] Git: local identity + SSH key (`~/.ssh/id_ed25519_github`) match ChessCoach; GitHub auth verified. The repo is **public** (D10).
 - [x] Discord webhook copied from ChessCoach into `.env`; test ping sent.
-- [x] Bodyweight and goal → maintain through the program, slow cut after (D9, NUTRITION.md).
-- [x] Hosting: local for now, built multi-user-ready for a possible public version (D8).
-- [x] Work address recorded (privately, in `athlete/PROFILE.md`).
+- [x] Bodyweight and goal → maintain through the program, slow cut after (D9).
+- [x] Hosting: local for now, built multi-user-ready (D8).
+- [x] lb sheet → normalized program + concrete on-ramp sessions (T002).
+- [x] Maxes: 365 / 495 all-time; the program runs off your entered 275 / 405 (D14).
+- [x] Route measured: 16.7 mi, ~230 ft up on the way in / ~615 ft up on the way home (T006).

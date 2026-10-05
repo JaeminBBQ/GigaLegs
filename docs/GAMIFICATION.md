@@ -6,10 +6,13 @@
 ## XP sources
 | Action | XP | Notes |
 |---|---|---|
-| Complete a lifting session as prescribed | 100 | "As prescribed" = all working sets logged, RPE within cap |
+| Complete a lifting session as prescribed | 100 | Every planned exercise has its planned sets logged, none over the cap |
 | Each working set logged with RPE + form toggle | 5 | Rewards good logging (the engine needs it) |
-| Set RPE on target (±0.5) | +5 | Accuracy, not intensity |
+| Set RPE on target | +5 | Inside the program's RPE range; on-ramp: within 2 under the cap. Accuracy, not intensity |
 | Readiness check-in before session | 10 | |
+| Morning soreness check-in | 5 | First one per day |
+| Recovery day logged (walk, mobility, easy spin) | 15 | "Something every day" without digging a hole (D20) |
+| Timed hold logged (planks) | 5 | No RPE needed |
 | Taking a gated adjustment (lighter day, repeat week) | 50 | Listening to the body is a skill |
 | Logged "smart rest" (readiness gate triggered) | 25 | Keeps streak |
 | Ride logged | 1 XP per mile, ×1.5 if a commute | Zone 1–2 only; no bonus for speed |

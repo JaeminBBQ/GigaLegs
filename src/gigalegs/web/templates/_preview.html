@@ -1,0 +1,25 @@
+{% if r.errors %}
+<div class="notice">
+  {% for line, msg in r.errors %}<div>Line {{ line }}: {{ msg }}</div>{% endfor %}
+</div>
+{% elif r.empty %}
+<p class="empty">Nothing to log yet.</p>
+{% else %}
+<section class="card">
+  <div class="kicker">Preview: looks good</div>
+  {% for l in r.lifts %}
+    <h3 style="margin-top:8px">Lift · {{ l.date.strftime('%a %b %-d') }}{% if l.phase %} · {{ l.phase }} {{ l.week }}{% endif %}{% if l.day %} · day {{ l.day }}{% endif %}</h3>
+    {% if l.readiness %}<small>Readiness: soreness {{ l.readiness[0] }}, sleep {{ l.readiness[1] }}, energy {{ l.readiness[2] }}</small>{% endif %}
+    <div class="scroll-x"><table><tbody>
+      {% for s in l.sets %}
+      <tr><td>{{ s.exercise|pretty }}</td>
+        <td>{% if s.seconds %}{{ s.seconds }}s{% else %}{% if s.weight_lb %}{{ s.weight_lb|num }}×{% else %}×{% endif %}{{ s.reps }}{% endif %}{% if s.rpe %} @{{ s.rpe|num }}{% endif %}
+        {% if not s.form_ok %} <span class="badge warn">form</span>{% endif %}{% if s.pain %} <span class="badge bad">pain: {{ s.pain }}</span>{% endif %}{% if s.amrap %} <span class="badge">amrap</span>{% endif %}</td></tr>
+      {% endfor %}
+    </tbody></table></div>
+    {% for n in l.notes %}<p><small>Note: {{ n }}</small></p>{% endfor %}
+  {% endfor %}
+  {% for x in r.rides %}<p>Ride · {{ x.date.strftime('%a %b %-d') }}: {{ x.miles }} mi, {{ x.minutes }} min{% if x.zone %}, Z{{ x.zone }}{% endif %}{% if x.commute %}, commute {{ 'home' if x.commute == 'out' else x.commute }}{% endif %}{% if x.elevation_ft %}, +{{ x.elevation_ft }} ft{% endif %}</p>{% endfor %}
+  {% for m in r.metrics %}<p>{{ m.kind|pretty }} · {{ m.date.strftime('%a %b %-d') }}: {{ m.value }}</p>{% endfor %}
+</section>
+{% endif %}

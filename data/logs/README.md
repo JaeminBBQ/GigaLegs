@@ -1,5 +1,7 @@
 # Logs
 
+How to log (the shorthand you send Claude): `docs/LOGGING.md`. Files here are gitignored (private).
+
 Source of truth for training history until the app exists (afterwards, the app exports here).
 One JSON object per line. Append only; fix mistakes by appending a correction with `"corrects": "<id>"`.
 
@@ -17,6 +19,16 @@ One JSON object per line. Append only; fix mistakes by appending a correction wi
 ```json
 {"date":"2026-10-07","miles":8.2,"minutes":40,"elevation_ft":120,"commute":null,"zone":2,"note":"Marina loop"}
 ```
-`commute`: `null` | `"in"` | `"out"` | `"round"`.
+`commute`: `null` | `"in"` | `"out"` | `"round"` (the shorthand `home` is stored as `"out"`).
 
 Exercise keys: lowercase snake_case (`back_squat`, `deadlift`, `deficit_deadlift`, `romanian_deadlift`, …). The normalized program in `program/` defines the full list.
+
+## `soreness.jsonl` — next-morning leg soreness
+```json
+{"date":"2026-10-06","soreness":3}
+```
+
+## `bodyweight.jsonl`
+```json
+{"date":"2026-10-06","lb":180.6}
+```

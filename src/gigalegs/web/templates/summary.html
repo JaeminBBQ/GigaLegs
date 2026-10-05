@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Summary · GigaLegs{% endblock %}
+{% block main %}
+{% set sess = summary.session %}
+<section class="card hero">
+  <div class="kicker">{{ sess.date.strftime('%a %b %-d') }} · {{ 'On-ramp ' ~ sess.week if sess.phase == 'onramp' else sess.phase|pretty ~ ' week ' ~ sess.week }} · Day {{ sess.day }}</div>
+  {% if not done_view %}<h1 style="font-size:2.4rem;margin:6px 0">+{{ summary.xp }} XP</h1>{% else %}<h1>Session · {{ summary.session.sets|sum(attribute='xp') }} XP from sets</h1>{% endif %}
+  {% for m in summary.messages %}<div class="notice good">{{ m }}</div>{% endfor %}
+</section>
+{% for ex in summary.exercises %}
+<section class="card">
+  <div class="row">
+    <h3 class="grow" style="margin:0">{{ ex.key|pretty }}</h3>
+    {% if ex.decision == 'advance' %}<span class="badge good">next step earned</span>
+    {% elif ex.decision == 'repeat' %}<span class="badge warn">repeat weight</span>
+    {% elif ex.decision == 'reset' %}<span class="badge bad">drop 10%</span>{% endif %}
+  </div>
+  <div class="scroll-x"><table>
+    <thead><tr><th>Set</th><th>Planned</th><th>Done</th><th class="num">XP</th></tr></thead>
+    <tbody>{% for s in ex.sets %}
+      <tr>
+        <td>{{ s.set_index }}</td>
+        <td>{% if s.prescribed_weight_lb %}{{ s.prescribed_weight_lb|round|int }}×{% endif %}{{ s.prescribed_reps or 'hold' }}{% if s.rpe_cap %} ≤{{ s.rpe_cap|num }}{% endif %}</td>
+        <td>{% if s.reps is none and s.seconds is none %}<small>not logged</small>{% else %}
+          {% if s.seconds %}{{ s.seconds }}s{% else %}{% if s.weight_lb %}{{ s.weight_lb|num }}×{% endif %}{{ s.reps }}{% endif %}{% if s.rpe %} @{{ s.rpe|num }}{% endif %}
+          {% if not s.form_ok %} <span class="badge warn">form</span>{% endif %}{% if s.pain %} <span class="badge bad">pain: {{ s.pain }}</span>{% endif %}{% endif %}</td>
+        <td class="num">{{ s.xp }}</td>
+      </tr>{% endfor %}
+    </tbody>
+  </table></div>
+</section>
+{% endfor %}
+{% if sess.note %}<section class="card"><div class="kicker">Notes</div><p>{{ sess.note }}</p></section>{% endif %}
+<a class="btn block" href="/">Back to today</a>
+{% endblock %}

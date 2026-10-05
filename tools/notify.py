@@ -48,12 +48,14 @@ def send(agent, kind, message):
     payload = {
         "username": "GigaLegs agents",
         "allowed_mentions": {"parse": []},
-        "embeds": [{
-            "title": f"{title}: {AGENTS.get(agent, agent)}",
-            "description": message[:3500],
-            "color": color,
-            "footer": {"text": "GigaLegs"},
-        }],
+        "embeds": [
+            {
+                "title": f"{title}: {AGENTS.get(agent, agent)}",
+                "description": message[:3500],
+                "color": color,
+                "footer": {"text": "GigaLegs"},
+            }
+        ],
     }
     req = urllib.request.Request(
         url,
@@ -79,11 +81,15 @@ def from_hook():
     message = data.get("message", "")
     if ntype == "idle_prompt" or "waiting for your input" in message.lower():
         return  # agents send explicit done/input notifications instead
-    send("agent", "input", f"{message or 'An agent needs your attention.'}\n(from Claude Code hook)")
+    send(
+        "agent", "input", f"{message or 'An agent needs your attention.'}\n(from Claude Code hook)"
+    )
 
 
 def main():
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     ap.add_argument("message", nargs="?", default="")
     ap.add_argument("--from", dest="agent", choices=sorted(AGENTS), default="claude")
     ap.add_argument("--kind", choices=sorted(KINDS), default="info")
