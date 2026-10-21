@@ -29,6 +29,12 @@ def _lan_ip() -> str | None:
 def cmd_serve(args: argparse.Namespace) -> None:
     import uvicorn
 
+    from .web.access import get_gate
+
+    if args.public and get_gate() is None:
+        sys.exit(
+            "--public needs GIGALEGS_PROXY_SECRET and GIGALEGS_ALLOWED_LOGINS (docs/HOSTING.md)"
+        )
     _migrate()
     ip = _lan_ip()
     print(f"GigaLegs on http://localhost:{args.port}", flush=True)
@@ -85,6 +91,11 @@ def main() -> None:
     s.add_argument("--host", default="0.0.0.0")
     s.add_argument("--port", type=int, default=8000)
     s.add_argument("--reload", action="store_true")
+    s.add_argument(
+        "--public",
+        action="store_true",
+        help="behind the Tailscale proxy: refuse to start unless the access gate is configured",
+    )
     s.set_defaults(fn=cmd_serve)
     lg = sub.add_parser("log", help="parse (and with --save, log) shorthand; '-' reads stdin")
     lg.add_argument("text")

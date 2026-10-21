@@ -3,7 +3,13 @@ from datetime import date, timedelta
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, Form, HTTPException, Request
-from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.responses import (
+    FileResponse,
+    HTMLResponse,
+    JSONResponse,
+    PlainTextResponse,
+    RedirectResponse,
+)
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session as Db
@@ -15,6 +21,7 @@ from ..db import LOCAL_USER_ID, get_sessionmaker
 from ..engine.onramp import ONRAMP_ORDER
 from ..engine.shorthand import parse
 from ..models import Ride, Session, SetLog
+from . import access
 
 HERE = Path(__file__).parent
 templates = Jinja2Templates(directory=HERE / "templates")
@@ -38,6 +45,18 @@ def route_miles() -> float | None:
 
 app = FastAPI(title="GigaLegs")
 app.mount("/static", StaticFiles(directory=HERE / "static"), name="static")
+
+
+@app.middleware("http")
+async def require_tailscale_access(request: Request, call_next):
+    gate = access.get_gate()
+    client = request.client.host if request.client else None
+    h = request.headers
+    if gate is not None and not gate.allows(
+        client, h.get(access.SECRET_HEADER), h.get(access.LOGIN_HEADER)
+    ):
+        return PlainTextResponse("Forbidden", status_code=403)
+    return await call_next(request)
 
 
 def get_db():

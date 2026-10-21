@@ -1,29 +1,22 @@
 # Product
 
 ## What we're building
-A coach that makes leg training **fun to show up for** and **hard to screw up**. The game layer (XP, levels, weekly streaks, badges, a commute map) rewards doing the plan as written (see `GAMIFICATION.md`). The coaching layer (deterministic rules engine + Claude as coach) keeps progress efficient and roughly linear, and pulls the brakes when recovery, form, or pain say so (see `training/METHODOLOGY.md`).
+A coach that makes training **easy to show up for every day** and **hard to screw up**. Every day has a short floor option, a standard session, and an optional push (`training/METHODOLOGY.md`). The game layer (XP, daily + weekly streaks, badges, a season map) rewards consistency and doing the plan (`GAMIFICATION.md`). The coaching layer (deterministic engine + Claude as coach) progresses weights and running volume safely.
 
-Today it's one user (the owner), running locally. It's built so it can later become a hosted app for anyone who trains legs (D8). No social features.
+Today it's one user (the owner), running locally, built multi-user-ready (D8). No social features.
 
-## Athlete goals (priority order)
-1. **Squat heavy.** Built through the purchased deadlift-focused program (it includes back squat work), then squat-focused blocks after it.
-2. **Bike-commute to work:** Five Ridges (north Sparks) → Sparks Blvd → Veterans Pkwy → South Meadows (south Reno). ~16.7 mi each way; ~615 ft of climbing on the way home, mostly in the last 1.7 mi. See `training/BIKE_COMMUTE_PLAN.md`.
-3. **Efficient, linear-ish progress** without the week-long soreness wipeouts you get from starting cold at full loads.
+## Athlete goals (D27, 2026-10-20)
+1. **Consistency:** something every day, morning or evening.
+2. **Fit and aesthetic:** full-body gym work for muscle (upper body now in scope), get leaner slowly.
+3. **Events:** Biggest Little Half Marathon (Apr 24, 2027) → America's Most Beautiful Bike Ride, 72 mi (Jun 6, 2027) → a fall marathon (Oct 2027). Calendar: `training/SEASON_PLAN.md`.
+4. **Bike commute** Five Ridges → South Meadows stays a side quest (`training/BIKE_COMMUTE_PLAN.md`).
 
-## Starting point (2026-10-02)
-- Hasn't started the deadlift program or biking yet.
-- Tried squatting near the program's numbers and chose to ramp in over a few weeks to avoid heavy DOMS → `training/ONRAMP.md`.
-- The program guide says it's meant for lifters with 8+ months of training who know their squat and deadlift 1RMs. The on-ramp bridges that gap.
+## Starting point (2026-10-20)
+- Former competitive powerlifter: strong and fit, but with little running base. Details are private (`athlete/PROFILE.md`).
+- Did ~2 weeks of the v1 on-ramp (purchased deadlift program) and dropped it for lack of motivation. That history stays in the DB.
 
-## Macrocycle (dates approximate)
-| Phase | Length | Dates (proposed) | Bike stage |
-|---|---|---|---|
-| On-ramp A/B/C | 3 wk | 2026-10-05 → 10-25 | 1 |
-| Deadlift program | N wk (from the lb sheet) | 2026-10-26 → … | 2 → 5 |
-| Peak (last 2–3 wk of program) | | | 5, capped at 2 round trips/wk |
-| Deload | 1 wk | | easy rides |
-| Squat volume block | 4–6 wk | | 5 |
-| Squat strength block | 6–8 wk | | 5 |
+## History
+v1 (2026-10-02 → 10-20) was a leg-strength app around a purchased deadlift program with a 3-week on-ramp (D4–D25). Superseded by D27.
 
 ## Logging now
 Manual: message Claude after each session or ride using the shorthand in `LOGGING.md` (free-form works too). Claude logs it, compares it to the prescription, and says what's next.

@@ -1,5 +1,7 @@
 # Bike Commute Plan: Five Ridges → South Meadows
 
+> **v2 (D28):** riding volume now follows `SEASON_PLAN.md`, and the commute is a side quest. The stages and lifting-interference notes below are from v1 and no longer drive the plan; the route, safety, and bike basics still apply.
+
 ## The route (measured 2026-10-03 from OpenStreetMap routing + USGS elevation; street-level details are in `athlete/PROFILE.md`)
 - **Start:** Five Ridges, north Sparks (off Pyramid Way / Sparks Blvd area).
 - **Destination:** work in South Meadows (exact address is in `athlete/PROFILE.md`, which is private).

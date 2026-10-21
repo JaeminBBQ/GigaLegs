@@ -14,6 +14,13 @@ class Settings:
     route_path: Path
     onramp_start: str  # ISO date the on-ramp starts, for the Path timeline
     bike_stage: int
+    # Tailscale gate (D34); both set = only localhost, or the Pi relay's secret + an allowed login
+    proxy_secret: str = ""
+    allowed_logins: frozenset[str] = frozenset()
+
+
+def _csv(name: str) -> frozenset[str]:
+    return frozenset(v.strip().lower() for v in os.environ.get(name, "").split(",") if v.strip())
 
 
 @lru_cache
@@ -32,4 +39,6 @@ def get_settings() -> Settings:
         route_path=Path(os.environ.get("GIGALEGS_ROUTE", root / "athlete" / "route.geojson")),
         onramp_start=os.environ.get("GIGALEGS_ONRAMP_START", "2026-10-05"),
         bike_stage=int(os.environ.get("GIGALEGS_BIKE_STAGE", "1")),
+        proxy_secret=os.environ.get("GIGALEGS_PROXY_SECRET", "").strip(),
+        allowed_logins=_csv("GIGALEGS_ALLOWED_LOGINS"),
     )

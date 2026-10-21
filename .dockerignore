@@ -1,0 +1,13 @@
+.git
+.venv
+.env
+data
+athlete
+program
+handoffs
+docs
+tests
+ios
+**/__pycache__
+.pytest_cache
+.ruff_cache

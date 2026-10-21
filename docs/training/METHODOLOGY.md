@@ -1,82 +1,118 @@
-# Training Methodology
+# Training Methodology (v2, D27–D31)
 
-This is the rulebook the rules engine implements and Claude (orchestrator/coach) enforces. Changing a rule = user approval + edit this file + an entry in `docs/DECISIONS.md`.
+This is the rulebook the rules engine implements and Claude (coach) enforces. Changing a rule = user approval + edit this file + an entry in `docs/DECISIONS.md`. The calendar (weeks, distances, dates) lives in `SEASON_PLAN.md`. v1 (the purchased deadlift program + on-ramp) is in git history up to commit `591b2e2`; the on-ramp doc is in `archive/`.
 
-## 1. Sources of truth
-- **The purchased program** (`program/source/`) defines exercises, sets, reps, %1RM / RPE targets for each week. Per its own guidance: *stick to the program* — don't swap exercises unless pain forces it, and then use the closest equivalent (e.g. deficit deadlift → Romanian deadlift).
-- **This file** defines everything around the program: the on-ramp, autoregulation, recovery gates, cardio interference, and what happens after the program ends.
+## 1. Goals and priorities
+1. **Show up every day.** Consistency is the main problem to solve, so every day has a short option that counts (§2).
+2. **Look good:** keep and build muscle with full-body gym work, and get leaner slowly (§6).
+3. **Events, trained together all season (D32):** the Biggest Little Half Marathon (Apr 24, 2027), America's Most Beautiful Bike Ride, 72 mi (Jun 6, 2027), then a full marathon in the fall (Lake Tahoe Marathon, Oct 2027; planned later). Running and riding are equal partners. Finishing healthy beats a fast time. Extra muscle slowing the events down is fine.
 
-## 2. Effort: RPE
-Standard 1–10 RPE (from the program guide):
+## 2. Every day: floor, standard, push
+The engine offers one **mission** per day with three levels. Any time of day counts: morning, lunch, or before bed. The day closes at midnight.
 
-| RPE | Meaning |
-|---|---|
-| 10 | Max effort, no reps left |
-| 9 | 1 rep left |
-| 8 | 2–3 reps left |
-| 7 | 3–5 reps left |
-| 6 | 6+ reps left, easy |
-| ≤5 | Warm-up |
+| Level | What | Counts for |
+|---|---|---|
+| **Floor** | 15–20 min from the floor menu (below) | Daily streak |
+| **Standard** | The next session in the week's plan | Daily streak + the week's checklist |
+| **Push** (optional) | The standard session plus its pre-written add-on (§2b) | Same as standard, plus a small capped bonus (GAMIFICATION) |
 
-Every logged working set records the RPE actually felt. RPE 10 is only allowed on prescribed max / AMRAP sets and accessories.
+**Floor menu:** pick one.
+- 20-min walk
+- 20-min easy spin (gym bike or outside)
+- **Floor circuit** (~12 min, no equipment): 3 rounds of 10 push-ups (incline or knees is fine), 15 bodyweight squats, 10 glute bridges, 30 s plank. Rest as needed.
+- 15-min easy run or walk-run, **only if the week's run slots aren't done yet**, and it then counts as that week's shortest run. A floor never adds running beyond the plan (§4).
+- 15 min of mobility (hips, calves, thoracic spine, hamstrings).
 
-## 3. Load progression ("linear-ish")
-Applied per exercise, per week, by the engine:
+A floor day doesn't drop the planned session: the session queue just waits (§3).
 
-1. **Hit the reps, form solid, RPE at or under the cap** → next prescribed weight as written (on RPE-based lifts: +10 lb for deadlift-pattern lifts, +5 lb for everything else).
-2. **Hit the reps but went over the RPE cap** (the program's max RPE, or the on-ramp cap) → repeat the same weight next time. An unrated set counts as over the cap. On-ramp accessories have no cap (D25): they're done by feel and don't progress automatically.
-3. **Missed reps, or form broke down noticeably** → repeat the weight; if that happens twice in a row, drop 10% and rebuild.
-4. **Never** increase weight when technique breaks down (program rule; also the engine can't see form, so the athlete's "form OK?" toggle on each set gates progression).
+### 2b. Push add-ons (written in advance; nothing else counts as push)
+- **Gym:** +1 set on up to 2 upper-body exercises, *or* the arm/shoulder finisher (2 × lateral raise + 2 × curl + 2 × triceps, 12–20 reps). Never extra leg sets.
+- **Easy ride:** +15 min, still easy.
+- **Long ride:** none (it's already the week's big ride).
+- **Easy run:** from Week 9, 4–6 × 20 s strides at the end (fast but relaxed, full walk-back recovery). No push in Weeks 1–8.
+- **Long run, tempo run, race weeks, down weeks, and any day with pain:** no push.
 
-e1RM is estimated from top sets with the RPE-adjusted Epley formula: `e1RM = weight × (1 + (reps + (10 − RPE)) / 30)`. Only sets with RPE ≥ 7 count (lower RPE estimates are unreliable).
+## 3. The week: a checklist, not a calendar
+Like v1 (D20), there are no fixed weekdays. Each plan week is a set of **slots**; the app suggests which slot fits today. Doing two slots in one day is fine (e.g. a gym session in the morning and an easy ride after work), except long run + long ride.
 
-## 3b. Flexible scheduling (D20)
-No fixed weekdays: the athlete trains by feel and availability and wants to do *something* most days.
-- **The program is a queue, not a calendar.** Day 1 → Day 2 → Day 3 → (next week) Day 1… A program/on-ramp "week" is complete when its Day 3 is done, however many calendar days that took.
-- **Heavy leg days are Day 1 and Day 3** (squat + deadlift pattern). Day 2 is rows/core/back work.
-- **Spacing rules** (the program says to spread sessions apart):
-  - ≥ 48 h between two heavy leg sessions (72 h preferred).
-  - ≥ 20 h between any two lifting sessions.
-  - At most 3 program sessions in any rolling 7 days.
-- **Every other day is a ride, recovery, or rest.**
-  - *Recovery* = 20–40 min walk, mobility, or an easy spin under 30 min. It counts as "doing something".
-  - At least one rest or recovery day per rolling 7 days.
-  - Never two hard days back to back, where hard = a heavy leg session or a ride over 60 min.
-- **Daily recommendation (engine):** the app suggests one of: Lift (next queued day, if the spacing rules and readiness allow), Easy ride (Zone 1–2, length from the bike stage), Recovery, or Rest. Each suggestion comes with its reasons. It's a suggestion: the athlete can pick something else, and logging works the same either way.
+Base week (exact contents per week in `SEASON_PLAN.md`):
+- **Gym × 3** (alternate A and B: A-B-A, then B-A-B), ~45–55 min
+- **Run × 3:** Easy 1, Easy 2, Long (from Week 17, Easy 1 becomes a tempo run)
+- **Ride × 2:** Easy ride + Long ride (commutes count)
+- Every other day is a floor or recovery day, which still keeps the streak.
 
-## 4. Readiness and recovery gates
-Optionally (D24: the athlete logs after the fact and isn't asked), a session can carry 3 numbers (0–10): **leg soreness**, **sleep quality**, **overall energy**. When present, the rules below apply; when absent, nothing is adjusted.
+**Ordering rules (the engine checks these when it suggests today's slot):**
+- No two run days in a row in Weeks 1–12 (tendons and shins adapt slower than lungs).
+- The long run and the tempo run are never on back-to-back days.
+- Long run and long ride on back-to-back days is fine (the normal weekend). Do the long run first when you can: impact work goes on fresh legs. Never both on the same day.
+- **Gym A (leg-emphasis) is never the day before the long run or tempo run.**
+- At most 2 hard days in a row, where hard = long run, tempo, long ride (> 2 h), or Gym A.
+- A week is done when its slots are done, however many days it takes. If it takes more than 9 days, the coach looks at why instead of pushing harder.
 
-| Condition | Action |
-|---|---|
-| Soreness ≥ 7 | Do the session at 90% of prescribed loads, cap RPE at target −1. |
-| Soreness ≥ 7 two sessions in a row | Coach flags: repeat the week instead of advancing. |
-| **Sharp/joint pain** (not muscle soreness) | Stop that exercise. Log it. Substitute a pain-free close variant or skip. Coach raises it at check-in. Pain that persists >1 week → see a professional. |
-| Sleep ≤ 3 and energy ≤ 3 | Optional: swap to a light day or rest. Logged as "smart rest" (still keeps the streak — see GAMIFICATION). |
+## 4. Running
+- **Easy means conversational:** you can speak full sentences. Walk breaks are allowed in any easy run. HR guide: easy ≤ 75% HRmax; the talk test wins if they disagree (D30). Exact bpm is in `athlete/PROFILE.md`.
+- **Tempo:** "comfortably hard", 80–88% HRmax; you can speak a few words.
+- **Volume grows ≤ ~10% per week** by time, and **every 4th week is a down week** (≈ −25%). The `SEASON_PLAN.md` table already follows this; the engine never adds to it.
+- **Start with walk-run** even though cardio fitness will feel ahead of it. Strong lifters' muscles and lungs outrun their tendons and bones, and that gap is where shin splints and Achilles trouble come from.
+- **Shoes:** get fitted at a running store before Week 1 runs feel serious.
+- **Pain rules:** any sharp or joint pain, or pain that changes how you run → stop, walk home, log it. Next run waits until a pain-free walk and 10 pain-free hops on that leg. Shin pain that's sore to press on a specific spot, or pain lasting > 1 week → see a professional. Normal muscle soreness is fine.
 
-**Oura data is advisory for now (D17).** Readiness score, HRV vs. baseline, resting HR, and temperature deviation are shown next to the check-in, but they don't change loads automatically. After ~4 weeks of paired data (Oura + subjective scores + session RPEs), Claude reviews whether an Oura-based rule earns a place here (e.g. "Oura readiness < 60 *and* soreness ≥ 5 → treat as soreness ≥ 7"). How you feel and how the bar moves stay primary.
+## 4b. Riding
+- **Easy rides** follow the HR zones of D13 (Zone 1–2, ≤ 70% HRmax for ≥ 80% of the ride; the allowance covers climbs). Long rides: same, except steady climbs may go into Zone 3.
+- **Long-ride time grows ≤ ~20% over the previous longest ride**, with the down weeks in `SEASON_PLAN.md`. Indoor rides count.
+- Fuel every ride over 90 min (NUTRITION). Bike safety and basics: `BIKE_COMMUTE_PLAN.md`.
 
-## 5. Cardio / bike interference
-The program says cardio is fine and encouraged if **low intensity**, and should taper toward the end of the program so you peak.
+## 5. Gym (full body, double progression)
+### Templates
+Each line is a **slot**: pick any listed option (variety keeps it fun) and stick with that pick for a few weeks so progress is measurable. Options marked * are the defaults.
 
-- **Commute rides are Zone 1–2** (conversational; can speak full sentences). Hills: gear down, don't hammer.
-- **Heart-rate zones (when the watch recorded HR, D13):** HRmax = measured value if known, else `208 − 0.7 × age`. Zone 1 < 60% HRmax, Zone 2 = 60–70%, Zone 3+ > 70%. A ride counts as **easy** (XP-eligible as Zone 1–2) if **≥ 80% of its HR-recorded time is ≤ 70% HRmax**. The 20% allowance covers the steep finish of the ride home. Without HR, the athlete's self-reported zone is used.
-- **Don't ride hard the day before a heavy lower session.** A short easy spin the day before is fine.
-- Prefer commuting on **non-lifting days** or after lifting, not hours before a heavy squat/deadlift session.
-- Weekly ride volume grows ≤ ~15–20% per week (see BIKE_COMMUTE_PLAN).
-- **Last 2–3 weeks of the program (peak):** cap commuting at 2 round trips/week, all easy.
-- Commuting burns a lot of energy (rough order: 600–1,200 kcal per round trip depending on distance, speed, wind). The program requires eating at maintenance or above — **eat for the riding**, or squat and deadlift progress will stall.
+**Gym A, leg emphasis**
+| Slot | Options | Sets × reps |
+|---|---|---|
+| Squat pattern | leg press*, hack squat, goblet squat, barbell squat | 3 × 8–12 |
+| Horizontal press | DB bench*, machine chest press, push-ups | 3 × 8–12 |
+| Vertical pull | lat pulldown*, pull-ups, assisted pull-ups | 3 × 8–12 |
+| Side delts | DB lateral raise*, cable lateral raise | 3 × 12–20 |
+| Calves | standing calf raise*, seated calf raise, leg-press calf raise | 3 × 10–15 |
+| Biceps | any curl | 2 × 10–15 |
 
-## 6. Nutrition (program guide + D9)
-- **Through the on-ramp and the deadlift program: maintain bodyweight.** The program says no caloric deficit, and commuting will quietly create one if you don't eat for it.
-- **Fat loss comes after the program**, during the deload + squat volume block: a slow cut of ~0.5–1 lb/week, high protein, with lifting loads unchanged. Commuting at Stage 5 does a lot of the work.
-- Details and gram targets: `NUTRITION.md`.
+**Gym B, upper emphasis**
+| Slot | Options | Sets × reps |
+|---|---|---|
+| Hinge | DB Romanian deadlift*, 45° back extension, cable pull-through | 3 × 8–12 |
+| Incline press | incline DB press*, incline machine press | 3 × 8–12 |
+| Row | chest-supported row*, seated cable row, machine row | 3 × 8–12 |
+| Shoulder press | DB shoulder press*, machine shoulder press | 2 × 8–12 |
+| Hamstrings | leg curl (seated* or lying) | 2 × 10–15 |
+| Triceps | cable pushdown*, overhead cable extension, dips | 2 × 10–15 |
+| Core | plank*, dead bug, hanging knee raise, cable crunch | 2 sets |
 
-## 7. Deloads and blocks
-- **On-ramp (3 weeks)** before program Week 1 — see `ONRAMP.md`.
-- After the program: **1-week deload**, then **4–6 weeks of easier, different training** (program guide). We use that window for a **squat-focused hypertrophy/volume block** — moderate loads, the goal is building the base for heavy squats while the deadlift recovers.
-- Then a squat strength block. The program should not be run back-to-back.
+### Effort (RPE, same scale as v1: 10 = nothing left, 8 = 2–3 reps left)
+- **Weeks 1–2:** cap RPE 7 on everything. Pick starting weights by feel in the session; nobody types in a number in advance. This avoids the DOMS crater that would also wreck the first runs (the v1 on-ramp lesson).
+- **From Week 3:** leg exercises cap RPE 8; upper-body exercises target RPE 8–9.
+- RPE 10 only on the last set of an upper-body isolation exercise, and only as a push add-on.
+
+### Double progression (engine)
+Per exercise, per session, using the sets logged at that exercise's working weight:
+1. **All sets hit the top of the rep range, at or under the cap, form OK** → add weight next time: +5 lb on upper-body, isolation, and dumbbell lifts (or the next dumbbell up), +10 lb on leg press, hack squat, and barbell lower-body lifts.
+2. **Reps inside the range** → same weight; aim for more reps.
+3. **Any set below the bottom of the range, form flagged, or over the cap** → same weight. Twice in a row → −10% and build back.
+4. Swapping the option in a slot starts that exercise fresh (the first session sets the weight by feel).
+
+### Running and lifting together
+- **Down weeks:** gym sets −1 per exercise.
+- **Weeks 21–25 (half peak and taper):** gym drops to 2 sessions/week; leg exercises −1 set and cap RPE 7.
+- **Race weeks:** one short upper-body session only, ≥ 3 days before the race.
+
+## 6. Body composition and nutrition (D31)
+Get leaner slowly while keeping strength and training quality: ~0.25–0.75 lb/week on the 7-day average, high protein. No deficit in race weeks or during illness. Details and targets: `NUTRITION.md`.
+
+## 7. Readiness, bad days, and pain
+- **Bad day (tired, busy, unmotivated):** do the floor. That's the whole point of it. Done is better than skipped.
+- **Very sore legs (≥ 7/10) or poor sleep two nights in a row:** the app offers a floor or an easy ride instead of a run or Gym A. Accepting it earns the "smart call" XP.
+- **Sick:** above-the-neck cold → floor walk is OK; fever, chest, or stomach → rest and use a streak freeze. Return with 2 easy days before any long or tempo session.
+- **Pain:** §4 pain rules apply to all training. Pain is never "push through"; persistent pain → a professional.
 
 ## 8. What agents may and may not do
-- May: explain rules, summarize logs, flag readiness issues, propose rule changes (as a written proposal).
-- May not: invent loads outside these rules, tell the athlete to train through joint pain, or remove a deload to "level up faster".
+- May: explain rules, suggest today's slot, summarize logs, flag readiness or pain issues, propose rule changes in writing.
+- May not: invent loads or distances outside these rules and `SEASON_PLAN.md`, tell the athlete to train through pain, reward extra unplanned volume, or remove a down week or taper.

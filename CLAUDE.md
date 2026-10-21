@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-GigaLegs is a gamified but legitimate training coach: a phone-first web app plus a coach agent, for one athlete (the user). **Pivoting (D27, 2026-10-20)** from the barbell-squat program to full-body gym work + endurance (bike or run) toward a local event, with a short "floor" option for bad days. Goals: be fit and look good, stay consistent. Until the new plan lands in `docs/`, older docs still describe the squat program.
+GigaLegs is a gamified but legitimate training coach: a phone-first web app plus a coach agent, for one athlete (the user). **Pivoting (D27, 2026-10-20)** from the barbell-squat program to full-body gym work + endurance (bike or run) toward a local event, with a short "floor" option for bad days. Goals: be fit and look good, stay consistent. The plan is in `docs/training/` (v2); the app still runs v1 until T020 lands.
 
 ## Roles (D26)
 - **Claude (builder + coach):** owns product, architecture, implementation, tests, and **all training decisions**. Tracks work in `handoffs/BOARD.md`. No implementer agent; no handoff relay.
@@ -22,9 +22,10 @@ Use `--kind done` for finished milestones and `--kind blocked` for blockers. The
 - `docs/DECISIONS.md`: decision log (append-only)
 - `docs/GAMIFICATION.md`: XP, levels, streaks, badges, commute map
 - `docs/training/METHODOLOGY.md`: the training rulebook the engine implements (hard rules)
-- `docs/training/ONRAMP.md`: 3-week lead-in before program Week 1
-- `docs/training/BIKE_COMMUTE_PLAN.md`: staged build-up to the commute
-- `docs/training/NUTRITION.md`: maintain through the program, slow cut after
+- `docs/training/SEASON_PLAN.md`: the 2026–27 calendar (half → Tahoe ride → fall marathon)
+- `docs/training/BIKE_COMMUTE_PLAN.md`: commute route, safety, bike basics (side quest)
+- `docs/training/NUTRITION.md`: slow cut with high protein
+- `docs/HOSTING.md`: private hosting via Tailscale on the Pi → Mac mini (D34)
 - `docs/LOGGING.md`: manual logging shorthand + what Claude does with a log message
 - `docs/WATCH_SYNC.md`, `docs/OURA_SYNC.md`: **deferred** (D19) wearable designs
 - `program/private/`: normalized purchased program + concrete on-ramp sessions (gitignored)

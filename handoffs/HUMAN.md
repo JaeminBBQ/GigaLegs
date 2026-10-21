@@ -4,17 +4,18 @@ Items Claude needs from the user. Claude adds items; the user answers inline or 
 **The repo is public:** keep answers with personal details in chat or in `athlete/PROFILE.md`, not in this file.
 
 ## Open
-### Pivot (D27): answer these first
-- [ ] **Event:** Tahoe ride (America's Most Beautiful Bike Ride, Jun 6 2027; 72 or 100 mi), Reno half (Biggest Little Half, Apr 24 2027), or both?
-- [ ] **What made the old routine hard?** Time, soreness, boredom, the barbell setup?
-- [ ] **Days per week and minutes on a normal day.**
+### Season v2 (D27–D31)
+- [ ] **Read the plan and say OK** (or what to change): `docs/training/METHODOLOGY.md` + `SEASON_PLAN.md`.
+- [ ] **Register:** Biggest Little Half (Apr 24) and America's Most Beautiful Bike Ride (Jun 6; 72 mi). Check the dates on the official pages first.
+- [ ] **Running shoes:** get fitted at a running store before Week 1 (Oct 26).
+- [ ] **Starter week (now → Oct 25):** something every day; try Gym A and Gym B once each at RPE ≤ 7; one walk-run. Message Claude what you did.
+- [ ] **Injuries/pain:** anything in the knees, back, hips, shins, or feet Claude should know about?
 
-The items below belong to the old squat plan and get rewritten once the pivot lands.
+The items below are from v1. The bike recon and tune-up still apply; ignore the on-ramp parts.
 
 ### Start training (no app needed)
 - [ ] **Start the app:** `cd ~/Projects/GigaLegs && uv run gigalegs serve`. Open the printed phone URL in Safari (same Wi-Fi) → Share → Add to Home Screen. The Mac has to be awake with the server running.
 - [ ] Each morning, tap your soreness (0–10) on Today; it drives the on-ramp gate and the daily suggestion. Log lifts by tapping through the sets; log rides, recovery, and rest days from Today. Messaging Claude still works too.
-- [ ] **Injuries/pain:** anything in the knees, back, or hips Claude should know about?
 
 ### Bike
 - [ ] **Recon ride** (a weekend, before Stage 3): Sparks Blvd → Erica Greif Memorial Bikeway (the path beside Veterans) → South Meadows Pkwy. Tell Claude about anything sketchy, especially the I-80 ramps and the last mile of Veterans.
