@@ -1,0 +1,3251 @@
+{
+ "id": "season-2026",
+ "name": "Season 2026–27: half → Tahoe 72 → fall marathon",
+ "source": "docs/training/SEASON_PLAN.md + METHODOLOGY.md (original, D28–D32)",
+ "events": [
+  {
+   "name": "Biggest Little Half Marathon",
+   "date": "2027-04-24",
+   "week": 26
+  },
+  {
+   "name": "America's Most Beautiful Bike Ride, 72 mi",
+   "date": "2027-06-06",
+   "week": 32
+  },
+  {
+   "name": "Lake Tahoe Marathon",
+   "date": "2027-10-16",
+   "week": null
+  }
+ ],
+ "gym_templates": {
+  "A": {
+   "name": "Gym A",
+   "subtitle": "leg emphasis",
+   "slots": [
+    {
+     "key": "squat_pattern",
+     "name": "Squat pattern",
+     "options": [
+      "Leg press",
+      "Hack squat",
+      "Goblet squat",
+      "Barbell squat"
+     ],
+     "sets": 3,
+     "reps": [
+      8,
+      12
+     ],
+     "lower": true,
+     "inc": 10
+    },
+    {
+     "key": "horizontal_press",
+     "name": "Horizontal press",
+     "options": [
+      "DB bench",
+      "Machine chest press",
+      "Push-ups"
+     ],
+     "sets": 3,
+     "reps": [
+      8,
+      12
+     ],
+     "lower": false,
+     "inc": 5
+    },
+    {
+     "key": "vertical_pull",
+     "name": "Vertical pull",
+     "options": [
+      "Lat pulldown",
+      "Pull-ups",
+      "Assisted pull-ups"
+     ],
+     "sets": 3,
+     "reps": [
+      8,
+      12
+     ],
+     "lower": false,
+     "inc": 5
+    },
+    {
+     "key": "side_delts",
+     "name": "Side delts",
+     "options": [
+      "DB lateral raise",
+      "Cable lateral raise"
+     ],
+     "sets": 3,
+     "reps": [
+      12,
+      20
+     ],
+     "lower": false,
+     "inc": 5
+    },
+    {
+     "key": "calves",
+     "name": "Calves",
+     "options": [
+      "Standing calf raise",
+      "Seated calf raise",
+      "Leg-press calf raise"
+     ],
+     "sets": 3,
+     "reps": [
+      10,
+      15
+     ],
+     "lower": true,
+     "inc": 10
+    },
+    {
+     "key": "biceps",
+     "name": "Biceps",
+     "options": [
+      "DB curl",
+      "Cable curl",
+      "EZ-bar curl",
+      "Hammer curl"
+     ],
+     "sets": 2,
+     "reps": [
+      10,
+      15
+     ],
+     "lower": false,
+     "inc": 5
+    }
+   ]
+  },
+  "B": {
+   "name": "Gym B",
+   "subtitle": "upper emphasis",
+   "slots": [
+    {
+     "key": "hinge",
+     "name": "Hinge",
+     "options": [
+      "DB Romanian deadlift",
+      "45° back extension",
+      "Cable pull-through"
+     ],
+     "sets": 3,
+     "reps": [
+      8,
+      12
+     ],
+     "lower": true,
+     "inc": 10
+    },
+    {
+     "key": "incline_press",
+     "name": "Incline press",
+     "options": [
+      "Incline DB press",
+      "Incline machine press"
+     ],
+     "sets": 3,
+     "reps": [
+      8,
+      12
+     ],
+     "lower": false,
+     "inc": 5
+    },
+    {
+     "key": "row",
+     "name": "Row",
+     "options": [
+      "Chest-supported row",
+      "Seated cable row",
+      "Machine row"
+     ],
+     "sets": 3,
+     "reps": [
+      8,
+      12
+     ],
+     "lower": false,
+     "inc": 5
+    },
+    {
+     "key": "shoulder_press",
+     "name": "Shoulder press",
+     "options": [
+      "DB shoulder press",
+      "Machine shoulder press"
+     ],
+     "sets": 2,
+     "reps": [
+      8,
+      12
+     ],
+     "lower": false,
+     "inc": 5
+    },
+    {
+     "key": "hamstrings",
+     "name": "Hamstrings",
+     "options": [
+      "Seated leg curl",
+      "Lying leg curl"
+     ],
+     "sets": 2,
+     "reps": [
+      10,
+      15
+     ],
+     "lower": true,
+     "inc": 5
+    },
+    {
+     "key": "triceps",
+     "name": "Triceps",
+     "options": [
+      "Cable pushdown",
+      "Overhead cable extension",
+      "Dips"
+     ],
+     "sets": 2,
+     "reps": [
+      10,
+      15
+     ],
+     "lower": false,
+     "inc": 5
+    },
+    {
+     "key": "core",
+     "name": "Core",
+     "options": [
+      "Plank (sec)",
+      "Dead bug",
+      "Hanging knee raise",
+      "Cable crunch"
+     ],
+     "sets": 2,
+     "reps": [
+      10,
+      15
+     ],
+     "lower": false,
+     "inc": 5
+    }
+   ]
+  },
+  "U": {
+   "name": "Upper body",
+   "subtitle": "race week, short",
+   "slots": [
+    {
+     "key": "incline_press",
+     "name": "Incline press",
+     "options": [
+      "Incline DB press",
+      "Incline machine press"
+     ],
+     "sets": 2,
+     "reps": [
+      8,
+      12
+     ],
+     "lower": false,
+     "inc": 5
+    },
+    {
+     "key": "row",
+     "name": "Row",
+     "options": [
+      "Chest-supported row",
+      "Seated cable row",
+      "Machine row"
+     ],
+     "sets": 2,
+     "reps": [
+      8,
+      12
+     ],
+     "lower": false,
+     "inc": 5
+    },
+    {
+     "key": "side_delts",
+     "name": "Side delts",
+     "options": [
+      "DB lateral raise",
+      "Cable lateral raise"
+     ],
+     "sets": 2,
+     "reps": [
+      12,
+      20
+     ],
+     "lower": false,
+     "inc": 5
+    }
+   ]
+  }
+ },
+ "floor_menu": [
+  {
+   "key": "walk",
+   "name": "20-min walk"
+  },
+  {
+   "key": "spin",
+   "name": "20-min easy spin"
+  },
+  {
+   "key": "circuit",
+   "name": "Floor circuit (~12 min)",
+   "detail": "3 rounds: 10 push-ups, 15 bodyweight squats, 10 glute bridges, 30 s plank"
+  },
+  {
+   "key": "mobility",
+   "name": "15 min mobility",
+   "detail": "hips, calves, upper back, hamstrings"
+  }
+ ],
+ "push": {
+  "gym": "+1 set on up to 2 upper-body exercises, or the arm/shoulder finisher (2 × lateral raise, curl, triceps, 12–20 reps). Never extra leg sets.",
+  "ride": "+15 min, still easy",
+  "run": "4–6 × 20 s strides at the end (fast but relaxed, walk back to recover)"
+ },
+ "weeks": [
+  {
+   "week": 0,
+   "start": "2026-10-19",
+   "label": "Starter week",
+   "tag": "starter",
+   "phase": "Starter",
+   "note": "Build the habit: something every day. Try Gym A and Gym B once each at RPE 7 to pick exercises and starting weights. Get running shoes fitted.",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run1",
+     "kind": "run",
+     "title": "Walk-run, ~20 min",
+     "detail": "10 × (1 min run / 1 min walk)",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 30–45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 1,
+   "start": "2026-10-26",
+   "label": "Week 1",
+   "tag": null,
+   "phase": "Walk-run base",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run1",
+     "kind": "run",
+     "title": "Walk-run",
+     "detail": "5 min walk before and after. 10 × (1 min run / 1 min walk)",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run2",
+     "kind": "run",
+     "title": "Walk-run",
+     "detail": "5 min walk before and after. 10 × (1 min run / 1 min walk)",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run3",
+     "kind": "run",
+     "title": "Walk-run",
+     "detail": "5 min walk before and after. 10 × (1 min run / 1 min walk)",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 30–45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 45 min easy",
+     "detail": "",
+     "hard": false,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 2,
+   "start": "2026-11-02",
+   "label": "Week 2",
+   "tag": null,
+   "phase": "Walk-run base",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run1",
+     "kind": "run",
+     "title": "Walk-run",
+     "detail": "5 min walk before and after. 8 × (2 min run / 1 min walk)",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run2",
+     "kind": "run",
+     "title": "Walk-run",
+     "detail": "5 min walk before and after. 8 × (2 min run / 1 min walk)",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run3",
+     "kind": "run",
+     "title": "Walk-run",
+     "detail": "5 min walk before and after. 8 × (2 min run / 1 min walk)",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 30–45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 50 min easy",
+     "detail": "",
+     "hard": false,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 3,
+   "start": "2026-11-09",
+   "label": "Week 3",
+   "tag": null,
+   "phase": "Walk-run base",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run1",
+     "kind": "run",
+     "title": "Walk-run",
+     "detail": "5 min walk before and after. 6 × (3 min run / 1 min walk)",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run2",
+     "kind": "run",
+     "title": "Walk-run",
+     "detail": "5 min walk before and after. 6 × (3 min run / 1 min walk)",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run3",
+     "kind": "run",
+     "title": "Walk-run",
+     "detail": "5 min walk before and after. 6 × (3 min run / 1 min walk)",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 30–45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 60 min easy",
+     "detail": "",
+     "hard": false,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 4,
+   "start": "2026-11-16",
+   "label": "Week 4",
+   "tag": "down",
+   "phase": "Walk-run base",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run1",
+     "kind": "run",
+     "title": "Walk-run",
+     "detail": "5 min walk before and after. 7 × (2 min run / 1 min walk)",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run2",
+     "kind": "run",
+     "title": "Walk-run",
+     "detail": "5 min walk before and after. 7 × (2 min run / 1 min walk)",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run3",
+     "kind": "run",
+     "title": "Walk-run",
+     "detail": "5 min walk before and after. 7 × (2 min run / 1 min walk)",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 30–45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": false,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 45 min easy",
+     "detail": "",
+     "hard": false,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 5,
+   "start": "2026-11-23",
+   "label": "Week 5",
+   "tag": null,
+   "phase": "Walk-run base",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run1",
+     "kind": "run",
+     "title": "Walk-run",
+     "detail": "5 min walk before and after. 4 × (5 min run / 1 min walk)",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run2",
+     "kind": "run",
+     "title": "Walk-run",
+     "detail": "5 min walk before and after. 4 × (5 min run / 1 min walk)",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run3",
+     "kind": "run",
+     "title": "Walk-run",
+     "detail": "5 min walk before and after. 4 × (5 min run / 1 min walk)",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 30–45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 70 min easy",
+     "detail": "",
+     "hard": false,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 6,
+   "start": "2026-11-30",
+   "label": "Week 6",
+   "tag": null,
+   "phase": "Walk-run base",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run1",
+     "kind": "run",
+     "title": "Walk-run",
+     "detail": "5 min walk before and after. 3 × (8 min run / 1 min walk)",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run2",
+     "kind": "run",
+     "title": "Walk-run",
+     "detail": "5 min walk before and after. 3 × (8 min run / 1 min walk)",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run3",
+     "kind": "run",
+     "title": "Walk-run",
+     "detail": "5 min walk before and after. 3 × (8 min run / 1 min walk)",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 30–45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 80 min easy",
+     "detail": "",
+     "hard": false,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 7,
+   "start": "2026-12-07",
+   "label": "Week 7",
+   "tag": null,
+   "phase": "Walk-run base",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run1",
+     "kind": "run",
+     "title": "Walk-run",
+     "detail": "5 min walk before and after. 2 × (12 min run / 1 min walk)",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run2",
+     "kind": "run",
+     "title": "Walk-run",
+     "detail": "5 min walk before and after. 2 × (12 min run / 1 min walk)",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run3",
+     "kind": "run",
+     "title": "Walk-run",
+     "detail": "5 min walk before and after. 2 × (12 min run / 1 min walk)",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 30–45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 90 min easy",
+     "detail": "",
+     "hard": false,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 8,
+   "start": "2026-12-14",
+   "label": "Week 8",
+   "tag": "down",
+   "phase": "Walk-run base",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Easy run, 20 min continuous",
+     "detail": "5 min walk before and after. ",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 20 min continuous",
+     "detail": "5 min walk before and after. ",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run_long",
+     "kind": "run",
+     "title": "Long run, 25 min continuous",
+     "detail": "5 min walk before and after. ",
+     "hard": true,
+     "long": true,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 30–45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": false,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 60 min easy",
+     "detail": "",
+     "hard": false,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 9,
+   "start": "2026-12-21",
+   "label": "Week 9",
+   "tag": null,
+   "phase": "Running base",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Easy run, 25 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": true
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 25 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": true
+    },
+    {
+     "key": "run_long",
+     "kind": "run",
+     "title": "Long run, 30 min easy",
+     "detail": "",
+     "hard": true,
+     "long": true,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 90 min easy",
+     "detail": "",
+     "hard": false,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 10,
+   "start": "2026-12-28",
+   "label": "Week 10",
+   "tag": null,
+   "phase": "Running base",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Easy run, 25 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": true
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": true
+    },
+    {
+     "key": "run_long",
+     "kind": "run",
+     "title": "Long run, 35 min easy",
+     "detail": "",
+     "hard": true,
+     "long": true,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 100 min easy",
+     "detail": "",
+     "hard": false,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 11,
+   "start": "2027-01-04",
+   "label": "Week 11",
+   "tag": null,
+   "phase": "Running base",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Easy run, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": true
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": true
+    },
+    {
+     "key": "run_long",
+     "kind": "run",
+     "title": "Long run, 40 min easy",
+     "detail": "",
+     "hard": true,
+     "long": true,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 110 min easy",
+     "detail": "",
+     "hard": false,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 12,
+   "start": "2027-01-11",
+   "label": "Week 12",
+   "tag": "down",
+   "phase": "Running base",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Easy run, 25 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 25 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run_long",
+     "kind": "run",
+     "title": "Long run, 30 min easy",
+     "detail": "",
+     "hard": true,
+     "long": true,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": false,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 75 min easy",
+     "detail": "",
+     "hard": false,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 13,
+   "start": "2027-01-18",
+   "label": "Week 13",
+   "tag": null,
+   "phase": "Half build",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Easy run, 30 min + strides",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": true
+    },
+    {
+     "key": "run_long",
+     "kind": "run",
+     "title": "Long run, 4 mi easy",
+     "detail": "walk breaks allowed",
+     "hard": true,
+     "long": true,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 2 h",
+     "detail": "fuel 30–60 g carbs/hour from the first hour",
+     "hard": false,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 14,
+   "start": "2027-01-25",
+   "label": "Week 14",
+   "tag": null,
+   "phase": "Half build",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Easy run, 35 min + strides",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": true
+    },
+    {
+     "key": "run_long",
+     "kind": "run",
+     "title": "Long run, 5 mi easy",
+     "detail": "walk breaks allowed",
+     "hard": true,
+     "long": true,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 2 h",
+     "detail": "fuel 30–60 g carbs/hour from the first hour",
+     "hard": false,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 15,
+   "start": "2027-02-01",
+   "label": "Week 15",
+   "tag": null,
+   "phase": "Half build",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Easy run, 35 min + strides",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 35 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": true
+    },
+    {
+     "key": "run_long",
+     "kind": "run",
+     "title": "Long run, 5.5 mi easy",
+     "detail": "walk breaks allowed",
+     "hard": true,
+     "long": true,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 2 h 15",
+     "detail": "fuel 30–60 g carbs/hour from the first hour",
+     "hard": true,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 16,
+   "start": "2027-02-08",
+   "label": "Week 16",
+   "tag": "down",
+   "phase": "Half build",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Easy run, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run_long",
+     "kind": "run",
+     "title": "Long run, 4 mi easy",
+     "detail": "walk breaks allowed",
+     "hard": true,
+     "long": true,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": false,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 1 h 30",
+     "detail": "fuel 30–60 g carbs/hour from the first hour",
+     "hard": false,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 17,
+   "start": "2027-02-15",
+   "label": "Week 17",
+   "tag": null,
+   "phase": "Half build",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Tempo run: 2 × 8 min (2 min easy between)",
+     "detail": "10 min easy, the tempo block at comfortably hard (80–88% HRmax), 10 min easy",
+     "hard": true,
+     "long": false,
+     "tempo": true,
+     "push": false
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 35 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": true
+    },
+    {
+     "key": "run_long",
+     "kind": "run",
+     "title": "Long run, 6 mi easy",
+     "detail": "walk breaks allowed",
+     "hard": true,
+     "long": true,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 2 h 30 with some climbing",
+     "detail": "fuel 30–60 g carbs/hour from the first hour",
+     "hard": true,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 18,
+   "start": "2027-02-22",
+   "label": "Week 18",
+   "tag": null,
+   "phase": "Half build",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Tempo run: 2 × 10 min",
+     "detail": "10 min easy, the tempo block at comfortably hard (80–88% HRmax), 10 min easy",
+     "hard": true,
+     "long": false,
+     "tempo": true,
+     "push": false
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 40 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": true
+    },
+    {
+     "key": "run_long",
+     "kind": "run",
+     "title": "Long run, 7 mi easy",
+     "detail": "walk breaks allowed",
+     "hard": true,
+     "long": true,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 2 h 30 with some climbing",
+     "detail": "fuel 30–60 g carbs/hour from the first hour",
+     "hard": true,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 19,
+   "start": "2027-03-01",
+   "label": "Week 19",
+   "tag": null,
+   "phase": "Half build",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Tempo run: 15 min",
+     "detail": "10 min easy, the tempo block at comfortably hard (80–88% HRmax), 10 min easy",
+     "hard": true,
+     "long": false,
+     "tempo": true,
+     "push": false
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 40 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": true
+    },
+    {
+     "key": "run_long",
+     "kind": "run",
+     "title": "Long run, 8 mi easy",
+     "detail": "walk breaks allowed",
+     "hard": true,
+     "long": true,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 2 h 45 with some climbing",
+     "detail": "fuel 30–60 g carbs/hour from the first hour",
+     "hard": true,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 20,
+   "start": "2027-03-08",
+   "label": "Week 20",
+   "tag": "down",
+   "phase": "Half build",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Easy run, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run_long",
+     "kind": "run",
+     "title": "Long run, 6 mi easy",
+     "detail": "walk breaks allowed",
+     "hard": true,
+     "long": true,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": false,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 2 h with some climbing",
+     "detail": "fuel 30–60 g carbs/hour from the first hour",
+     "hard": false,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 21,
+   "start": "2027-03-15",
+   "label": "Week 21",
+   "tag": null,
+   "phase": "Half build",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Tempo run: 2 × 12 min",
+     "detail": "10 min easy, the tempo block at comfortably hard (80–88% HRmax), 10 min easy",
+     "hard": true,
+     "long": false,
+     "tempo": true,
+     "push": false
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 40 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": true
+    },
+    {
+     "key": "run_long",
+     "kind": "run",
+     "title": "Long run, 9 mi easy",
+     "detail": "walk breaks allowed",
+     "hard": true,
+     "long": true,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 3 h with some climbing",
+     "detail": "fuel 30–60 g carbs/hour from the first hour",
+     "hard": true,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 22,
+   "start": "2027-03-22",
+   "label": "Week 22",
+   "tag": null,
+   "phase": "Half build",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Tempo run: 20 min",
+     "detail": "10 min easy, the tempo block at comfortably hard (80–88% HRmax), 10 min easy",
+     "hard": true,
+     "long": false,
+     "tempo": true,
+     "push": false
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": true
+    },
+    {
+     "key": "run_long",
+     "kind": "run",
+     "title": "Long run, 10 mi easy",
+     "detail": "walk breaks allowed",
+     "hard": true,
+     "long": true,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 2 h 30 with some climbing",
+     "detail": "fuel 30–60 g carbs/hour from the first hour",
+     "hard": true,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 23,
+   "start": "2027-03-29",
+   "label": "Week 23",
+   "tag": null,
+   "phase": "Half build",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Tempo run: 2 × 12 min",
+     "detail": "10 min easy, the tempo block at comfortably hard (80–88% HRmax), 10 min easy",
+     "hard": true,
+     "long": false,
+     "tempo": true,
+     "push": false
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 40 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": true
+    },
+    {
+     "key": "run_long",
+     "kind": "run",
+     "title": "Long run, 11 mi easy (peak)",
+     "detail": "walk breaks allowed",
+     "hard": true,
+     "long": true,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 2 h 30 with some climbing",
+     "detail": "fuel 30–60 g carbs/hour from the first hour",
+     "hard": true,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 24,
+   "start": "2027-04-05",
+   "label": "Week 24",
+   "tag": "taper",
+   "phase": "Half build",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Tempo run: 15 min",
+     "detail": "10 min easy, the tempo block at comfortably hard (80–88% HRmax), 10 min easy",
+     "hard": true,
+     "long": false,
+     "tempo": true,
+     "push": false
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 35 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run_long",
+     "kind": "run",
+     "title": "Long run, 8 mi easy",
+     "detail": "walk breaks allowed",
+     "hard": true,
+     "long": true,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": false,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 2 h with some climbing",
+     "detail": "fuel 30–60 g carbs/hour from the first hour",
+     "hard": false,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 25,
+   "start": "2027-04-12",
+   "label": "Week 25",
+   "tag": "taper",
+   "phase": "Half build",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Tempo run: 10 min",
+     "detail": "10 min easy, the tempo block at comfortably hard (80–88% HRmax), 10 min easy",
+     "hard": true,
+     "long": false,
+     "tempo": true,
+     "push": false
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run_long",
+     "kind": "run",
+     "title": "Long run, 6 mi easy",
+     "detail": "walk breaks allowed",
+     "hard": true,
+     "long": true,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": false,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 1 h 30 with some climbing",
+     "detail": "fuel 30–60 g carbs/hour from the first hour",
+     "hard": false,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 26,
+   "start": "2027-04-19",
+   "label": "Week 26 · Half marathon",
+   "tag": "race",
+   "phase": "Race week",
+   "event": {
+    "name": "Biggest Little Half Marathon",
+    "date": "2027-04-24"
+   },
+   "note": "Race Saturday. Start slower than feels right for the first 3 miles. Floors on the other days.",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "U",
+     "title": "Upper body · race week, short",
+     "hard": false,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Easy run, 20–25 min with 4 strides",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 20 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy spin, 30–45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": false,
+     "tempo": false
+    },
+    {
+     "key": "race",
+     "kind": "run",
+     "title": "Half marathon (Sat Apr 24)",
+     "detail": "Finish strong and healthy",
+     "hard": true,
+     "long": true,
+     "tempo": false,
+     "push": false
+    }
+   ]
+  },
+  {
+   "week": 27,
+   "start": "2027-04-26",
+   "label": "Week 27",
+   "tag": "recovery",
+   "phase": "Ride peak",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Easy run, 20 min (only once legs feel normal)",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride or commute, 45–60 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": false,
+     "tempo": false
+    },
+    {
+     "key": "ride_easy2",
+     "kind": "ride",
+     "title": "Easy ride or commute, 45–60 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": false,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 2 h easy",
+     "detail": "practice event fueling: 30–60 g carbs + a bottle per hour",
+     "hard": true,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 28,
+   "start": "2027-05-03",
+   "label": "Week 28",
+   "tag": null,
+   "phase": "Ride peak",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Easy run, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride or commute, 45–60 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_easy2",
+     "kind": "ride",
+     "title": "Easy ride or commute, 45–60 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 3.5 h (~45 mi)",
+     "detail": "practice event fueling: 30–60 g carbs + a bottle per hour",
+     "hard": true,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 29,
+   "start": "2027-05-10",
+   "label": "Week 29",
+   "tag": null,
+   "phase": "Ride peak",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Easy run, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride or commute, 45–60 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_easy2",
+     "kind": "ride",
+     "title": "Easy ride or commute, 45–60 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 4 h (~50–55 mi), ~1,500+ ft of climbing",
+     "detail": "practice event fueling: 30–60 g carbs + a bottle per hour",
+     "hard": true,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 30,
+   "start": "2027-05-17",
+   "label": "Week 30",
+   "tag": null,
+   "phase": "Ride peak",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": true,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Easy run, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride or commute, 45–60 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_easy2",
+     "kind": "ride",
+     "title": "Easy ride or commute, 45–60 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": true,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 4.5 h (~60 mi), the most climbing you can find",
+     "detail": "practice event fueling: 30–60 g carbs + a bottle per hour",
+     "hard": true,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 31,
+   "start": "2027-05-24",
+   "label": "Week 31",
+   "tag": "down",
+   "phase": "Ride peak",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym3",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Easy run, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "run_easy2",
+     "kind": "run",
+     "title": "Easy run, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride or commute, 45–60 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": false,
+     "tempo": false
+    },
+    {
+     "key": "ride_easy2",
+     "kind": "ride",
+     "title": "Easy ride or commute, 45–60 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": false,
+     "tempo": false
+    },
+    {
+     "key": "ride_long",
+     "kind": "ride",
+     "title": "Long ride, 2.5 h",
+     "detail": "practice event fueling: 30–60 g carbs + a bottle per hour",
+     "hard": true,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 32,
+   "start": "2027-05-31",
+   "label": "Week 32 · Tahoe 72",
+   "tag": "race",
+   "phase": "Event week",
+   "event": {
+    "name": "America's Most Beautiful Bike Ride, 72 mi",
+    "date": "2027-06-06"
+   },
+   "note": "Event Sunday. Conversational effort on the climbs; eat and drink every hour.",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "U",
+     "title": "Upper body · race week, short",
+     "hard": false,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": false,
+     "tempo": false
+    },
+    {
+     "key": "ride_easy2",
+     "kind": "ride",
+     "title": "Easy ride, 45 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Easy run, 20 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "event",
+     "kind": "ride",
+     "title": "Tahoe 72 (Sun Jun 6)",
+     "detail": "Finish smiling",
+     "hard": true,
+     "long": true,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  },
+  {
+   "week": 33,
+   "start": "2027-06-07",
+   "label": "Week 33",
+   "tag": "recovery",
+   "phase": "After Tahoe",
+   "note": "Easy week. Claude writes the fall marathon block next.",
+   "slots": [
+    {
+     "key": "gym1",
+     "kind": "gym",
+     "template": "A",
+     "title": "Gym A · leg emphasis",
+     "hard": true,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "gym2",
+     "kind": "gym",
+     "template": "B",
+     "title": "Gym B · upper emphasis",
+     "hard": false,
+     "push": false,
+     "detail": "",
+     "long": false,
+     "tempo": false
+    },
+    {
+     "key": "run_easy1",
+     "kind": "run",
+     "title": "Easy run, 30 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "tempo": false,
+     "push": false
+    },
+    {
+     "key": "ride_easy",
+     "kind": "ride",
+     "title": "Easy ride, 45–60 min",
+     "detail": "",
+     "hard": false,
+     "long": false,
+     "push": false,
+     "tempo": false
+    }
+   ]
+  }
+ ]
+}

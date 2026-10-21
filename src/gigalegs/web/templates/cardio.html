@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{{ slot.title }} · GigaLegs{% endblock %}
+{% block main %}
+<form class="card" method="post" action="/do/{{ slot.key }}/cardio">
+  <div class="kicker">{{ st.week.label }} · {{ 'Run' if sport == 'run' else 'Ride' }}{{ ' · key session' if slot.long or slot.tempo }}</div>
+  <h1>{{ slot.title }}</h1>
+  {% if slot.detail %}<p>{{ slot.detail }}</p>{% endif %}
+  {% if done %}<div class="notice good">Already logged {{ done.date.strftime('%a %b %-d') }}. Logging again just adds the activity, no extra XP.</div>{% endif %}
+  <div class="grid2">
+    <div><label for="minutes">Minutes</label><input id="minutes" name="minutes" type="number" inputmode="numeric" required></div>
+    <div><label for="miles">Miles (optional)</label><input id="miles" name="miles" type="number" step="0.01" inputmode="decimal"></div>
+  </div>
+  <div style="margin-top:10px"><label>Effort</label>
+    <div class="chips">
+      {% for z, name in [(2, 'Easy, conversational'), (3, 'Comfortably hard'), (4, 'Hard')] %}
+      <input type="radio" id="z{{ z }}" name="zone" value="{{ z }}" {{ 'checked' if z == (3 if slot.tempo else 2) }}><label for="z{{ z }}">{{ name }}</label>
+      {% endfor %}
+    </div>
+  </div>
+  {% if push_text %}
+  <label class="row" style="margin-top:10px; gap:8px; align-items:center"><input type="checkbox" name="push" value="1" style="width:auto"> Push: {{ push_text }}</label>
+  {% endif %}
+  <div class="grid2" style="margin-top:10px">
+    <div><label for="pain">Any pain? (where)</label><input id="pain" name="pain" placeholder="leave empty if none"></div>
+    <div><label for="day">Date</label><input id="day" name="day" type="date" value="{{ d.isoformat() }}"></div>
+  </div>
+  <div style="margin-top:10px"><label for="note">Note</label><input id="note" name="note" placeholder="how it felt, route, weather"></div>
+  <button class="btn block" style="margin-top:14px">Save</button>
+</form>
+{% endblock %}

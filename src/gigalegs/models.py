@@ -92,6 +92,9 @@ class Ride(Base):
     miles: Mapped[float] = mapped_column(Float)
     minutes: Mapped[int] = mapped_column(Integer)
     zone: Mapped[int] = mapped_column(Integer, default=2)
+    sport: Mapped[str] = mapped_column(
+        String(8), default="ride", server_default="ride"
+    )  # ride | run
     commute: Mapped[str | None] = mapped_column(String(8), nullable=True)  # in | out | round
     elevation_ft: Mapped[int | None] = mapped_column(Integer, nullable=True)
     note: Mapped[str] = mapped_column(Text, default="")
@@ -120,6 +123,26 @@ class Metric(Base):
     date: Mapped[date] = mapped_column(Date, index=True)
     kind: Mapped[str] = mapped_column(String(16))  # soreness | bodyweight
     value: Mapped[float] = mapped_column(Float)
+    created_at: Mapped[datetime] = mapped_column(DateTime)
+
+
+class Mission(Base):
+    """One thing done for the season plan (v2, D29): a floor, or a standard/push slot."""
+
+    __tablename__ = "missions"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    date: Mapped[date] = mapped_column(Date, index=True)
+    plan_week: Mapped[int] = mapped_column(Integer)
+    slot_key: Mapped[str | None] = mapped_column(String(20), nullable=True)  # None = floor
+    kind: Mapped[str] = mapped_column(String(8))  # gym | run | ride | floor
+    level: Mapped[str] = mapped_column(String(8))  # floor | standard | push
+    title: Mapped[str] = mapped_column(String(120))
+    hard: Mapped[bool] = mapped_column(Boolean, default=False)
+    long: Mapped[bool] = mapped_column(Boolean, default=False)
+    tempo: Mapped[bool] = mapped_column(Boolean, default=False)
+    ref: Mapped[str] = mapped_column(String(40), default="")  # session-N | ride-N | day-N
+    pain: Mapped[str | None] = mapped_column(String(120), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime)
 
 

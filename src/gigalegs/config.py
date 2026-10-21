@@ -11,6 +11,7 @@ class Settings:
     mode: str  # local | hosted (D8)
     timezone: str
     program_path: Path
+    season_path: Path
     route_path: Path
     onramp_start: str  # ISO date the on-ramp starts, for the Path timeline
     bike_stage: int
@@ -36,6 +37,7 @@ def get_settings() -> Settings:
                 "GIGALEGS_PROGRAM", root / "program" / "private" / "deadlift-program.json"
             )
         ),
+        season_path=Path(os.environ.get("GIGALEGS_SEASON", root / "program" / "season-2026.json")),
         route_path=Path(os.environ.get("GIGALEGS_ROUTE", root / "athlete" / "route.geojson")),
         onramp_start=os.environ.get("GIGALEGS_ONRAMP_START", "2026-10-05"),
         bike_stage=int(os.environ.get("GIGALEGS_BIKE_STAGE", "1")),

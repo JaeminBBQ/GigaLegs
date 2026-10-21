@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 
 FIXTURES = Path(__file__).parent / "fixtures"
+SEASON = Path(__file__).parent.parent / "program" / "season-2026.json"  # original, public (D28)
 
 
 @pytest.fixture
@@ -18,6 +19,7 @@ def app_env(tmp_path, monkeypatch):
     monkeypatch.setenv("DATABASE_URL", f"sqlite:///{tmp_path / 'test.db'}")
     monkeypatch.setenv("GIGALEGS_PROGRAM", str(FIXTURES / "fake-program.json"))
     monkeypatch.setenv("GIGALEGS_ROUTE", str(tmp_path / "no-route.geojson"))
+    monkeypatch.setenv("GIGALEGS_SEASON", str(SEASON))
     from gigalegs import config, db, services
 
     config.get_settings.cache_clear()

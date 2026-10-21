@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}{{ slot.title }} · GigaLegs{% endblock %}
+{% block main %}
+<form method="post" action="/do/{{ slot.key }}/gym">
+<section class="card">
+  <div class="kicker">{{ st.week.label }}{{ ' · ' ~ st.week.tag ~ ' week' if st.week.tag }}</div>
+  <h1>{{ slot.title }}</h1>
+  <p><small>Log after the gym is fine. Fill reps and RPE for the sets you did; empty rows are skipped. RPE 8 = 2–3 reps left.</small></p>
+  {% if done %}<div class="notice good">Already logged {{ done.date.strftime('%a %b %-d') }}. Logging again keeps the sets, no extra mission XP.</div>{% endif %}
+</section>
+
+{% for t in targets %}
+{% set k = t.slot_key %}
+{% set extra = 1 if push_text and not t.lower else 0 %}
+<section class="card exercise">
+  <div class="row">
+    <div class="grow">
+      <div class="kicker">{{ t.slot_name }} · {{ t.target.sets }} × {{ t.target.reps[0] }}–{{ t.target.reps[1] }} · RPE ≤ {{ t.target.rpe_cap|num }}</div>
+      <select name="{{ k }}_option" aria-label="{{ t.slot_name }} exercise" onchange="pick('{{ k }}', this.value)" style="margin-top:6px">
+        {% for o in t.options %}<option {{ 'selected' if o == t.option }}>{{ o }}</option>{% endfor %}
+      </select>
+    </div>
+  </div>
+  <p><small>{% if t.target.weight %}<b>{{ t.target.weight|num }} lb</b> · {% endif %}{{ t.target.note }}</small></p>
+  {% for i in range(1, t.target.sets + extra + 1) %}
+  <div class="setrow">
+    <span class="idx">{{ i }}</span>
+    <input name="{{ k }}_w{{ i }}" type="number" step="0.5" inputmode="decimal" placeholder="lb" aria-label="Set {{ i }} weight" value="{{ t.target.weight|num if t.target.weight }}">
+    <input name="{{ k }}_r{{ i }}" type="number" inputmode="numeric" placeholder="{{ t.target.reps[1] }} reps" aria-label="Set {{ i }} reps">
+    <input name="{{ k }}_rpe{{ i }}" type="number" step="0.5" min="1" max="10" inputmode="decimal" placeholder="RPE" aria-label="Set {{ i }} RPE">
+    <span class="idx">{% if i > t.target.sets %}<small>push</small>{% endif %}</span>
+  </div>
+  {% endfor %}
+  <label class="row" style="margin-top:8px; gap:8px; align-items:center"><input type="checkbox" name="{{ k }}_formbad" value="1" style="width:auto"> Form broke down (no weight increase next time)</label>
+</section>
+{% endfor %}
+
+<section class="card">
+  {% if push_text %}
+  <label class="row" style="gap:8px; align-items:center"><input type="checkbox" name="push" value="1" style="width:auto"> Push: {{ push_text }}</label>
+  {% endif %}
+  <div class="grid2" style="margin-top:10px">
+    <div><label for="pain">Any pain? (where)</label><input id="pain" name="pain" placeholder="leave empty if none"></div>
+    <div><label for="day">Date</label><input id="day" name="day" type="date" value="{{ d.isoformat() }}"></div>
+  </div>
+  <div style="margin-top:10px"><label for="note">Note</label><input id="note" name="note"></div>
+  <button class="btn block" style="margin-top:14px">Save session</button>
+</section>
+</form>
+<script>
+function pick(slot, option) {
+  const u = new URL(location.href);
+  u.searchParams.set('opt_' + slot, option);
+  location.href = u.toString();
+}
+</script>
+{% endblock %}

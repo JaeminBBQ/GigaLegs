@@ -18,16 +18,16 @@ def test_pages_render(app_env):
         "/history",
         "/insights",
         "/path",
+        "/season",
         "/healthz",
         "/manifest.webmanifest",
     ):
         assert c.get(url).status_code == 200, url
 
 
-def test_today_shows_onramp_plan(app_env):
+def test_today_has_no_soreness_prompt(app_env):
     html = client().get("/").text
-    assert "On-ramp A" in html and "135 lb" in html  # 60% of 225
-    assert "45 / side" in html
+    assert "Today's mission" in html and "How sore" not in html
 
 
 def test_full_onramp_week_and_gate(app_env):
@@ -104,14 +104,6 @@ def test_export_jsonl(app_env, tmp_path):
     with get_sessionmaker()() as db:
         counts = S.export_jsonl(db, 1, tmp_path / "logs")
     assert counts["rides.jsonl"] == 1
-
-
-def test_pain_flag_then_clear(app_env):
-    c = client()
-    c.post("/log/save", data={"text": "lift onramp A day 2\nrow 95x10 @6 !pain left elbow"})
-    assert "You flagged pain" in c.get("/").text
-    c.post("/pain/clear")
-    assert "You flagged pain" not in c.get("/").text
 
 
 def test_timed_hold_earns_logged_xp(app_env):

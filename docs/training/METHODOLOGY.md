@@ -20,7 +20,6 @@ The engine offers one **mission** per day with three levels. Any time of day cou
 - 20-min walk
 - 20-min easy spin (gym bike or outside)
 - **Floor circuit** (~12 min, no equipment): 3 rounds of 10 push-ups (incline or knees is fine), 15 bodyweight squats, 10 glute bridges, 30 s plank. Rest as needed.
-- 15-min easy run or walk-run, **only if the week's run slots aren't done yet**, and it then counts as that week's shortest run. A floor never adds running beyond the plan (§4).
 - 15 min of mobility (hips, calves, thoracic spine, hamstrings).
 
 A floor day doesn't drop the planned session: the session queue just waits (§3).
@@ -47,7 +46,7 @@ Base week (exact contents per week in `SEASON_PLAN.md`):
 - Long run and long ride on back-to-back days is fine (the normal weekend). Do the long run first when you can: impact work goes on fresh legs. Never both on the same day.
 - **Gym A (leg-emphasis) is never the day before the long run or tempo run.**
 - At most 2 hard days in a row, where hard = long run, tempo, long ride (> 2 h), or Gym A.
-- A week is done when its slots are done, however many days it takes. If it takes more than 9 days, the coach looks at why instead of pushing harder.
+- **Weeks follow the calendar (Mon–Sun, D35).** Unfinished slots don't carry over. To keep growth safe, **runs and the long ride only move up a level after a week where you did them** (≥ 2 runs; the long ride): miss a week and the next one repeats the level instead of jumping ahead. From the taper (Week 24) and the ride peak's end (Week 31), the calendar rules so race weeks stay put.
 
 ## 4. Running
 - **Easy means conversational:** you can speak full sentences. Walk breaks are allowed in any easy run. HR guide: easy ≤ 75% HRmax; the talk test wins if they disagree (D30). Exact bpm is in `athlete/PROFILE.md`.

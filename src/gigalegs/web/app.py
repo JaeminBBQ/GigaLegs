@@ -15,6 +15,7 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session as Db
 
 from .. import engine as E
+from .. import missions as M
 from .. import services as S
 from ..config import get_settings
 from ..db import LOCAL_USER_ID, get_sessionmaker
@@ -97,27 +98,144 @@ def _date(v: str | None) -> date:
 
 @app.get("/", response_class=HTMLResponse)
 def today_page(request: Request, db: Db = Depends(get_db), uid: int = Depends(current_user)):
-    st = S.ensure_user(db, uid)
-    open_sess = S.open_session(db, uid)
-    if open_sess:
-        return RedirectResponse(f"/session/{open_sess.id}", status_code=303)
+    S.ensure_user(db, uid)
     d = S.today()
-    ctx = S.day_context(db, uid, d)
-    rec = E.recommend(ctx)
-    plan = S.plan_for(db, uid, S.position(st))
-    return render(
-        request,
-        "today.html",
+    view = M.today_view(db, uid, d)
+    if view is None:
+        raise HTTPException(500, "Season plan file not found (program/season-2026.json)")
+    return render(request, "today.html", db, uid, v=view, d=d, recent=S.history(db, uid, days=3))
+
+
+@app.post("/floor")
+def floor_log(
+    option: str = Form(...),
+    day: str = Form(""),
+    db: Db = Depends(get_db),
+    uid: int = Depends(current_user),
+):
+    try:
+        M.log_floor(db, uid, _date(day), option)
+    except ValueError as e:
+        raise HTTPException(400, str(e)) from e
+    return RedirectResponse("/", status_code=303)
+
+
+def _slot_or_404(db: Db, uid: int, d: date, slot_key: str):
+    st = M.week_state(db, uid, d)
+    slot = next((s for s in st.slots if s.key == slot_key), None) if st else None
+    if slot is None:
+        raise HTTPException(404, "No such session in this week's plan")
+    return st, slot
+
+
+@app.get("/do/{slot_key}", response_class=HTMLResponse)
+def do_page(
+    request: Request,
+    slot_key: str,
+    day: str = "",
+    db: Db = Depends(get_db),
+    uid: int = Depends(current_user),
+):
+    d = _date(day)
+    st, slot = _slot_or_404(db, uid, d, slot_key)
+    season = M.get_season()
+    ctx = {"st": st, "slot": slot, "d": d, "done": st.done.get(slot_key), "push_text": ""}
+    if slot.push:
+        ctx["push_text"] = season.push.get(slot.kind, "")
+    if slot.kind == "gym":
+        overrides = {k[4:]: v for k, v in request.query_params.items() if k.startswith("opt_")}
+        targets = M.gym_targets(db, uid, st.week, slot.template, overrides)
+        return render(request, "gym.html", db, uid, targets=targets, **ctx)
+    return render(request, "cardio.html", db, uid, sport=slot.kind, **ctx)
+
+
+@app.post("/do/{slot_key}/cardio")
+def do_cardio(
+    slot_key: str,
+    minutes: int = Form(...),
+    miles: str = Form(""),
+    zone: int = Form(2),
+    push: str = Form(""),
+    pain: str = Form(""),
+    note: str = Form(""),
+    day: str = Form(""),
+    db: Db = Depends(get_db),
+    uid: int = Depends(current_user),
+):
+    d = _date(day)
+    _, slot = _slot_or_404(db, uid, d, slot_key)
+    M.log_cardio(
         db,
         uid,
-        st=st,
-        rec=rec,
-        plan=plan,
-        ctx=ctx,
-        morning=S.morning(db, uid, d),
-        program_missing=S.get_program() is None,
-        recent=S.history(db, uid, days=3),
-        streak=S.streak(db, uid),
+        d,
+        slot.kind,
+        slot_key,
+        minutes,
+        to_float(miles),
+        zone,
+        bool(push),
+        pain.strip() or None,
+        note.strip(),
+    )
+    return RedirectResponse("/", status_code=303)
+
+
+@app.post("/do/{slot_key}/gym")
+async def do_gym(
+    request: Request,
+    slot_key: str,
+    db: Db = Depends(get_db),
+    uid: int = Depends(current_user),
+):
+    form = await request.form()
+    d = _date(form.get("day"))
+    st, slot = _slot_or_404(db, uid, d, slot_key)
+    season = M.get_season()
+    exercises = []
+    for t in season.gym_templates[slot.template]["slots"]:
+        k = t["key"]
+        option = form.get(f"{k}_option") or t["options"][0]
+        if option not in t["options"]:
+            raise HTTPException(400, f"unknown option {option!r}")
+        sets = []
+        for i in range(1, 8):
+            reps = to_int(form.get(f"{k}_r{i}"))
+            if reps is None:
+                continue
+            sets.append((to_float(form.get(f"{k}_w{i}")), reps, to_float(form.get(f"{k}_rpe{i}"))))
+        if sets:
+            cap = M.SE.gym_rpe_cap(st.week.week, t["lower"])
+            exercises.append(
+                M.LoggedExercise(k, option, cap, sets, form_ok=not form.get(f"{k}_formbad"))
+            )
+    M.log_gym(
+        db,
+        uid,
+        d,
+        slot_key,
+        exercises,
+        bool(form.get("push")),
+        (form.get("pain") or "").strip() or None,
+        (form.get("note") or "").strip(),
+    )
+    return RedirectResponse("/", status_code=303)
+
+
+@app.get("/season", response_class=HTMLResponse)
+def season_page(request: Request, db: Db = Depends(get_db), uid: int = Depends(current_user)):
+    season = M.get_season()
+    if season is None:
+        raise HTTPException(500, "Season plan file not found")
+    d = S.today()
+    return render(
+        request,
+        "season.html",
+        db,
+        uid,
+        season=season,
+        current=season.week_for(d).week,
+        st=M.week_state(db, uid, d),
+        badges=S.badge_catalog(db, uid),
     )
 
 

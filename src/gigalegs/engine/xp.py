@@ -15,6 +15,15 @@ E1RM_PR = 150
 DELOAD_WEEK = 200
 COMMUTE_MULTIPLIER = 1.5
 
+# Season v2 missions (GAMIFICATION v2, D29)
+FLOOR = 30
+MISSION = 100
+KEY_MISSION = 150  # long run, tempo, long ride, race
+PUSH = 20
+PUSHES_PER_WEEK = 2
+WEEK_DONE = 100
+EASY_WEEK_DONE = 200  # down, taper, recovery, and race weeks are worth more
+
 
 def set_xp(
     rpe: float | None,

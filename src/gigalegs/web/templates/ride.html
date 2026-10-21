@@ -3,6 +3,7 @@
 {% block main %}
 <form class="card" method="post" action="{{ '/ride/' ~ ride.id ~ '/update' if ride else '/ride' }}">
   <h1>{{ 'Edit ride' if ride else 'Log a ride' }}</h1>
+  {% if not ride %}<div class="notice">Part of this week's plan? Log it from <a href="/">Today's checklist</a> instead, so it counts as a mission.</div>{% endif %}
   {% if route_miles %}
   <div class="chips" style="margin:8px 0 12px" aria-label="Commute shortcuts">
     <button type="button" class="btn ghost small" onclick="fill({{ route_miles }}, 'in')">Commute in · {{ route_miles }} mi</button>

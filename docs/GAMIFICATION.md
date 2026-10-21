@@ -12,7 +12,7 @@ Today screen shows one mission with three buttons: **Floor · Standard · Push**
 | Standard session done | 100 | Gym, easy run, easy ride |
 | Key session done | 150 | Long run, tempo run, long ride |
 | Push add-on done | +20 | Max **2 per week**; only the add-ons written in METHODOLOGY §2b |
-| Working set logged with RPE + form toggle, at or under the cap | 5 | Helps the engine progress your weights |
+| Working set logged with RPE + form toggle, at or under the cap | 5, +5 if within 2 of the cap | Helps the engine progress your weights; accuracy, not intensity |
 | Weight increase earned (double progression) | 25 | Per exercise; rewards quality reps, not max effort |
 | Smart call (took the floor/easy option the app offered for soreness, sleep, sickness, or pain) | 50 | Listening to your body is a skill |
 | Week's checklist complete | 100 | |

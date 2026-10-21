@@ -634,11 +634,18 @@ def _remove_xp_events(db: Db, uid: int, refs: list[str]) -> int:
     return sum(e.amount for e in evs)
 
 
+def _drop_missions(db: Db, uid: int, ref: str) -> int:
+    from .missions import drop_missions_for  # missions imports this module
+
+    return drop_missions_for(db, uid, ref)
+
+
 def delete_ride(db: Db, uid: int, ride_id: int) -> int | None:
     r = db.get(Ride, ride_id)
     if r is None or r.user_id != uid:
         return None
     xp = _remove_xp_events(db, uid, [f"ride-{ride_id}"])
+    xp += _drop_missions(db, uid, f"ride-{ride_id}")
     db.delete(r)
     db.commit()
     return xp
@@ -649,6 +656,7 @@ def delete_day(db: Db, uid: int, day_id: int) -> int | None:
     if x is None or x.user_id != uid:
         return None
     xp = _remove_xp_events(db, uid, [f"day-{day_id}"])
+    xp += _drop_missions(db, uid, f"day-{day_id}")
     db.delete(x)
     db.commit()
     return xp
@@ -671,6 +679,7 @@ def delete_session(db: Db, uid: int, session_id: int) -> int | None:
         return None
     refs = [f"session-{session_id}"] + [f"set-{s.id}" for s in sess.sets]
     xp = _remove_xp_events(db, uid, refs)
+    xp += _drop_missions(db, uid, f"session-{session_id}")
     db.delete(sess)  # cascades to set_logs
     db.commit()
     return xp
@@ -923,7 +932,12 @@ def history(db: Db, uid: int, days: int = 30) -> list[dict]:
                 + (f" @{x.rpe:g}" if x.rpe else "")
                 + (f" ({len(done)} sets)" if len(done) > 1 else "")
             )
-        label = f"Lift ({s.phase} {s.week}, day {s.day})"
+        if s.phase == "season":
+            from .missions import history_label
+
+            label = history_label(db, uid, f"session-{s.id}") or "Gym"
+        else:
+            label = f"Lift ({s.phase} {s.week}, day {s.day})"
         items[s.date].append(
             {"kind": "session", "id": s.id, "label": label + ": " + "; ".join(parts)}
         )
@@ -935,7 +949,10 @@ def history(db: Db, uid: int, days: int = 30) -> list[dict]:
             {
                 "kind": "ride",
                 "id": r.id,
-                "label": f"Ride{c}: {r.miles:g} mi, {r.minutes} min, Z{r.zone}"
+                "label": ("Run" if r.sport == "run" else "Ride")
+                + f"{c}: "
+                + (f"{r.miles:g} mi, " if r.miles else "")
+                + f"{r.minutes} min, Z{r.zone}"
                 + (f", {r.note}" if r.note else ""),
             }
         )

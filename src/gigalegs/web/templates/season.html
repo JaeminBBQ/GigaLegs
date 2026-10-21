@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Season · GigaLegs{% endblock %}
+{% block main %}
+<section class="card hero">
+  <div class="kicker">Season 2026–27</div>
+  <h1>Half → Tahoe 72 → fall marathon</h1>
+  <ul class="checks">
+    {% for e in season.events %}
+    <li class="{{ 'got' if e.week and current > e.week }}"><span class="dot"></span><span><b>{{ e.name }}</b> · {{ e.date }}{% if e.week %} · Week {{ e.week }}{% else %} · plan comes in May{% endif %}</span></li>
+    {% endfor %}
+  </ul>
+</section>
+
+<section class="card">
+  <div class="kicker">Weeks</div>
+  <div class="scroll-x"><table>
+    <thead><tr><th>Week</th><th>Starts</th><th>Runs</th><th>Rides</th><th>Gym</th></tr></thead>
+    <tbody>
+    {% for w in season.weeks %}
+      <tr {% if w.week == current %}style="background:var(--surface-2)"{% endif %}>
+        <td><b>{{ w.week }}</b>{% if w.week == current %} ◀{% endif %}{% if w.tag %}<br><small>{{ w.tag }}</small>{% endif %}</td>
+        <td>{{ w.start.strftime('%b %-d') }}<br><small>{{ w.phase }}</small></td>
+        <td><small>{% for s in w.slots if s.kind == 'run' %}{{ s.title }}{% if s.detail and 'walk' in s.detail %}: {{ s.detail }}{% endif %}<br>{% endfor %}</small></td>
+        <td><small>{% for s in w.slots if s.kind == 'ride' %}{{ s.title }}<br>{% endfor %}</small></td>
+        <td><small>{{ w.slots|selectattr('kind', 'equalto', 'gym')|list|length }}×</small></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  <p><small>Weeks are checklists. Runs and the long ride only move up after a week where you actually did them, so a missed week repeats instead of jumping ahead. Full rules: docs/training/METHODOLOGY.md.</small></p>
+</section>
+
+{% if badges %}
+<section class="card">
+  <div class="kicker">Badges</div>
+  <div class="badges">{% for b in badges %}<div class="badge-card {{ 'on' if b.earned }}"><b>{{ b.name }}</b><small>{{ b.how }}</small></div>{% endfor %}</div>
+</section>
+{% endif %}
+{% endblock %}

@@ -31,14 +31,14 @@
   {% set path = request.url.path %}
   <nav class="tabs" aria-label="Main">
     <div class="wrap">
-      <a href="/" class="{{ 'on' if path == '/' or path.startswith('/session') }}">
+      <a href="/" class="{{ 'on' if path == '/' or path.startswith('/session') or path.startswith('/do/') }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12h18M6 8v8M18 8v8M2 10v4M22 10v4"/></svg>Today</a>
       <a href="/log" class="{{ 'on' if path.startswith('/log') or path.startswith('/ride') }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4"/></svg>Log</a>
       <a href="/insights" class="{{ 'on' if path.startswith('/insights') }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19V5M4 19h16M8 15l4-5 3 3 5-6"/></svg>Insights</a>
-      <a href="/path" class="{{ 'on' if path.startswith('/path') }}">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 19c0-6 12-4 12-10a3 3 0 0 0-6 0M6 19a2 2 0 1 0 0 .01M18 9a2 2 0 1 0 0 .01"/></svg>Path</a>
+      <a href="/season" class="{{ 'on' if path.startswith('/season') }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 19c0-6 12-4 12-10a3 3 0 0 0-6 0M6 19a2 2 0 1 0 0 .01M18 9a2 2 0 1 0 0 .01"/></svg>Season</a>
       <a href="/history" class="{{ 'on' if path.startswith('/history') }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 7v5l3 2M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg>History</a>
     </div>
