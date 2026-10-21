@@ -98,7 +98,7 @@
   <div class="kicker">Recent</div>
   {% for d in recent %}
     <h3 style="margin-top:8px">{{ d.date.strftime('%a %b %-d') }}</h3>
-    <ul class="reasons">{% for i in d['items'] %}<li>{{ i }}</li>{% endfor %}</ul>
+    <ul class="reasons">{% for i in d['items'] %}<li>{{ i.label }}</li>{% endfor %}</ul>
   {% endfor %}
 </section>
 {% endif %}

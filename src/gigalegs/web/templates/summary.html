@@ -31,5 +31,23 @@
 </section>
 {% endfor %}
 {% if sess.note %}<section class="card"><div class="kicker">Notes</div><p>{{ sess.note }}</p></section>{% endif %}
+{% if done_view %}
+<section class="card">
+  <div class="kicker">Fix a set</div>
+  <p><small>Editing a set recomputes its XP and the session bonus. e1RM PR XP is not recomputed on edits.</small></p>
+  {% set row_verb = 'edit-set' %}
+  {% for ex in summary.exercises %}
+    <h3 style="margin-top:12px">{{ ex.key|pretty }}</h3>
+    <div class="setrow" aria-hidden="true" style="border:0;padding-bottom:0">
+      <span></span><span class="mini">{{ 'sec' if is_hold(ex.key) else 'lb' }}</span><span class="mini">{{ '' if is_hold(ex.key) else 'reps' }}</span><span class="mini">RPE</span><span></span>
+    </div>
+    {% for s in ex.sets %}{% include "_set_row.html" %}{% endfor %}
+  {% endfor %}
+</section>
+<form class="card" method="post" action="/session/{{ sess.id }}/delete" onsubmit="return confirm('Delete this whole session? Its sets and all their XP will be removed.')">
+  <button class="btn danger block">Delete session</button>
+</form>
+<p><small>Deleting never moves your program position. If this changed where you are in the program, fix it on Path → Adjust position.</small></p>
+{% endif %}
 <a class="btn block" href="/">Back to today</a>
 {% endblock %}

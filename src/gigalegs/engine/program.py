@@ -144,6 +144,17 @@ def _onramp_exercise(e: ProgramExercise, week: str) -> PrescribedExercise:
             weight_lb=p.weight_lb,
             rpe_cap=p.rpe_cap,
         )
+    if t == "rpe" and e.category == "accessory":
+        # D25: on-ramp accessories are the program's full sets × reps, load by feel, no cap.
+        return PrescribedExercise(
+            key=e.key,
+            name=e.name,
+            category=e.category,
+            kind="rpe",
+            sets=e.sets,
+            reps=e.reps,
+            note="By feel: pick any load that feels right",
+        )
     if t == "rpe":
         p = onramp_prescription(week, e.sets, e.reps, None, max_rpe)
         return PrescribedExercise(

@@ -14,17 +14,19 @@ Use the program's **Week 1** sessions (same exercises, same days) and scale them
 | C | 90% | 100% | 8 | Close to max hold |
 
 - Sets: round up, minimum 2 (a single prescribed set stays 1), never more than prescribed.
-- RPE cap = the lower of the table cap and (the program's max RPE for that exercise − 1). The same rules apply to accessories.
+- RPE cap = the lower of the table cap and (the program's max RPE for that exercise − 1).
+- **Accessories (D25):** RPE-based accessories (rows, sit-ups, back extensions) use the program's full sets × reps from week A, with the load chosen by feel and no RPE cap. Substitutes (e.g. a cable reverse hyper for back extensions) are fine. Timed holds still follow the table.
 - Reps stay as written.
 - Round loads to the nearest 5 lb.
+- **Floor (D23):** a prescription never drops below the heaviest weight you already did cleanly for that exercise during the on-ramp.
 - If a session lists RPE instead of a weight, use the RPE cap from the table instead.
 - Warm up with 2–4 ramping sets before the first working set on squat/deadlift.
 
 ## Gate to advance each week
 Advance from A→B→C→Program only if:
-- leg soreness at the next session is ≤ 5/10, **and**
+- leg soreness at the next session is ≤ 5/10 (only if you logged it; it's optional, D24), **and**
 - no joint pain, **and**
-- every working set was at or under the RPE cap with solid form.
+- every **main-lift** working set (squat, deadlift, RDL) hit its reps, at or under the RPE cap, with solid form. Accessories don't count (D25), except that pain flagged on any set still blocks.
 
 Otherwise **repeat the week** (that's still progress — it earns XP, see GAMIFICATION).
 

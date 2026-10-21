@@ -299,6 +299,8 @@ def resolve_gate(db: Db, uid: int, soreness: int) -> str | None:
         return None
     sets = [s for sess in _week_sessions(db, uid, st) for s in sess.sets]
     pain = any(s.pain for s in sets)
+    # D25: only the main lifts decide the gate; accessories are by feel.
+    sets = [s for s in sets if s.category in HEAVY_CATEGORIES]
     ok = all(
         s.form_ok
         and (s.rpe_cap is None or s.rpe is None or s.rpe <= s.rpe_cap)
@@ -371,7 +373,8 @@ def start_session(
                 )
             )
     db.add(sess)
-    add_xp(db, uid, "readiness_checkin", X.READINESS_CHECKIN, "session")
+    db.flush()
+    add_xp(db, uid, "readiness_checkin", X.READINESS_CHECKIN, f"session-{sess.id}")
     notes = [m for m in (gate_msg,) if m]
     if adj.load_factor < 1:
         notes.append("Soreness ≥ 7: loads are 10% lighter and the RPE cap is 1 lower today.")
@@ -401,6 +404,8 @@ def log_set(
 def _set_xp(s: SetLog) -> int:
     if s.seconds is not None and s.rpe is None:
         return X.SET_LOGGED if s.form_ok else 0
+    if s.category == "accessory" and s.rpe_cap is None and s.prescribed_reps is not None:
+        return X.SET_LOGGED if s.form_ok else 0  # D25: by-feel accessory, no cap
     rng = (s.rpe_min, s.rpe_max) if s.rpe_min is not None and s.rpe_max is not None else None
     return X.set_xp(s.rpe, s.form_ok, s.rpe_cap, rng)
 
@@ -442,8 +447,8 @@ def summarize(sess: Session) -> list[ExerciseSummary]:
     return out
 
 
-def finish_session(db: Db, uid: int, sess: Session) -> SessionSummary:
-    st = ensure_user(db, uid)
+def _session_bonus(db: Db, uid: int, sess: Session) -> tuple[bool, int]:
+    """The session bonus for the data as it now stands, plus whether the plan was covered."""
     logged = [s for s in sess.sets if s.reps is not None or s.seconds is not None]
     plan = plan_for(db, uid, E.Position(sess.phase, sess.week, sess.day))
     counts: dict[str, int] = defaultdict(int)
@@ -456,10 +461,17 @@ def finish_session(db: Db, uid: int, sess: Session) -> SessionSummary:
         else len(logged) == len(sess.sets)
     )
     within = all(s.rpe_cap is None or s.rpe is None or s.rpe <= s.rpe_cap for s in logged)
+    return all_logged, X.session_xp(all_logged, within)
+
+
+def finish_session(db: Db, uid: int, sess: Session) -> SessionSummary:
+    st = ensure_user(db, uid)
+    logged = [s for s in sess.sets if s.reps is not None or s.seconds is not None]
     xp = sum(s.xp for s in logged)
     for s in logged:
         add_xp(db, uid, "set", s.xp, f"set-{s.id}")
-    xp += add_xp(db, uid, "session", X.session_xp(all_logged, within), f"session-{sess.id}")
+    all_logged, bonus = _session_bonus(db, uid, sess)
+    xp += add_xp(db, uid, "session", bonus, f"session-{sess.id}")
     msgs = []
     # e1RM PRs on the main lifts
     for keys, label in ((SQUAT_KEYS, "squat"), (DEADLIFT_KEYS, "deadlift")):
@@ -565,9 +577,11 @@ def log_ride(
 
 
 def log_day(db: Db, uid: int, d: date, kind: str, minutes: int | None, note: str) -> int:
-    db.add(DayLog(user_id=uid, date=d, kind=kind, minutes=minutes, note=note, created_at=utcnow()))
+    x = DayLog(user_id=uid, date=d, kind=kind, minutes=minutes, note=note, created_at=utcnow())
+    db.add(x)
+    db.flush()
     amount = {"recovery": X.RECOVERY_DAY, "smart_rest": X.SMART_REST}.get(kind, 0)
-    xp = add_xp(db, uid, kind, amount, d.isoformat())
+    xp = add_xp(db, uid, kind, amount, f"day-{x.id}")
     award_badges(db, uid)
     db.commit()
     return xp
@@ -582,16 +596,139 @@ def log_metric(db: Db, uid: int, d: date, kind: str, value: float) -> int:
         )
         == 0
     )
-    db.add(Metric(user_id=uid, date=d, kind=kind, value=value, created_at=utcnow()))
+    m = Metric(user_id=uid, date=d, kind=kind, value=value, created_at=utcnow())
+    db.add(m)
+    db.flush()
     xp = add_xp(
         db,
         uid,
         "morning_checkin",
         X.MORNING_CHECKIN if first and kind == "soreness" else 0,
-        d.isoformat(),
+        f"metric-{m.id}",
     )
     db.commit()
     return xp
+
+
+# ---------- edit and delete ----------
+
+
+def _sync_xp_event(db: Db, uid: int, source: str, ref: str, amount: int) -> None:
+    """Upsert an XP event so the total matches the data as it now stands (0 removes it)."""
+    ev = db.scalar(
+        select(XpEvent).where(XpEvent.user_id == uid, XpEvent.source == source, XpEvent.ref == ref)
+    )
+    if amount:
+        if ev is None:
+            db.add(XpEvent(user_id=uid, ts=utcnow(), source=source, amount=amount, ref=ref))
+        else:
+            ev.amount = amount
+    elif ev is not None:
+        db.delete(ev)
+
+
+def _remove_xp_events(db: Db, uid: int, refs: list[str]) -> int:
+    evs = list(db.scalars(select(XpEvent).where(XpEvent.user_id == uid, XpEvent.ref.in_(refs))))
+    for e in evs:
+        db.delete(e)
+    return sum(e.amount for e in evs)
+
+
+def delete_ride(db: Db, uid: int, ride_id: int) -> int | None:
+    r = db.get(Ride, ride_id)
+    if r is None or r.user_id != uid:
+        return None
+    xp = _remove_xp_events(db, uid, [f"ride-{ride_id}"])
+    db.delete(r)
+    db.commit()
+    return xp
+
+
+def delete_day(db: Db, uid: int, day_id: int) -> int | None:
+    x = db.get(DayLog, day_id)
+    if x is None or x.user_id != uid:
+        return None
+    xp = _remove_xp_events(db, uid, [f"day-{day_id}"])
+    db.delete(x)
+    db.commit()
+    return xp
+
+
+def delete_metric(db: Db, uid: int, metric_id: int) -> int | None:
+    m = db.get(Metric, metric_id)
+    if m is None or m.user_id != uid:
+        return None
+    xp = _remove_xp_events(db, uid, [f"metric-{metric_id}"])
+    db.delete(m)
+    db.commit()
+    return xp
+
+
+def delete_session(db: Db, uid: int, session_id: int) -> int | None:
+    """Remove a session, its sets, and all their XP events. Never touches phase_state."""
+    sess = db.get(Session, session_id)
+    if sess is None or sess.user_id != uid:
+        return None
+    refs = [f"session-{session_id}"] + [f"set-{s.id}" for s in sess.sets]
+    xp = _remove_xp_events(db, uid, refs)
+    db.delete(sess)  # cascades to set_logs
+    db.commit()
+    return xp
+
+
+def update_ride(
+    db: Db,
+    uid: int,
+    ride_id: int,
+    d: date,
+    miles: float,
+    minutes: int,
+    zone: int,
+    commute: str | None,
+    elevation_ft: int | None,
+    note: str,
+) -> int | None:
+    r = db.get(Ride, ride_id)
+    if r is None or r.user_id != uid:
+        return None
+    r.date, r.miles, r.minutes, r.zone, r.commute, r.elevation_ft, r.note = (
+        d,
+        miles,
+        minutes,
+        zone,
+        commute,
+        elevation_ft,
+        note,
+    )
+    xp = E.ride_xp(miles, commute is not None, zone)
+    _sync_xp_event(db, uid, "ride", f"ride-{ride_id}", xp)
+    db.commit()
+    return xp
+
+
+def update_set(
+    db: Db,
+    uid: int,
+    set_id: int,
+    weight: float | None,
+    reps: int | None,
+    seconds: int | None,
+    rpe: float | None,
+    form_ok: bool,
+    pain: str | None,
+) -> tuple[int, int] | None:
+    """Edit one set of a finished session and recompute its XP and the session bonus."""
+    s = db.get(SetLog, set_id)
+    if s is None or s.session.user_id != uid or s.session.status != "done":
+        return None
+    s.weight_lb, s.reps, s.seconds, s.rpe = weight, reps, seconds, rpe
+    s.form_ok, s.pain = form_ok, pain or None
+    s.xp = _set_xp(s)
+    _sync_xp_event(db, uid, "set", f"set-{s.id}", s.xp)
+    _, bonus = _session_bonus(db, uid, s.session)
+    _sync_xp_event(db, uid, "session", f"session-{s.session.id}", bonus)
+    db.commit()
+    return s.xp, bonus
 
 
 # ---------- quick log (shorthand) ----------
@@ -765,7 +902,7 @@ def insights(db: Db, uid: int, d: date) -> dict:
 
 def history(db: Db, uid: int, days: int = 30) -> list[dict]:
     d0 = today() - timedelta(days=days)
-    items: dict[date, list[str]] = defaultdict(list)
+    items: dict[date, list[dict]] = defaultdict(list)
     for s in db.scalars(
         select(Session).where(Session.user_id == uid, Session.status == "done", Session.date >= d0)
     ):
@@ -787,26 +924,40 @@ def history(db: Db, uid: int, days: int = 30) -> list[dict]:
                 + (f" ({len(done)} sets)" if len(done) > 1 else "")
             )
         label = f"Lift ({s.phase} {s.week}, day {s.day})"
-        items[s.date].append(label + ": " + "; ".join(parts))
+        items[s.date].append(
+            {"kind": "session", "id": s.id, "label": label + ": " + "; ".join(parts)}
+        )
     for r in db.scalars(select(Ride).where(Ride.user_id == uid, Ride.date >= d0)):
         c = {"in": " commute in", "out": " commute home", "round": " round-trip commute"}.get(
             r.commute or "", ""
         )
         items[r.date].append(
-            f"Ride{c}: {r.miles:g} mi, {r.minutes} min, Z{r.zone}"
-            + (f", {r.note}" if r.note else "")
+            {
+                "kind": "ride",
+                "id": r.id,
+                "label": f"Ride{c}: {r.miles:g} mi, {r.minutes} min, Z{r.zone}"
+                + (f", {r.note}" if r.note else ""),
+            }
         )
     for x in db.scalars(select(DayLog).where(DayLog.user_id == uid, DayLog.date >= d0)):
         items[x.date].append(
-            x.kind.replace("_", " ").title()
-            + (f" {x.minutes} min" if x.minutes else "")
-            + (f": {x.note}" if x.note else "")
+            {
+                "kind": "day",
+                "id": x.id,
+                "label": x.kind.replace("_", " ").title()
+                + (f" {x.minutes} min" if x.minutes else "")
+                + (f": {x.note}" if x.note else ""),
+            }
         )
     for m in db.scalars(select(Metric).where(Metric.user_id == uid, Metric.date >= d0)):
         items[m.date].append(
-            ("Soreness " if m.kind == "soreness" else "Bodyweight ")
-            + f"{m.value:g}"
-            + (" lb" if m.kind == "bodyweight" else "/10")
+            {
+                "kind": "metric",
+                "id": m.id,
+                "label": ("Soreness " if m.kind == "soreness" else "Bodyweight ")
+                + f"{m.value:g}"
+                + (" lb" if m.kind == "bodyweight" else "/10"),
+            }
         )
     return [{"date": k, "items": v} for k, v in sorted(items.items(), reverse=True)]
 

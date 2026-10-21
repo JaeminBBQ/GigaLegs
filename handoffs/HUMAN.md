@@ -4,6 +4,13 @@ Items Claude needs from the user. Claude adds items; the user answers inline or 
 **The repo is public:** keep answers with personal details in chat or in `athlete/PROFILE.md`, not in this file.
 
 ## Open
+### Pivot (D27): answer these first
+- [ ] **Event:** Tahoe ride (America's Most Beautiful Bike Ride, Jun 6 2027; 72 or 100 mi), Reno half (Biggest Little Half, Apr 24 2027), or both?
+- [ ] **What made the old routine hard?** Time, soreness, boredom, the barbell setup?
+- [ ] **Days per week and minutes on a normal day.**
+
+The items below belong to the old squat plan and get rewritten once the pivot lands.
+
 ### Start training (no app needed)
 - [ ] **Start the app:** `cd ~/Projects/GigaLegs && uv run gigalegs serve`. Open the printed phone URL in Safari (same Wi-Fi) → Share → Add to Home Screen. The Mac has to be awake with the server running.
 - [ ] Each morning, tap your soreness (0–10) on Today; it drives the on-ramp gate and the daily suggestion. Log lifts by tapping through the sets; log rides, recovery, and rest days from Today. Messaging Claude still works too.
@@ -25,7 +32,7 @@ Items Claude needs from the user. Claude adds items; the user answers inline or 
 ## Done
 - [x] Web app MVP built (D21); no fixed training days (D20); Sparks Blvd bike lane confirmed on Street View (D22).
 - [x] Wearable sync deferred; logging is manual via chat for now (D19).
-- [x] Workflow: Claude orchestrates, DeepSeek implements, and you relay and commit (2026-10-03).
+- [x] Workflow: Claude builds and coaches; you commit (D26, 2026-10-20; replaced the DeepSeek relay).
 - [x] Git: local identity + SSH key (`~/.ssh/id_ed25519_github`) match ChessCoach; GitHub auth verified. The repo is **public** (D10).
 - [x] Discord webhook copied from ChessCoach into `.env`; test ping sent.
 - [x] Bodyweight and goal → maintain through the program, slow cut after (D9).

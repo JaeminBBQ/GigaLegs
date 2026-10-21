@@ -2,11 +2,25 @@
 {% block title %}History · GigaLegs{% endblock %}
 {% block main %}
 <h1>History</h1>
+{% if note %}<div class="notice good">{{ note }}</div>{% endif %}
 {% if not days %}<p class="empty">Nothing logged yet. Your first session shows up here.</p>{% endif %}
 {% for d in days %}
 <section class="card">
   <div class="kicker">{{ d.date.strftime('%A %b %-d') }}</div>
-  <ul class="reasons">{% for i in d['items'] %}<li>{{ i }}</li>{% endfor %}</ul>
+  <ul class="reasons">{% for i in d['items'] %}
+    <li class="entry">
+      <span class="grow">{{ i.label }}</span>
+      {% if i.kind == 'session' %}
+      <a class="btn ghost small" href="/session/{{ i.id }}">Edit</a>
+      {% elif i.kind == 'ride' %}
+      <a class="btn ghost small" href="/ride/{{ i.id }}/edit">Edit</a>
+      {% elif i.kind == 'day' %}
+      <form method="post" action="/day/{{ i.id }}/delete" onsubmit="return confirm('Delete this day log? Its XP will be removed.')"><button class="btn danger small">Delete</button></form>
+      {% elif i.kind == 'metric' %}
+      <form method="post" action="/metric/{{ i.id }}/delete" onsubmit="return confirm('Delete this metric?')"><button class="btn danger small">Delete</button></form>
+      {% endif %}
+    </li>
+  {% endfor %}</ul>
 </section>
 {% endfor %}
 {% endblock %}

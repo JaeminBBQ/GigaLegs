@@ -263,3 +263,12 @@ def test_queue_order(fake_program_data):
     assert next_position(prog, Position("onramp", "A", 3), advance_week=False) == Position(
         "onramp", "A", 1
     )
+
+
+def test_onramp_accessory_is_by_feel(fake_program_data):
+    # D25: full program sets × reps, no cap, in every on-ramp week
+    prog = load_program(fake_program_data)
+    for week in ("A", "B", "C"):
+        row = day_plan(prog, Position("onramp", week, 2)).exercises[0]
+        assert (row.kind, row.sets, row.reps, row.rpe_cap) == ("rpe", 5, 10, None)
+        assert "feel" in row.note.lower()

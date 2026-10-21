@@ -3,7 +3,7 @@
 Status: **MVP built** (D21), 2026-10-04. Run with `uv run gigalegs serve`; DB at `data/gigalegs.db`.
 
 ## Stack (D3)
-Python 3.12 via `uv` · FastAPI + Jinja2 server-rendered pages + HTMX for quick set logging · SQLite + SQLAlchemy 2 + Alembic · pytest · ruff. No JS build step. A PWA manifest so the app installs on the phone. Same shape as LeagueApp, which DeepSeek has already shipped successfully.
+Python 3.12 via `uv` · FastAPI + Jinja2 server-rendered pages + HTMX for quick set logging · SQLite + SQLAlchemy 2 + Alembic · pytest · ruff. No JS build step. A PWA manifest so the app installs on the phone. Same shape as LeagueApp.
 
 ## Layout
 ```

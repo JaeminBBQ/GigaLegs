@@ -14,7 +14,7 @@ from ..config import get_settings
 from ..db import LOCAL_USER_ID, get_sessionmaker
 from ..engine.onramp import ONRAMP_ORDER
 from ..engine.shorthand import parse
-from ..models import Session, SetLog
+from ..models import Ride, Session, SetLog
 
 HERE = Path(__file__).parent
 templates = Jinja2Templates(directory=HERE / "templates")
@@ -166,6 +166,13 @@ def _owned(db: Db, uid: int, sid: int) -> Session:
     return sess
 
 
+def _owned_row(db: Db, uid: int, model, row_id: int):
+    row = db.get(model, row_id)
+    if row is None or row.user_id != uid:
+        raise HTTPException(404)
+    return row
+
+
 @app.get("/session/{sid}", response_class=HTMLResponse)
 def session_page(
     request: Request,
@@ -255,6 +262,54 @@ def session_discard(sid: int, db: Db = Depends(get_db), uid: int = Depends(curre
     return RedirectResponse("/", status_code=303)
 
 
+@app.post("/session/{sid}/edit-set/{set_id}", response_class=HTMLResponse)
+def session_edit_set(
+    request: Request,
+    sid: int,
+    set_id: int,
+    weight: str = Form(""),
+    reps: str = Form(""),
+    seconds: str = Form(""),
+    rpe: str = Form(""),
+    form_bad: str = Form(""),
+    pain: str = Form(""),
+    db: Db = Depends(get_db),
+    uid: int = Depends(current_user),
+):
+    sess = _owned(db, uid, sid)
+    s = db.get(SetLog, set_id)
+    if s is None or s.session_id != sess.id:
+        raise HTTPException(404)
+    if sess.status != "done":
+        raise HTTPException(400, "session not finished")
+    out = S.update_set(
+        db,
+        uid,
+        s.id,
+        to_float(weight),
+        to_int(reps),
+        to_int(seconds),
+        to_float(rpe),
+        form_ok=not form_bad,
+        pain=pain.strip() or None,
+    )
+    if out is None:
+        raise HTTPException(404)
+    return templates.TemplateResponse(
+        request, "_set_row.html", {"s": s, "sess": sess, "row_verb": "edit-set"}
+    )
+
+
+@app.post("/session/{sid}/delete")
+def session_delete(sid: int, db: Db = Depends(get_db), uid: int = Depends(current_user)):
+    if S.delete_session(db, uid, sid) is None:
+        raise HTTPException(404)
+    from urllib.parse import quote
+
+    note = "Session deleted. If this changed where you are in the program, fix it on Path → Adjust position."
+    return RedirectResponse("/history?note=" + quote(note), status_code=303)
+
+
 # ---------- Quick log, rides ----------
 
 
@@ -315,12 +370,78 @@ def ride_save(
     return RedirectResponse("/history", status_code=303)
 
 
+@app.get("/ride/{ride_id}/edit", response_class=HTMLResponse)
+def ride_edit_page(
+    request: Request, ride_id: int, db: Db = Depends(get_db), uid: int = Depends(current_user)
+):
+    ride = _owned_row(db, uid, Ride, ride_id)
+    return render(request, "ride.html", db, uid, route_miles=route_miles(), ride=ride)
+
+
+@app.post("/ride/{ride_id}/update")
+def ride_update(
+    ride_id: int,
+    miles: float = Form(...),
+    minutes: int = Form(...),
+    zone: int = Form(2),
+    commute: str = Form(""),
+    elevation_ft: str = Form(""),
+    note: str = Form(""),
+    day: str = Form(""),
+    db: Db = Depends(get_db),
+    uid: int = Depends(current_user),
+):
+    if (
+        S.update_ride(
+            db,
+            uid,
+            ride_id,
+            _date(day),
+            miles,
+            minutes,
+            zone,
+            commute or None,
+            to_int(elevation_ft),
+            note.strip(),
+        )
+        is None
+    ):
+        raise HTTPException(404)
+    return RedirectResponse("/history", status_code=303)
+
+
+@app.post("/ride/{ride_id}/delete")
+def ride_delete(ride_id: int, db: Db = Depends(get_db), uid: int = Depends(current_user)):
+    if S.delete_ride(db, uid, ride_id) is None:
+        raise HTTPException(404)
+    return RedirectResponse("/history", status_code=303)
+
+
+@app.post("/day/{day_id}/delete")
+def day_delete(day_id: int, db: Db = Depends(get_db), uid: int = Depends(current_user)):
+    if S.delete_day(db, uid, day_id) is None:
+        raise HTTPException(404)
+    return RedirectResponse("/history", status_code=303)
+
+
+@app.post("/metric/{metric_id}/delete")
+def metric_delete(metric_id: int, db: Db = Depends(get_db), uid: int = Depends(current_user)):
+    if S.delete_metric(db, uid, metric_id) is None:
+        raise HTTPException(404)
+    return RedirectResponse("/history", status_code=303)
+
+
 # ---------- History, insights, path ----------
 
 
 @app.get("/history", response_class=HTMLResponse)
-def history_page(request: Request, db: Db = Depends(get_db), uid: int = Depends(current_user)):
-    return render(request, "history.html", db, uid, days=S.history(db, uid, days=60))
+def history_page(
+    request: Request,
+    note: str = "",
+    db: Db = Depends(get_db),
+    uid: int = Depends(current_user),
+):
+    return render(request, "history.html", db, uid, days=S.history(db, uid, days=60), note=note)
 
 
 @app.get("/insights", response_class=HTMLResponse)

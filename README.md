@@ -16,5 +16,5 @@ Other commands: `uv run gigalegs log "<shorthand>" --save` (log from the termina
 Private files (gitignored): `program/private/` (the purchased program), `athlete/` (profile, route),
 `data/gigalegs.db` (your logs).
 
-- Orchestrator (Claude): `CLAUDE.md` · Implementer (DeepSeek): `DEEPSEEK.md`
+- Claude builds and coaches: `CLAUDE.md`
 - Product and training docs: `docs/` · Work in flight: `handoffs/BOARD.md`, `handoffs/HUMAN.md`

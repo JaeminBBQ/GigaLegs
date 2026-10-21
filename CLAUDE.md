@@ -1,28 +1,20 @@
 # CLAUDE.md
 
-> **If you are DeepSeek or any implementer agent: stop here and follow `DEEPSEEK.md` instead.**
-> This file is for the orchestrator (Claude).
+GigaLegs is a gamified but legitimate training coach: a phone-first web app plus a coach agent, for one athlete (the user). **Pivoting (D27, 2026-10-20)** from the barbell-squat program to full-body gym work + endurance (bike or run) toward a local event, with a short "floor" option for bad days. Goals: be fit and look good, stay consistent. Until the new plan lands in `docs/`, older docs still describe the squat program.
 
-GigaLegs is a gamified but legitimate leg-training coach: a phone-first web app plus a coach agent, for one athlete (the user). Goals: squat heavy, and bike-commute Five Ridges (Sparks) → Sparks Blvd → Veterans Pkwy → South Meadows (Reno), with efficient, linear-ish progress.
+## Roles (D26)
+- **Claude (builder + coach):** owns product, architecture, implementation, tests, and **all training decisions**. Tracks work in `handoffs/BOARD.md`. No implementer agent; no handoff relay.
+- **User (human in the loop):** answers product/training questions, provides athlete data (logs, how sessions felt), does browser/visual/phone testing, manages accounts and secrets, runs all git commits.
 
-## Roles
-- **Claude (orchestrator + coach):** owns product, architecture, and **all training decisions** (loads, progression rules, on-ramp, bike plan, check-ins). Writes task handoffs, reviews and verifies DeepSeek's work, and does the hard or judgment-heavy work directly.
-- **DeepSeek (implementer):** does simple-to-moderate dev work from task files in `handoffs/tasks/`. Cannot be spawned by Claude; the user relays handoffs manually.
-- **User (human in the loop):** relays handoffs, answers product/training questions, provides athlete data (maxes, logs, how sessions felt), does browser/visual/phone testing, manages accounts and secrets, runs all git commits.
-
-## Handoff workflow (see `handoffs/README.md` for the full protocol)
-1. Claude writes `handoffs/tasks/TNNN-slug.md`, points `handoffs/TO_DEEPSEEK.md` at it (with any notes), and sets it `ready` in `handoffs/BOARD.md`.
-2. Claude pauses and tells the user: say **"read handoffs/TO_DEEPSEEK.md"** to DeepSeek.
-3. DeepSeek implements, writes `handoffs/reports/TNNN-report.md`, and overwrites `handoffs/TO_CLAUDE.md`.
-4. The user tells Claude "read handoffs/TO_CLAUDE.md". Claude reads it and the report, inspects `git diff`, **runs the acceptance commands itself**, and either marks the task `done` or writes a follow-up task (`TNNNa-fix-...`). Never mark done on DeepSeek's word alone.
-5. When a task is done, Claude gives the user the exact `git add/commit` command. **The user runs all commits; Claude and DeepSeek never commit.**
+## Workflow
+1. Work is tracked in `handoffs/BOARD.md`; things the user must do go in `handoffs/HUMAN.md`. Write a task spec in `handoffs/tasks/` only when the work is big enough to need one.
+2. Claude implements, then runs `uv run pytest -q` and `uv run ruff check .` itself before calling anything done.
+3. When work is done, Claude checks `git status` for leaks and gives the user the exact `git add/commit` command. **The user runs all commits; Claude never commits.**
 
 ## Discord notifications (always)
-The user may be away from the terminal. Before ending any turn where the user must act (hand off to DeepSeek, answer a question, run a commit, do a browser test), send:
+The user may be away from the terminal. Before ending any turn where the user must act (answer a question, run a commit, do a browser test), send:
 `python3 tools/notify.py --from claude --kind input "<exactly what to do>"`
 Use `--kind done` for finished milestones and `--kind blocked` for blockers. The webhook lives in `.env` (`DISCORD_WEBHOOK_URL`); never print it.
-
-What goes to DeepSeek: well-specified implementation with clear, runnable acceptance tests. What stays with Claude: decisions, specs, reviews, anything ambiguous, **anything that sets or changes training numbers or rules**, anything touching secrets or the user's personal data.
 
 ## Source of truth
 - `docs/PRODUCT.md`: what we're building, athlete goals and starting point
@@ -60,5 +52,4 @@ What goes to DeepSeek: well-specified implementation with clear, runnable accept
 - Code map: `src/gigalegs/engine/` (pure rules), `services.py` (DB glue), `web/` (routes, templates, static), `cli.py`. Tests use `tests/fixtures/fake-program.json`, never the real program.
 - Port 8765 is used by LeagueApp; GigaLegs defaults to 8000.
 - Units: lb, miles, feet. Store raw; convert only in the UI.
-- DeepSeek runs inside Claude Code, so it also loads this file and the auto-memory; the redirect at the top matters.
 - Git: the user commits. Branch `main`.

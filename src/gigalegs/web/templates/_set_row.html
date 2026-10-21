@@ -1,6 +1,7 @@
 {% set hold = is_hold(s.exercise) %}
 {% set logged = s.reps is not none or s.seconds is not none %}
-<form class="setrow {{ 'done' if logged }}" hx-post="/session/{{ sess.id }}/set/{{ s.id }}" hx-swap="outerHTML">
+{% set row_verb = row_verb|default('set') %}
+<form class="setrow {{ 'done' if logged }}" hx-post="/session/{{ sess.id }}/{{ row_verb }}/{{ s.id }}" hx-swap="outerHTML">
   <span class="idx">{{ s.set_index }}</span>
   {% if hold %}
     <input name="seconds" type="number" inputmode="numeric" placeholder="sec" value="{{ s.seconds if s.seconds is not none }}" aria-label="Seconds held, set {{ s.set_index }}">

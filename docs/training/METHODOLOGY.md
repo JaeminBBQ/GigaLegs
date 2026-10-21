@@ -24,7 +24,7 @@ Every logged working set records the RPE actually felt. RPE 10 is only allowed o
 Applied per exercise, per week, by the engine:
 
 1. **Hit the reps, form solid, RPE at or under the cap** → next prescribed weight as written (on RPE-based lifts: +10 lb for deadlift-pattern lifts, +5 lb for everything else).
-2. **Hit the reps but went over the RPE cap** (the program's max RPE, or the on-ramp cap) → repeat the same weight next time. An unrated set counts as over the cap.
+2. **Hit the reps but went over the RPE cap** (the program's max RPE, or the on-ramp cap) → repeat the same weight next time. An unrated set counts as over the cap. On-ramp accessories have no cap (D25): they're done by feel and don't progress automatically.
 3. **Missed reps, or form broke down noticeably** → repeat the weight; if that happens twice in a row, drop 10% and rebuild.
 4. **Never** increase weight when technique breaks down (program rule; also the engine can't see form, so the athlete's "form OK?" toggle on each set gates progression).
 
@@ -45,7 +45,7 @@ No fixed weekdays: the athlete trains by feel and availability and wants to do *
 - **Daily recommendation (engine):** the app suggests one of: Lift (next queued day, if the spacing rules and readiness allow), Easy ride (Zone 1–2, length from the bike stage), Recovery, or Rest. Each suggestion comes with its reasons. It's a suggestion: the athlete can pick something else, and logging works the same either way.
 
 ## 4. Readiness and recovery gates
-Before each lifting session the athlete answers 3 quick questions (0–10): **leg soreness**, **sleep quality**, **overall energy**.
+Optionally (D24: the athlete logs after the fact and isn't asked), a session can carry 3 numbers (0–10): **leg soreness**, **sleep quality**, **overall energy**. When present, the rules below apply; when absent, nothing is adjusted.
 
 | Condition | Action |
 |---|---|

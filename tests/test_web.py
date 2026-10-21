@@ -117,3 +117,55 @@ def test_pain_flag_then_clear(app_env):
 def test_timed_hold_earns_logged_xp(app_env):
     saved = client().post("/log/save", data={"text": "lift\nplank 60s x2"})
     assert "(+10 XP)" in saved.text  # 2 holds x 5, no RPE needed
+
+
+def test_gate_ignores_accessories(app_env):
+    # D25: a hard accessory set doesn't hold back the week; clean main lifts pass
+    from gigalegs import services as S
+    from gigalegs.db import get_sessionmaker
+    from gigalegs.engine.shorthand import parse
+
+    text = (
+        "lift onramp A day 1\nsq 135x5x2 @6\nplank 30s x2\n"
+        "lift onramp A day 2\nrow 135x10x5 @9\n"
+        "lift onramp A day 3\ndl 190x5x2 @6\n"
+    )
+    with get_sessionmaker()() as db:
+        S.ensure_user(db, 1)
+        S.save_parsed(db, 1, parse(text, S.today()))
+        st = S.ensure_user(db, 1)
+        assert st.gate_pending
+        msg = S.resolve_gate(db, 1, soreness=2)
+        assert "passed" in msg and S.ensure_user(db, 1).week == "B"
+
+
+def test_gate_still_blocks_on_accessory_pain(app_env):
+    from gigalegs import services as S
+    from gigalegs.db import get_sessionmaker
+    from gigalegs.engine.shorthand import parse
+
+    text = (
+        "lift onramp A day 1\nsq 135x5x2 @6\n"
+        "lift onramp A day 2\nrow 135x10 @6 !pain low back\n"
+        "lift onramp A day 3\ndl 190x5x2 @6\n"
+    )
+    with get_sessionmaker()() as db:
+        S.ensure_user(db, 1)
+        S.save_parsed(db, 1, parse(text, S.today()))
+        msg = S.resolve_gate(db, 1, soreness=2)
+        assert "Repeating" in msg and "pain" in msg
+
+
+def test_by_feel_accessory_sets_earn_logged_xp_unrated(app_env):
+    from gigalegs import services as S
+    from gigalegs.db import get_sessionmaker
+    from gigalegs.engine import xp as X
+    from gigalegs.engine.shorthand import parse
+
+    with get_sessionmaker()() as db:
+        S.ensure_user(db, 1)
+        S.save_parsed(db, 1, parse("lift onramp A day 2\nrow 135x10x5\ncurl 30x10", S.today()))
+        sets = db.query(S.SetLog).all()
+        rows = [s for s in sets if s.exercise == "barbell_row"]
+        assert len(rows) == 5 and all(s.rpe_cap is None and s.xp == X.SET_LOGGED for s in rows)
+        assert all(s.xp == 0 for s in sets if s.exercise != "barbell_row")  # unprescribed

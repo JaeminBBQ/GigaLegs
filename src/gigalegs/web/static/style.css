@@ -225,3 +225,5 @@ pre.cheat { background: var(--surface-2); border-radius: 10px; padding: 10px; ov
 .badge-card small { color: var(--muted); }
 .badge-card.on { background: var(--good-bg); border-color: var(--good); }
 .badge-card.on b { color: var(--good); }
+ul.reasons li.entry { display: flex; align-items: center; gap: 8px; }
+ul.reasons li.entry form { margin: 0; }

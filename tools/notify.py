@@ -3,7 +3,6 @@
 
 Usage:
     python3 tools/notify.py --from claude --kind input "Need your OK on X"
-    python3 tools/notify.py --from deepseek --kind done "T002 finished"
     python3 tools/notify.py --hook          # Claude Code Notification hook (reads JSON on stdin)
 
 Kinds: input (your input is needed), done (task finished), blocked, info.
@@ -25,7 +24,7 @@ KINDS = {
     "blocked": ("Blocked", 0xE74C3C),
     "info": ("Update", 0x3498DB),
 }
-AGENTS = {"claude": "Claude (orchestrator)", "deepseek": "DeepSeek (implementer)"}
+AGENTS = {"claude": "Claude"}
 
 
 def webhook_url():
