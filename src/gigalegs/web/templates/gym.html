@@ -15,7 +15,7 @@
 <section class="card exercise">
   <div class="row">
     <div class="grow">
-      <div class="kicker">{{ t.slot_name }} · {{ t.target.sets }} × {{ t.target.reps[0] }}–{{ t.target.reps[1] }} · RPE ≤ {{ t.target.rpe_cap|num }}</div>
+      <div class="kicker">{{ t.slot_name }} · {{ t.target.sets }} × {{ t.target.reps[0] }}–{{ t.target.reps[1] }}{{ ' s hold' if t.target.timed }} · RPE ≤ {{ t.target.rpe_cap|num }}</div>
       <select name="{{ k }}_option" aria-label="{{ t.slot_name }} exercise" onchange="pick('{{ k }}', this.value)" style="margin-top:6px">
         {% for o in t.options %}<option {{ 'selected' if o == t.option }}>{{ o }}</option>{% endfor %}
       </select>
@@ -25,8 +25,13 @@
   {% for i in range(1, t.target.sets + extra + 1) %}
   <div class="setrow">
     <span class="idx">{{ i }}</span>
+    {% if t.target.timed %}
+    <input name="{{ k }}_r{{ i }}" type="number" inputmode="numeric" placeholder="{{ t.target.reps[1] }} sec" aria-label="Set {{ i }} seconds held">
+    <span></span>
+    {% else %}
     <input name="{{ k }}_w{{ i }}" type="number" step="0.5" inputmode="decimal" placeholder="lb" aria-label="Set {{ i }} weight" value="{{ t.target.weight|num if t.target.weight }}">
     <input name="{{ k }}_r{{ i }}" type="number" inputmode="numeric" placeholder="{{ t.target.reps[1] }} reps" aria-label="Set {{ i }} reps">
+    {% endif %}
     <input name="{{ k }}_rpe{{ i }}" type="number" step="0.5" min="1" max="10" inputmode="decimal" placeholder="RPE" aria-label="Set {{ i }} RPE">
     <span class="idx">{% if i > t.target.sets %}<small>push</small>{% endif %}</span>
   </div>

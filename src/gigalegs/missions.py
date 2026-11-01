@@ -192,7 +192,8 @@ def _exercise_history(db: Db, uid: int, exercise: str, limit: int = 3) -> list[l
     ).all()
     out: dict[int, list[SE.SetPerf]] = {}
     for s, sid in rows:
-        out.setdefault(sid, []).append(SE.SetPerf(s.weight_lb, s.reps, s.rpe, s.form_ok))
+        done = s.reps if s.reps is not None else s.seconds
+        out.setdefault(sid, []).append(SE.SetPerf(s.weight_lb, done, s.rpe, s.form_ok))
     return list(out.values())[:limit]
 
 
@@ -203,6 +204,12 @@ def _last_option(db: Db, uid: int, slot_key: str) -> str | None:
         .where(Session.user_id == uid, Session.phase == "season", SetLog.category == slot_key)
         .order_by(Session.date.desc(), Session.id.desc())
     )
+
+
+def hold_range(slot: dict, option: str) -> tuple[int, int] | None:
+    """Seconds range if this option is a timed hold (e.g. plank), else None."""
+    r = slot.get("holds", {}).get(option)
+    return (int(r[0]), int(r[1])) if r else None
 
 
 def gym_targets(
@@ -217,9 +224,10 @@ def gym_targets(
         last = _last_option(db, uid, t["key"])
         option = picked if picked in t["options"] else names.get(last or "", t["options"][0])
         cap = SE.gym_rpe_cap(week.week, t["lower"])
-        reps = (int(t["reps"][0]), int(t["reps"][1]))
+        hold = hold_range(t, option)
+        reps = hold or (int(t["reps"][0]), int(t["reps"][1]))
         weight, note = SE.next_gym_weight(
-            _exercise_history(db, uid, slug(option)), reps, cap, float(t["inc"])
+            _exercise_history(db, uid, slug(option)), reps, cap, float(t["inc"]), timed=bool(hold)
         )
         out.append(
             ExerciseTarget(
@@ -234,6 +242,7 @@ def gym_targets(
                     cap,
                     weight,
                     note,
+                    timed=bool(hold),
                 ),
             )
         )
@@ -377,8 +386,9 @@ class LoggedExercise:
     slot_key: str
     option: str
     rpe_cap: float
-    sets: list[tuple[float | None, int | None, float | None]]  # weight, reps, rpe
+    sets: list[tuple[float | None, int | None, float | None]]  # weight, reps (or seconds), rpe
     form_ok: bool = True
+    timed: bool = False  # the reps column holds seconds
 
 
 def log_gym(
@@ -420,8 +430,9 @@ def log_gym(
                 category=ex.slot_key,
                 set_index=i,
                 rpe_cap=ex.rpe_cap,
-                weight_lb=w,
-                reps=reps,
+                weight_lb=None if ex.timed else w,
+                reps=None if ex.timed else reps,
+                seconds=reps if ex.timed else None,
                 rpe=rpe,
                 form_ok=ex.form_ok,
                 pain=pain,

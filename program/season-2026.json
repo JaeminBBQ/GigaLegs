@@ -224,7 +224,7 @@
      "key": "core",
      "name": "Core",
      "options": [
-      "Plank (sec)",
+      "Plank",
       "Dead bug",
       "Hanging knee raise",
       "Cable crunch"
@@ -235,7 +235,13 @@
       15
      ],
      "lower": false,
-     "inc": 5
+     "inc": 5,
+     "holds": {
+      "Plank": [
+       30,
+       60
+      ]
+     }
     }
    ]
   },
@@ -351,8 +357,8 @@
     {
      "key": "run1",
      "kind": "run",
-     "title": "Walk-run, ~20 min",
-     "detail": "10 × (1 min run / 1 min walk)",
+     "title": "Easy jog, 10 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -375,7 +381,7 @@
    "start": "2026-10-26",
    "label": "Week 1",
    "tag": null,
-   "phase": "Walk-run base",
+   "phase": "Easy-jog base",
    "slots": [
     {
      "key": "gym1",
@@ -413,8 +419,8 @@
     {
      "key": "run1",
      "kind": "run",
-     "title": "Walk-run",
-     "detail": "5 min walk before and after. 10 × (1 min run / 1 min walk)",
+     "title": "Easy jog, 10 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -423,8 +429,8 @@
     {
      "key": "run2",
      "kind": "run",
-     "title": "Walk-run",
-     "detail": "5 min walk before and after. 10 × (1 min run / 1 min walk)",
+     "title": "Easy jog, 10 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -433,8 +439,8 @@
     {
      "key": "run3",
      "kind": "run",
-     "title": "Walk-run",
-     "detail": "5 min walk before and after. 10 × (1 min run / 1 min walk)",
+     "title": "Easy jog, 10 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -467,7 +473,7 @@
    "start": "2026-11-02",
    "label": "Week 2",
    "tag": null,
-   "phase": "Walk-run base",
+   "phase": "Easy-jog base",
    "slots": [
     {
      "key": "gym1",
@@ -505,8 +511,8 @@
     {
      "key": "run1",
      "kind": "run",
-     "title": "Walk-run",
-     "detail": "5 min walk before and after. 8 × (2 min run / 1 min walk)",
+     "title": "Easy jog, 16 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -515,8 +521,8 @@
     {
      "key": "run2",
      "kind": "run",
-     "title": "Walk-run",
-     "detail": "5 min walk before and after. 8 × (2 min run / 1 min walk)",
+     "title": "Easy jog, 16 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -525,8 +531,8 @@
     {
      "key": "run3",
      "kind": "run",
-     "title": "Walk-run",
-     "detail": "5 min walk before and after. 8 × (2 min run / 1 min walk)",
+     "title": "Easy jog, 16 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -559,7 +565,7 @@
    "start": "2026-11-09",
    "label": "Week 3",
    "tag": null,
-   "phase": "Walk-run base",
+   "phase": "Easy-jog base",
    "slots": [
     {
      "key": "gym1",
@@ -597,8 +603,8 @@
     {
      "key": "run1",
      "kind": "run",
-     "title": "Walk-run",
-     "detail": "5 min walk before and after. 6 × (3 min run / 1 min walk)",
+     "title": "Easy jog, 18 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -607,8 +613,8 @@
     {
      "key": "run2",
      "kind": "run",
-     "title": "Walk-run",
-     "detail": "5 min walk before and after. 6 × (3 min run / 1 min walk)",
+     "title": "Easy jog, 18 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -617,8 +623,8 @@
     {
      "key": "run3",
      "kind": "run",
-     "title": "Walk-run",
-     "detail": "5 min walk before and after. 6 × (3 min run / 1 min walk)",
+     "title": "Easy jog, 18 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -651,7 +657,7 @@
    "start": "2026-11-16",
    "label": "Week 4",
    "tag": "down",
-   "phase": "Walk-run base",
+   "phase": "Easy-jog base",
    "slots": [
     {
      "key": "gym1",
@@ -689,8 +695,8 @@
     {
      "key": "run1",
      "kind": "run",
-     "title": "Walk-run",
-     "detail": "5 min walk before and after. 7 × (2 min run / 1 min walk)",
+     "title": "Easy jog, 14 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -699,8 +705,8 @@
     {
      "key": "run2",
      "kind": "run",
-     "title": "Walk-run",
-     "detail": "5 min walk before and after. 7 × (2 min run / 1 min walk)",
+     "title": "Easy jog, 14 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -709,8 +715,8 @@
     {
      "key": "run3",
      "kind": "run",
-     "title": "Walk-run",
-     "detail": "5 min walk before and after. 7 × (2 min run / 1 min walk)",
+     "title": "Easy jog, 14 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -743,7 +749,7 @@
    "start": "2026-11-23",
    "label": "Week 5",
    "tag": null,
-   "phase": "Walk-run base",
+   "phase": "Easy-jog base",
    "slots": [
     {
      "key": "gym1",
@@ -781,8 +787,8 @@
     {
      "key": "run1",
      "kind": "run",
-     "title": "Walk-run",
-     "detail": "5 min walk before and after. 4 × (5 min run / 1 min walk)",
+     "title": "Easy jog, 20 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -791,8 +797,8 @@
     {
      "key": "run2",
      "kind": "run",
-     "title": "Walk-run",
-     "detail": "5 min walk before and after. 4 × (5 min run / 1 min walk)",
+     "title": "Easy jog, 20 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -801,8 +807,8 @@
     {
      "key": "run3",
      "kind": "run",
-     "title": "Walk-run",
-     "detail": "5 min walk before and after. 4 × (5 min run / 1 min walk)",
+     "title": "Easy jog, 20 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -835,7 +841,7 @@
    "start": "2026-11-30",
    "label": "Week 6",
    "tag": null,
-   "phase": "Walk-run base",
+   "phase": "Easy-jog base",
    "slots": [
     {
      "key": "gym1",
@@ -873,8 +879,8 @@
     {
      "key": "run1",
      "kind": "run",
-     "title": "Walk-run",
-     "detail": "5 min walk before and after. 3 × (8 min run / 1 min walk)",
+     "title": "Easy jog, 24 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -883,8 +889,8 @@
     {
      "key": "run2",
      "kind": "run",
-     "title": "Walk-run",
-     "detail": "5 min walk before and after. 3 × (8 min run / 1 min walk)",
+     "title": "Easy jog, 24 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -893,8 +899,8 @@
     {
      "key": "run3",
      "kind": "run",
-     "title": "Walk-run",
-     "detail": "5 min walk before and after. 3 × (8 min run / 1 min walk)",
+     "title": "Easy jog, 24 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -927,7 +933,7 @@
    "start": "2026-12-07",
    "label": "Week 7",
    "tag": null,
-   "phase": "Walk-run base",
+   "phase": "Easy-jog base",
    "slots": [
     {
      "key": "gym1",
@@ -965,8 +971,8 @@
     {
      "key": "run1",
      "kind": "run",
-     "title": "Walk-run",
-     "detail": "5 min walk before and after. 2 × (12 min run / 1 min walk)",
+     "title": "Easy jog, 24 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -975,8 +981,8 @@
     {
      "key": "run2",
      "kind": "run",
-     "title": "Walk-run",
-     "detail": "5 min walk before and after. 2 × (12 min run / 1 min walk)",
+     "title": "Easy jog, 24 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -985,8 +991,8 @@
     {
      "key": "run3",
      "kind": "run",
-     "title": "Walk-run",
-     "detail": "5 min walk before and after. 2 × (12 min run / 1 min walk)",
+     "title": "Easy jog, 24 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -1019,7 +1025,7 @@
    "start": "2026-12-14",
    "label": "Week 8",
    "tag": "down",
-   "phase": "Walk-run base",
+   "phase": "Easy-jog base",
    "slots": [
     {
      "key": "gym1",
@@ -1057,8 +1063,8 @@
     {
      "key": "run_easy1",
      "kind": "run",
-     "title": "Easy run, 20 min continuous",
-     "detail": "5 min walk before and after. ",
+     "title": "Easy run, 20 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -1067,8 +1073,8 @@
     {
      "key": "run_easy2",
      "kind": "run",
-     "title": "Easy run, 20 min continuous",
-     "detail": "5 min walk before and after. ",
+     "title": "Easy run, 20 min",
+     "detail": "Steady, conversational pace.",
      "hard": false,
      "long": false,
      "tempo": false,
@@ -1077,8 +1083,8 @@
     {
      "key": "run_long",
      "kind": "run",
-     "title": "Long run, 25 min continuous",
-     "detail": "5 min walk before and after. ",
+     "title": "Long run, 25 min",
+     "detail": "Steady, conversational pace.",
      "hard": true,
      "long": true,
      "tempo": false,

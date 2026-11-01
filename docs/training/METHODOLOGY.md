@@ -52,7 +52,7 @@ Base week (exact contents per week in `SEASON_PLAN.md`):
 - **Easy means conversational:** you can speak full sentences. Walk breaks are allowed in any easy run. HR guide: easy ≤ 75% HRmax; the talk test wins if they disagree (D30). Exact bpm is in `athlete/PROFILE.md`.
 - **Tempo:** "comfortably hard", 80–88% HRmax; you can speak a few words.
 - **Volume grows ≤ ~10% per week** by time, and **every 4th week is a down week** (≈ −25%). The `SEASON_PLAN.md` table already follows this; the engine never adds to it.
-- **Start with walk-run** even though cardio fitness will feel ahead of it. Strong lifters' muscles and lungs outrun their tendons and bones, and that gap is where shin splints and Achilles trouble come from.
+- **Start with short steady jogs** (10 min in Week 1, D36) even though cardio fitness will feel ahead of them. Strong lifters' muscles and lungs outrun their tendons and bones, and that gap is where shin splints and Achilles trouble come from. The minutes, not the pace, are what's capped.
 - **Shoes:** get fitted at a running store before Week 1 runs feel serious.
 - **Pain rules:** any sharp or joint pain, or pain that changes how you run → stop, walk home, log it. Next run waits until a pain-free walk and 10 pain-free hops on that leg. Shin pain that's sore to press on a specific spot, or pain lasting > 1 week → see a professional. Normal muscle soreness is fine.
 
@@ -84,7 +84,7 @@ Each line is a **slot**: pick any listed option (variety keeps it fun) and stick
 | Shoulder press | DB shoulder press*, machine shoulder press | 2 × 8–12 |
 | Hamstrings | leg curl (seated* or lying) | 2 × 10–15 |
 | Triceps | cable pushdown*, overhead cable extension, dips | 2 × 10–15 |
-| Core | plank*, dead bug, hanging knee raise, cable crunch | 2 sets |
+| Core | plank*, dead bug, hanging knee raise, cable crunch | 2 × 10–15 (plank: 2 × 30–60 s holds) |
 
 ### Effort (RPE, same scale as v1: 10 = nothing left, 8 = 2–3 reps left)
 - **Weeks 1–2:** cap RPE 7 on everything. Pick starting weights by feel in the session; nobody types in a number in advance. This avoids the DOMS crater that would also wreck the first runs (the v1 on-ramp lesson).
