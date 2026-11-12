@@ -14,6 +14,11 @@ def calendar_rules(next_week: int, lag_until: int) -> bool:
     return next_week <= 1 or next_week > lag_until
 
 
+def _runs(done: int) -> str:
+    """'3 runs, 2 needed' rather than '3 of 2 runs'."""
+    return f"{done} run{'' if done == 1 else 's'}, {MIN_RUNS_TO_ADVANCE} needed"
+
+
 def run_unlock(
     week_no: int, level: int, next_level: int, runs_done: int, forgiven: bool = False
 ) -> str:
@@ -22,9 +27,9 @@ def run_unlock(
         return f"Runs follow the calendar: Week {nxt} uses Week {nxt}'s runs."
     if next_level > level:
         why = "forgiven week" if forgiven and runs_done < MIN_RUNS_TO_ADVANCE else ""
-        tail = f" ({why})" if why else f" ({runs_done} of {MIN_RUNS_TO_ADVANCE} runs)"
+        tail = f" ({why})" if why else f" ({_runs(runs_done)})"
         return f"Runs move up to Week {next_level}'s level{tail}."
-    return f"Runs repeat Week {level}'s level ({runs_done} of {MIN_RUNS_TO_ADVANCE} runs)."
+    return f"Runs repeat Week {level}'s level ({_runs(runs_done)})."
 
 
 def ride_unlock(

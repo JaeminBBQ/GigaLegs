@@ -50,17 +50,17 @@ def test_two_runs_move_runs_up(c):
     run(c, "run2", WEEK1_MON + timedelta(2))
     r = recap(1)
     assert r.runs_done == 2 and r.status == "past"
-    assert r.run_line == "Runs move up to Week 2's level (2 of 2 runs)."
+    assert r.run_line == "Runs move up to Week 2's level (2 runs, 2 needed)."
     assert "Runs move up to Week 2" in c.get("/week/1").text
 
 
 def test_one_run_repeats_and_shows_1_of_2(c):
     run(c, "run1", WEEK1_MON)
     r = recap(1)
-    assert r.run_line == "Runs repeat Week 1's level (1 of 2 runs)."
+    assert r.run_line == "Runs repeat Week 1's level (1 run, 2 needed)."
     assert "repeats Week 1's length" in r.ride_line
     html = c.get("/week/1").text
-    assert "1 of 2 runs" in html and "1/8 done" in html
+    assert "1 run, 2 needed" in html and "1/8 done" in html
 
 
 def test_long_ride_moves_up(c):
@@ -125,7 +125,7 @@ def test_last_week_card_monday_not_thursday(c, clock):
     run(c, "run1", WEEK1_MON)
     html = c.get("/").text
     assert "Last week · Week 1" in html and 'href="/week/1"' in html
-    assert "Runs repeat Week 1&#39;s level (1 of 2 runs)" in html
+    assert "Runs repeat Week 1&#39;s level (1 run, 2 needed)" in html
     clock(WEEK2_THU)
     assert "Last week" not in c.get("/").text
 

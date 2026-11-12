@@ -7,7 +7,7 @@
   <div class="tile"><div class="label">Active days, last 28</div><div class="value">{{ data.totals.active_days_28 }}</div></div>
   <div class="tile"><div class="label">Run miles, all time</div><div class="value">{{ cardio.totals.run.miles }}</div></div>
   <div class="tile"><div class="label">Ride miles, all time</div><div class="value">{{ cardio.totals.ride.miles }}</div></div>
-  <div class="tile"><div class="label">Week streak</div><div class="value">🔥 {{ data.streak.weeks }} <small>{{ data.streak.freezes_left }} freezes left</small></div></div>
+  {% if data.daily %}<div class="tile"><div class="label">Daily streak</div><div class="value">🔥 {{ data.daily.days }} <small>{{ data.daily.freezes }} freeze{{ '' if data.daily.freezes == 1 else 's' }}</small></div></div>{% endif %}
 </div>
 
 <section class="card">

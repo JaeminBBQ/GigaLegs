@@ -30,7 +30,7 @@
     <li class="{{ 'got' if r.long_ride_done or r.forgiven }}"><span class="dot"></span><span>{{ r.ride_line }}</span></li>
   </ul>
   <ul class="reasons">
-    <li>Runs: {{ r.runs_done }} of {{ r.runs_needed }} needed to move up</li>
+    <li>Runs: {{ r.runs_done }} done, {{ r.runs_needed }} needed to move up</li>
     <li>Long ride: {{ 'done' if r.long_ride_done else 'not done' }}</li>
     <li>Floors: {{ r.floors }} · Pushes: {{ r.pushes_used }}</li>
   </ul>

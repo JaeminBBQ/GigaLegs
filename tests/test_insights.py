@@ -113,3 +113,17 @@ def test_insights_renders_with_no_data(c):
     assert "Lifts" in html and "Weekly run minutes" in html and "Weekly ride minutes" in html
     assert "e1RM" not in html and "soreness" not in html.lower()
     assert "Bodyweight</h2>" not in html  # no bodyweight data, no section
+
+
+def test_lift_progress_ignores_the_starter_week(c):
+    """Week 0 entries (before Week 1's Monday) aren't the baseline for progress."""
+    _leg_press(date(2026, 10, 21), 360)  # starter week
+    _leg_press(date(2026, 10, 28), 180)
+    _leg_press(date(2026, 11, 2), 200)
+    lp = _lift("Leg press")
+    assert lp["start"] == 180 and lp["change"].startswith("+20 lb")
+
+
+def test_insights_shows_the_daily_streak(c):
+    _leg_press(TODAY, 200)
+    assert "Daily streak" in c.get("/insights").text

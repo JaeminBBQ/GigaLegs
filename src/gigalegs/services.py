@@ -894,6 +894,14 @@ def _exercise_names() -> dict[str, str]:
     }
 
 
+def _season_start() -> date:
+    """Week 1's Monday: progress counts from the real plan, not the starter week."""
+    from . import missions as M
+
+    season = M.get_season()
+    return season.week(1).start if season else date.min
+
+
 def lift_progress(db: Db, uid: int, d: date) -> list[dict]:
     """Season gym lifts: working weight (heaviest set with reps) per session date,
     start -> current, and the engine's next target. Weights are as logged; no load math."""
@@ -905,6 +913,7 @@ def lift_progress(db: Db, uid: int, d: date) -> list[dict]:
         .where(
             Session.user_id == uid,
             Session.phase == "season",
+            Session.date >= _season_start(),
             Session.date <= d,
             SetLog.reps.is_not(None),
         )
@@ -973,6 +982,15 @@ def weekly_cardio(db: Db, uid: int, d: date, weeks: int = 12) -> dict:
     return out
 
 
+def _daily_streak(db: Db, uid: int) -> dict | None:
+    from . import missions as M
+
+    if M.get_season() is None:
+        return None
+    st = M.streak(db, uid, today())
+    return {"days": st.days, "freezes": st.freezes}
+
+
 def insights(db: Db, uid: int, d: date) -> dict:
     start = d - timedelta(days=83)
     bw_by_day: dict[str, float] = {}
@@ -1005,6 +1023,7 @@ def insights(db: Db, uid: int, d: date) -> dict:
             "active_days_28": sum(1 for c in calendar if c["kind"] not in ("none", "rest")),
         },
         "streak": asdict(streak(db, uid)),
+        "daily": _daily_streak(db, uid),
     }
 
 
