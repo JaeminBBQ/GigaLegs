@@ -525,3 +525,24 @@ def test_taper_warning_on_today(c, monkeypatch):
 
     monkeypatch.setattr(services, "today", lambda: date(2027, 3, 10))  # week 20, no runs ever
     assert "weeks behind on runs with the half coming up" in c.get("/").text
+
+
+def test_forgive_applies_mid_week_despite_lock(c, monkeypatch):
+    """The real case: runs and the long ride already logged this week, then week 1 forgiven."""
+    from gigalegs import missions, services
+    from gigalegs.db import get_sessionmaker
+
+    wk2, wk3 = date(2026, 11, 4), date(2026, 11, 10)
+    for k in ("run1", "run2", "ride_long"):
+        c.post(f"/do/{k}/cardio", data={"minutes": "30", "day": wk2.isoformat()})
+    monkeypatch.setattr(services, "today", lambda: wk3)
+    c.post("/do/run1/cardio", data={"minutes": "16", "day": wk3.isoformat()})
+    c.post("/do/ride_long/cardio", data={"minutes": "50", "day": wk3.isoformat()})
+    with get_sessionmaker()() as db:
+        st = missions.week_state(db, 1, wk3)
+        assert (st.run_level, st.ride_level) == (2, 2)  # week 1 was short
+        missions.forgive_week(db, 1, 1)
+        db.commit()
+        st = missions.week_state(db, 1, wk3)
+        assert (st.run_level, st.ride_level) == (3, 3)
+    assert "behind the calendar" not in c.get("/").text

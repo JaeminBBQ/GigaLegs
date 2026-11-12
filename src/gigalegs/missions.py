@@ -106,7 +106,7 @@ def _levels(
 
     `run_asof` / `ride_asof` freeze a level as it stood when that week's first run / long
     ride was logged, so a later backdate or forgive can't swap the week's slots under
-    sessions already done (D39).
+    sessions already done (D39). Forgives always apply immediately.
     """
     ms = [m for m in _missions(db, uid, season.week(1).start, date.max) if m.plan_week < cal]
     run_weeks: dict[int, int] = {}
@@ -128,8 +128,10 @@ def _levels(
         return {int(v) for v, t in forgives if asof is None or t <= asof}
 
     done_runs = {w for w, n in run_weeks.items() if n >= SE.MIN_RUNS_TO_ADVANCE}
-    done_runs |= forgiven(run_asof)
-    ride_weeks |= forgiven(ride_asof)
+    # Forgives are deliberate coach calls, so they apply at once, even mid-week; the
+    # freeze only guards against backdated sessions reshuffling the week.
+    done_runs |= forgiven(None)
+    ride_weeks |= forgiven(None)
     return Levels(
         SE.effective_level(cal, done_runs, SE.LAG_RUN_UNTIL),
         SE.effective_level(cal, ride_weeks, SE.LAG_RIDE_UNTIL),
