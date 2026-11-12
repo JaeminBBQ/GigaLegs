@@ -19,6 +19,7 @@ from .. import missions as M
 from .. import services as S
 from ..config import get_settings
 from ..db import LOCAL_USER_ID, get_sessionmaker
+from ..engine import season as SE
 from ..engine.onramp import ONRAMP_ORDER
 from ..engine.shorthand import parse
 from ..models import Ride, Session, SetLog
@@ -27,6 +28,8 @@ from . import access
 HERE = Path(__file__).parent
 templates = Jinja2Templates(directory=HERE / "templates")
 templates.env.globals["plates"] = S.plates
+templates.env.globals["lag_run_until"] = SE.LAG_RUN_UNTIL
+templates.env.globals["lag_ride_until"] = SE.LAG_RIDE_UNTIL
 templates.env.filters["pretty"] = lambda k: k.replace("_", " ").capitalize()
 templates.env.filters["num"] = lambda v: (
     "" if v is None else (f"{int(v)}" if float(v).is_integer() else f"{float(v):.1f}")
@@ -103,7 +106,16 @@ def today_page(request: Request, db: Db = Depends(get_db), uid: int = Depends(cu
     view = M.today_view(db, uid, d)
     if view is None:
         raise HTTPException(500, "Season plan file not found (program/season-2026.json)")
-    return render(request, "today.html", db, uid, v=view, d=d, recent=S.history(db, uid, days=3))
+    return render(
+        request,
+        "today.html",
+        db,
+        uid,
+        v=view,
+        d=d,
+        recent=S.history(db, uid, days=3),
+        last=M.last_week_recap(db, uid, d),
+    )
 
 
 @app.post("/floor")
@@ -218,7 +230,39 @@ async def do_gym(
         (form.get("pain") or "").strip() or None,
         (form.get("note") or "").strip(),
     )
-    return RedirectResponse("/", status_code=303)
+    sid = M.latest_session_id(db, uid)
+    return RedirectResponse(f"/gym/saved/{sid}", status_code=303)
+
+
+@app.get("/gym/saved/{session_id}", response_class=HTMLResponse)
+def gym_saved(
+    request: Request,
+    session_id: int,
+    db: Db = Depends(get_db),
+    uid: int = Depends(current_user),
+):
+    """Save confirmation for a gym session: which exercises earned a weight increase."""
+    sess = db.get(Session, session_id)
+    if sess is None or sess.user_id != uid:
+        raise HTTPException(404, "No such session")
+    names: dict[str, str] = {}
+    m = M.mission_for(db, uid, f"session-{session_id}")
+    season = M.get_season()
+    if season is not None:
+        for t in season.gym_templates.values():
+            for slot in t["slots"]:
+                names.update({M.slug(o): o for o in slot["options"]})
+    increases = [names.get(e, e) for e in M.weight_increases(db, uid, session_id)]
+    return render(
+        request,
+        "gym_saved.html",
+        db,
+        uid,
+        sess=sess,
+        mission=m,
+        increases=increases,
+        inc_xp=M.X.WEIGHT_INCREASE,
+    )
 
 
 @app.get("/season", response_class=HTMLResponse)
@@ -237,6 +281,16 @@ def season_page(request: Request, db: Db = Depends(get_db), uid: int = Depends(c
         st=M.week_state(db, uid, d),
         badges=S.badge_catalog(db, uid),
     )
+
+
+@app.get("/week/{week_no}", response_class=HTMLResponse)
+def week_page(
+    request: Request, week_no: int, db: Db = Depends(get_db), uid: int = Depends(current_user)
+):
+    recap = M.week_recap(db, uid, week_no)
+    if recap is None:
+        raise HTTPException(404, "No such week in the season")
+    return render(request, "week.html", db, uid, r=recap)
 
 
 @app.post("/morning")

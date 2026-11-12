@@ -13,6 +13,15 @@
   {% if st.week.note %}<p><small>{{ st.week.note }}</small></p>{% endif %}
 </section>
 
+{% if last %}
+<section class="card">
+  <div class="kicker">Last week · {{ last.week.label }}</div>
+  <p style="margin:6px 0 0"><b>{{ last.slots_done }}/{{ last.slots_total }} done</b> · <b>+{{ last.xp }} XP</b>{% if last.forgiven %} · <small>forgiven, counts as done</small>{% endif %}</p>
+  <ul class="reasons"><li>{{ last.run_line }}</li><li>{{ last.ride_line }}</li></ul>
+  <a class="btn ghost small" href="/week/{{ last.week.week }}">See {{ last.week.label }}'s recap</a>
+</section>
+{% endif %}
+
 <section class="card">
   <div class="kicker">Today's mission</div>
   {% if sug.slot %}
@@ -53,8 +62,9 @@
 
 <section class="card">
   <div class="kicker">This week · {{ st.done|length }}/{{ st.slots|length }} done{% if st.pushes_used %} · {{ st.pushes_used }} push{{ 'es' if st.pushes_used != 1 }}{% endif %}</div>
-  {% if st.run_level != st.week.week %}<div class="notice">Runs repeat Week {{ st.run_level }}'s level: the week before had fewer than 2 runs, so we don't jump ahead (≤10% growth rule).</div>{% endif %}
-  {% if st.ride_level != st.week.week %}<div class="notice">The long ride repeats Week {{ st.ride_level }}'s length (the last one wasn't logged).</div>{% endif %}
+  {% if st.taper_risk %}<div class="notice">You're {{ st.taper_risk }} weeks behind on runs with the half coming up. From Week {{ lag_run_until + 1 }} the taper follows the calendar, which would be too big a jump from what you've run. Tell Claude so the half plan can be redone (a shorter long run or a run/walk race).</div>{% endif %}
+  {% if st.run_level != st.week.week %}{% set n = st.run_missed|length %}<div class="notice">Runs are at Week {{ st.run_level }}'s level, {{ st.week.week - st.run_level }} week{{ 's' if st.week.week - st.run_level != 1 }} behind the calendar. Runs move up only after a week with 2+ runs (≤10% growth), and Week{{ 's' if n != 1 }} {{ st.run_missed|join(', ') }} {{ 'was' if n == 1 else 'were' }} short. Each full week from here still moves you up one; the calendar takes over at Week {{ lag_run_until + 1 }}.</div>{% endif %}
+  {% if st.ride_level != st.week.week %}{% set n = st.ride_missed|length %}<div class="notice">The long ride is at Week {{ st.ride_level }}'s length, {{ st.week.week - st.ride_level }} week{{ 's' if st.week.week - st.ride_level != 1 }} behind the calendar: it moves up only after a week with the long ride, and Week{{ 's' if n != 1 }} {{ st.ride_missed|join(', ') }} didn't have one. The calendar takes over at Week {{ lag_ride_until + 1 }}.</div>{% endif %}
   <ul class="checks">
     {% for s in st.slots %}
     {% set m = st.done.get(s.key) %}

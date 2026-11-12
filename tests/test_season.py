@@ -181,7 +181,8 @@ def test_gym_logging_and_progression(c):
             }
         )
     c.post("/do/gym1/gym", data=form)
-    assert xp() == 100 + 3 * 10  # 5 logged + 5 on target (within 2 of the cap)
+    # 5 logged + 5 on target per set, +25: all sets at the top of the range under the cap
+    assert xp() == 100 + 3 * 10 + 25
     nxt = c.get("/do/gym3").text
     assert "210 lb" in nxt and "+10 lb" in nxt
 
@@ -229,4 +230,262 @@ def test_missed_runs_repeat_the_level(c, monkeypatch):
     week3 = date(2026, 11, 11)
     monkeypatch.setattr(services, "today", lambda: week3)
     html = c.get("/").text
-    assert "Runs repeat Week 1" in html and "10 × (1 min run" in html
+    assert "Runs are at Week 1's level, 2 weeks behind" in html and "10 × (1 min run" in html
+    assert "Weeks 1, 2 were short" in html
+    assert "The long ride is at Week 1's length" in html
+
+
+def test_forgiven_week_counts_for_levels(c, monkeypatch):
+    from gigalegs import missions, services
+    from gigalegs.db import get_sessionmaker
+
+    week3 = date(2026, 11, 11)
+    monkeypatch.setattr(services, "today", lambda: week3)
+    with get_sessionmaker()() as db:
+        services.ensure_user(db, 1)
+        assert missions.forgive_week(db, 1, 1) is True
+        assert missions.forgive_week(db, 1, 1) is False  # idempotent
+        db.commit()
+        st = missions.week_state(db, 1, week3)
+        assert (st.run_level, st.ride_level) == (2, 2)
+        assert st.run_missed == [2] and st.ride_missed == [2]
+    html = c.get("/").text
+    assert "Week 2 was short" in html and "1 week behind" in html
+    assert xp() == 0  # forgiving a week is not an XP event
+
+
+def test_missed_weeks():
+    assert SE.missed_weeks(4, {1, 3}, 23) == [2]
+    assert SE.missed_weeks(1, set(), 23) == []
+    assert SE.missed_weeks(24, set(), 23) == []
+
+
+# ---------- regressions: pain, edits, deletes ----------
+
+
+def _events():
+    from gigalegs.db import get_sessionmaker
+    from gigalegs.models import XpEvent
+
+    with get_sessionmaker()() as db:
+        return [(e.source, e.amount, e.ref) for e in db.query(XpEvent)]
+
+
+def _gym_form():
+    form = {"squat_pattern_option": "Leg press"}
+    for i in (1, 2, 3):
+        form.update(
+            {
+                f"squat_pattern_w{i}": "200",
+                f"squat_pattern_r{i}": "12",
+                f"squat_pattern_rpe{i}": "7",
+            }
+        )
+    return form
+
+
+def _one(model):
+    from gigalegs.db import get_sessionmaker
+
+    with get_sessionmaker()() as db:
+        return db.query(model).one().id
+
+
+def test_pain_after_same_day_clear_still_counts(c):
+    c.post("/do/run1/cardio", data={"minutes": "20", "pain": "left shin"})
+    c.post("/pain/clear")
+    assert "You flagged pain" not in c.get("/").text
+    c.post("/do/ride_easy/cardio", data={"minutes": "30", "pain": "right knee sharp"})
+    assert "You flagged pain" in c.get("/").text
+
+
+@pytest.mark.parametrize("kind", ["cardio", "gym"])
+def test_pain_on_unplanned_log_counts(c, kind):
+    if kind == "cardio":
+        c.post("/do/run1/cardio", data={"minutes": "25"})
+        c.post("/do/run1/cardio", data={"minutes": "25", "pain": "sharp knee"})  # unplanned
+    else:
+        c.post("/do/gym1/gym", data=_gym_form())
+        c.post("/do/gym1/gym", data={**_gym_form(), "pain": "sharp knee"})  # unplanned
+    assert "You flagged pain" in c.get("/").text
+    html = c.get("/history").text
+    assert "Pain flagged" in html and "Bodyweight" not in html
+    c.post("/pain/clear")
+    assert "You flagged pain" not in c.get("/").text
+
+
+def test_edit_season_run_earns_no_v1_ride_xp(c):
+    from gigalegs.models import Ride
+
+    c.post("/do/run1/cardio", data={"minutes": "25", "miles": "3"})
+    rid = _one(Ride)
+    day = WED_WEEK1.isoformat()
+    c.post(f"/ride/{rid}/update", data={"miles": "3", "minutes": "25", "zone": "2", "day": day})
+    assert xp() == 100
+    assert not any(e[0] == "ride" for e in _events())
+
+
+def test_edit_run_date_moves_mission_and_week_bonus(c):
+    from gigalegs.db import get_sessionmaker
+    from gigalegs.models import Mission, Ride
+
+    d = WED_WEEK1
+    for key in ("run1", "run2", "run3", "ride_easy", "ride_long"):
+        c.post(f"/do/{key}/cardio", data={"minutes": "45", "day": d.isoformat()})
+    for key in ("gym1", "gym2", "gym3"):
+        c.post(f"/do/{key}/gym", data={"day": d.isoformat()})
+    assert any(e[2] == "week-1" for e in _events())
+    with get_sessionmaker()() as db:
+        rid = db.query(Ride).order_by(Ride.id).first().id
+    newd = d + timedelta(days=7)
+    c.post(
+        f"/ride/{rid}/update",
+        data={"miles": "0", "minutes": "45", "zone": "2", "day": newd.isoformat()},
+    )
+    with get_sessionmaker()() as db:
+        m = db.query(Mission).filter(Mission.ref == f"ride-{rid}").one()
+        assert (m.date, m.plan_week) == (newd, 2)
+    assert not any(e[2] == "week-1" for e in _events())  # week 1 is no longer complete
+
+
+def test_edit_season_set_adds_no_session_bonus(c):
+    from gigalegs.models import SetLog
+
+    c.post("/do/gym1/gym", data=_gym_form())
+    before = xp()
+    from gigalegs.db import get_sessionmaker
+
+    with get_sessionmaker()() as db:
+        s = db.query(SetLog).first()
+        sid, setid = s.session_id, s.id
+    c.post(f"/session/{sid}/edit-set/{setid}", data={"weight": "200", "reps": "12", "rpe": "7"})
+    assert xp() == before
+    assert not any(e[0] == "session" for e in _events())
+
+
+def test_repeated_gym_slot_earns_no_set_xp(c):
+    c.post("/do/gym1/gym", data=_gym_form())
+    first = xp()
+    c.post("/do/gym1/gym", data=_gym_form())  # same slot again: extra, unprescribed volume
+    assert xp() == first
+
+
+def test_week_bonus_revoked_for_later_weeks(c, monkeypatch):
+    """Deleting a week-7 run drops week 8's run level, so week 8 is no longer complete."""
+    from gigalegs import missions, services
+    from gigalegs.db import get_sessionmaker
+    from gigalegs.models import Ride
+
+    with get_sessionmaker()() as db:
+        services.ensure_user(db, 1)
+        for w in range(1, 7):
+            missions.forgive_week(db, 1, w)
+        db.commit()
+    wk7, wk8 = date(2026, 12, 9), date(2026, 12, 16)
+    for k in ("run1", "run2"):
+        c.post(f"/do/{k}/cardio", data={"minutes": "25", "day": wk7.isoformat()})
+    monkeypatch.setattr(services, "today", lambda: wk8)
+    with get_sessionmaker()() as db:
+        keys = [s.key for s in missions.week_state(db, 1, wk8).slots]
+    for k in keys:
+        kind = "gym" if k.startswith("gym") else "cardio"
+        c.post(f"/do/{k}/{kind}", data={"minutes": "25", "day": wk8.isoformat()})
+    assert any(e[2] == "week-8" for e in _events())
+    with get_sessionmaker()() as db:
+        rid = db.query(Ride).filter(Ride.date == wk7).first().id
+    c.post(f"/ride/{rid}/delete")
+    with get_sessionmaker()() as db:
+        assert not missions.week_state(db, 1, wk8).complete
+    assert not any(e[2] == "week-8" for e in _events())
+
+
+def test_history_labels_internal_metrics(c):
+    from gigalegs import missions, services
+    from gigalegs.db import get_sessionmaker
+    from gigalegs.models import Metric
+
+    c.post("/pain/clear")
+    with get_sessionmaker()() as db:
+        services.ensure_user(db, 1)
+        missions.forgive_week(db, 1, 2)
+        db.commit()
+        fid = db.query(Metric).filter(Metric.kind == "level_forgive").one().id
+    html = c.get("/history").text
+    assert "Bodyweight" not in html
+    assert "Pain cleared" in html and "Week 2 counted as done for levels" in html
+    assert f"/metric/{fid}/delete" not in html
+    c.post(f"/metric/{fid}/delete")
+    with get_sessionmaker()() as db:
+        assert missions.forgiven_weeks(db, 1) == {2}
+
+
+def test_floor_regains_xp_when_other_mission_deleted(c):
+    from gigalegs.models import Ride
+
+    c.post("/do/run1/cardio", data={"minutes": "25"})
+    c.post("/floor", data={"option": "walk"})
+    assert xp() == 100
+    c.post(f"/ride/{_one(Ride)}/delete")
+    assert xp() == 30  # a floor-only day earns the floor
+
+
+def test_push_bonus_reawarded_after_delete(c):
+    from gigalegs.models import Ride
+
+    c.post("/do/ride_easy/cardio", data={"minutes": "40", "push": "1"})
+    c.post("/do/gym1/gym", data={"push": "1"})
+    c.post("/do/gym2/gym", data={"push": "1"})  # 3rd push: no bonus
+    c.post(f"/ride/{_one(Ride)}/delete")
+    assert sum(1 for e in _events() if e[0] == "push") == 2
+
+
+# ---------- D38 ----------
+
+
+def test_week_run_slots_lock_once_a_run_is_logged(c, monkeypatch):
+    """A backdated earlier week can't swap this week's run slots under done runs."""
+    from gigalegs import missions, services
+    from gigalegs.db import get_sessionmaker
+
+    with get_sessionmaker()() as db:
+        services.ensure_user(db, 1)
+        for w in range(1, 7):
+            missions.forgive_week(db, 1, w)
+        db.commit()
+    wk7, wk8 = date(2026, 12, 9), date(2026, 12, 16)
+    monkeypatch.setattr(services, "today", lambda: wk8)
+    c.post("/do/run1/cardio", data={"minutes": "25", "day": wk8.isoformat()})
+    c.post("/do/run2/cardio", data={"minutes": "25", "day": (wk8 + timedelta(2)).isoformat()})
+    for k, dd in (("run1", wk7), ("run2", wk7 + timedelta(2))):
+        c.post(f"/do/{k}/cardio", data={"minutes": "25", "day": dd.isoformat()})
+    with get_sessionmaker()() as db:
+        st = missions.week_state(db, 1, wk8)
+        keys = {s.key for s in st.slots}
+        assert st.run_level == 7  # frozen at the first run's level
+        assert sum(1 for k in st.done if k in keys) == 2
+
+
+def test_pain_holds_the_next_gym_weight():
+    hi = SE.SetPerf(200, 12, 7, True)
+    hurt = SE.SetPerf(200, 12, 7, True, pain=True)
+    assert SE.next_gym_weight([[hi, hi, hi]], (8, 12), 8, 10)[0] == 210
+    w, note = SE.next_gym_weight([[hi, hi, hurt]], (8, 12), 8, 10)
+    assert w == 200 and "Pain" in note
+    assert not SE.earned_increase([hi, hi, hurt], (8, 12), 8)
+
+
+def test_taper_jump_risk():
+    all_done = set(range(1, 30))
+    assert SE.taper_jump_risk(20, all_done, 23) == 0
+    assert SE.taper_jump_risk(20, all_done - {3, 9}, 23) == 0  # 2 behind: taper is below that
+    assert SE.taper_jump_risk(20, all_done - {3, 9, 15}, 23) == 3
+    assert SE.taper_jump_risk(25, all_done - {3, 9, 15}, 23) == 3  # still flagged in the taper
+    assert SE.taper_jump_risk(17, all_done - {3, 9, 15}, 23) == 0  # too early to call
+    assert SE.taper_jump_risk(27, all_done - {3, 9, 15}, 23) == 0  # after the race
+
+
+def test_taper_warning_on_today(c, monkeypatch):
+    from gigalegs import services
+
+    monkeypatch.setattr(services, "today", lambda: date(2027, 3, 10))  # week 20, no runs ever
+    assert "weeks behind on runs with the half coming up" in c.get("/").text

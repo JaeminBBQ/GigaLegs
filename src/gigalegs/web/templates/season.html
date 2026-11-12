@@ -18,7 +18,7 @@
     <tbody>
     {% for w in season.weeks %}
       <tr {% if w.week == current %}style="background:var(--surface-2)"{% endif %}>
-        <td><b>{{ w.week }}</b>{% if w.week == current %} ◀{% endif %}{% if w.tag %}<br><small>{{ w.tag }}</small>{% endif %}</td>
+        <td>{% if w.week <= current %}<a href="/week/{{ w.week }}"><b>{{ w.week }}</b></a>{% else %}<b>{{ w.week }}</b>{% endif %}{% if w.week == current %} ◀{% endif %}{% if w.tag %}<br><small>{{ w.tag }}</small>{% endif %}</td>
         <td>{{ w.start.strftime('%b %-d') }}<br><small>{{ w.phase }}</small></td>
         <td><small>{% for s in w.slots if s.kind == 'run' %}{{ s.title }}{% if s.detail and 'walk' in s.detail %}: {{ s.detail }}{% endif %}<br>{% endfor %}</small></td>
         <td><small>{% for s in w.slots if s.kind == 'ride' %}{{ s.title }}<br>{% endfor %}</small></td>

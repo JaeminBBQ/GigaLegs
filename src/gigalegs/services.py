@@ -200,7 +200,7 @@ def active_dates(db: Db, uid: int, start: date, end: date) -> dict[date, set[str
             DayLog.user_id == uid, DayLog.date.between(start, end)
         )
     ):
-        out[d].add("recovery" if kind == "recovery" else "rest")
+        out[d].add(kind if kind in ("recovery", "floor") else "rest")
     return out
 
 
@@ -229,7 +229,7 @@ def day_context(db: Db, uid: int, d: date, now: datetime | None = None) -> E.Day
         streak += 1
         probe -= timedelta(days=1)
     easy = any(
-        acts.get(d - timedelta(days=i), set()) & {"recovery", "rest"}
+        acts.get(d - timedelta(days=i), set()) & {"recovery", "floor", "rest"}
         or (i > 0 and not acts.get(d - timedelta(days=i)))
         for i in range(7)
     )
@@ -627,6 +627,9 @@ def _sync_xp_event(db: Db, uid: int, source: str, ref: str, amount: int) -> None
         db.delete(ev)
 
 
+WEIGHT_INCREASE_SOURCE = "weight_increase"
+
+
 def _remove_xp_events(db: Db, uid: int, refs: list[str]) -> int:
     evs = list(db.scalars(select(XpEvent).where(XpEvent.user_id == uid, XpEvent.ref.in_(refs))))
     for e in evs:
@@ -662,9 +665,12 @@ def delete_day(db: Db, uid: int, day_id: int) -> int | None:
     return xp
 
 
+UNDELETABLE_METRICS = ("level_forgive", "pain")  # coach decisions; pain is cleared, not deleted
+
+
 def delete_metric(db: Db, uid: int, metric_id: int) -> int | None:
     m = db.get(Metric, metric_id)
-    if m is None or m.user_id != uid:
+    if m is None or m.user_id != uid or m.kind in UNDELETABLE_METRICS:
         return None
     xp = _remove_xp_events(db, uid, [f"metric-{metric_id}"])
     db.delete(m)
@@ -678,6 +684,7 @@ def delete_session(db: Db, uid: int, session_id: int) -> int | None:
     if sess is None or sess.user_id != uid:
         return None
     refs = [f"session-{session_id}"] + [f"set-{s.id}" for s in sess.sets]
+    refs += [f"inc-{session_id}-{e}" for e in {s.exercise for s in sess.sets}]
     xp = _remove_xp_events(db, uid, refs)
     xp += _drop_missions(db, uid, f"session-{session_id}")
     db.delete(sess)  # cascades to set_logs
@@ -709,7 +716,11 @@ def update_ride(
         elevation_ft,
         note,
     )
-    xp = E.ride_xp(miles, commute is not None, zone)
+    from .missions import move_mission  # missions imports this module
+
+    # A season run/ride earns mission XP only; v1 ride XP applies to non-mission rides.
+    season_mission = move_mission(db, uid, f"ride-{ride_id}", d)
+    xp = 0 if season_mission else E.ride_xp(miles, commute is not None, zone)
     _sync_xp_event(db, uid, "ride", f"ride-{ride_id}", xp)
     db.commit()
     return xp
@@ -732,11 +743,25 @@ def update_set(
         return None
     s.weight_lb, s.reps, s.seconds, s.rpe = weight, reps, seconds, rpe
     s.form_ok, s.pain = form_ok, pain or None
-    s.xp = _set_xp(s)
+    sess = s.session
+    if sess.phase == "season":
+        from .missions import mission_for  # missions imports this module
+
+        # v2: unplanned sessions earn no set XP, and there is no v1 session bonus.
+        planned = mission_for(db, uid, f"session-{sess.id}") is not None
+        s.xp, bonus = (X.set_xp(s.rpe, s.form_ok, s.rpe_cap) if planned else 0), 0
+    else:
+        s.xp = _set_xp(s)
+        _, bonus = _session_bonus(db, uid, sess)
     _sync_xp_event(db, uid, "set", f"set-{s.id}", s.xp)
-    _, bonus = _session_bonus(db, uid, s.session)
-    _sync_xp_event(db, uid, "session", f"session-{s.session.id}", bonus)
+    _sync_xp_event(db, uid, "session", f"session-{sess.id}", bonus)
+    if sess.phase == "season":
+        from .missions import sync_weight_increases  # missions imports this module
+
+        sync_weight_increases(db, uid, sess)
     db.commit()
+    if sess.phase == "season":
+        award_badges(db, uid)
     return s.xp, bonus
 
 
@@ -824,48 +849,140 @@ def save_parsed(db: Db, uid: int, parsed: ParseResult) -> list[str]:
 # ---------- insights ----------
 
 
-def insights(db: Db, uid: int, d: date) -> dict:
-    start = d - timedelta(days=83)
-    e1: dict[str, dict[str, float]] = {"Squat": {}, "Deadlift": {}}
-    for sdate, s in db.execute(
-        select(Session.date, SetLog)
-        .join(SetLog)
+CALENDAR_KINDS = ("heavy", "lift", "long_ride", "ride", "floor", "recovery", "rest")
+
+
+def _fmt_day(d: date) -> str:
+    return f"{d:%b} {d.day}"
+
+
+def _gym_targets_now(db: Db, uid: int, d: date) -> dict[str, dict]:
+    """The engine's next target per exercise slug (missions.gym_targets), current options only."""
+    from . import missions as M  # missions imports services; import lazily
+
+    season = M.get_season()
+    if season is None:
+        return {}
+    week = season.week_for(d)
+    out: dict[str, dict] = {}
+    for template in season.gym_templates:
+        for t in M.gym_targets(db, uid, week, template):
+            key = M.slug(t.option)
+            if key in out:
+                continue
+            out[key] = {
+                "name": t.option,
+                "weight": t.target.weight,
+                "note": t.target.note,
+                "sets": t.target.sets,
+                "reps": list(t.target.reps),
+            }
+    return out
+
+
+def _exercise_names() -> dict[str, str]:
+    from . import missions as M
+
+    season = M.get_season()
+    if season is None:
+        return {}
+    return {
+        M.slug(o): o
+        for tpl in season.gym_templates.values()
+        for slot in tpl["slots"]
+        for o in slot["options"]
+    }
+
+
+def lift_progress(db: Db, uid: int, d: date) -> list[dict]:
+    """Season gym lifts: working weight (heaviest set with reps) per session date,
+    start -> current, and the engine's next target. Weights are as logged; no load math."""
+    per_ex: dict[str, dict[date, float]] = defaultdict(dict)
+    seen: dict[str, date] = {}
+    for sdate, ex, w in db.execute(
+        select(Session.date, SetLog.exercise, SetLog.weight_lb)
+        .join(Session, SetLog.session_id == Session.id)
         .where(
             Session.user_id == uid,
-            Session.date >= start,
-            SetLog.weight_lb.is_not(None),
+            Session.phase == "season",
+            Session.date <= d,
             SetLog.reps.is_not(None),
-            SetLog.rpe.is_not(None),
-            SetLog.form_ok.is_(True),
         )
+        .order_by(Session.date)
     ):
-        label = (
-            "Squat"
-            if s.exercise in SQUAT_KEYS
-            else "Deadlift"
-            if s.exercise in DEADLIFT_KEYS
-            else None
-        )
-        v = E.e1rm(s.weight_lb, s.reps, s.rpe) if label else None
-        if v:
-            k = sdate.isoformat()
-            e1[label][k] = max(e1[label].get(k, 0), round(v, 1))
+        seen.setdefault(ex, sdate)
+        if w:
+            per_ex[ex][sdate] = max(per_ex[ex].get(sdate, 0.0), w)
+    if not seen:
+        return []
+    names = _exercise_names()
+    targets = _gym_targets_now(db, uid, d)
+    out = []
+    for ex in sorted(seen, key=lambda k: (seen[k], k)):
+        pts = sorted(per_ex.get(ex, {}).items())
+        row: dict = {
+            "exercise": ex,
+            "name": names.get(ex, ex.replace("_", " ").capitalize()),
+            "points": [(k.isoformat(), v) for k, v in pts],
+            "start": pts[0][1] if pts else None,
+            "current": pts[-1][1] if pts else None,
+            "change": None,
+            "target": targets.get(ex),
+        }
+        if len(pts) > 1:
+            delta = pts[-1][1] - pts[0][1]
+            sign = "+" if delta > 0 else "−" if delta < 0 else "±"
+            row["change"] = f"{sign}{abs(delta):g} lb since {_fmt_day(pts[0][0])}"
+        out.append(row)
+    return out
+
+
+def weekly_cardio(db: Db, uid: int, d: date, weeks: int = 12) -> dict:
+    """Runs and rides (both Ride rows, split by sport) per Mon-Sun week."""
     week0 = d - timedelta(days=d.weekday())
-    weeks = [week0 - timedelta(weeks=i) for i in range(11, -1, -1)]
-    miles = {w.isoformat(): 0.0 for w in weeks}
-    for rdate, m in db.execute(
-        select(Ride.date, Ride.miles).where(Ride.user_id == uid, Ride.date >= weeks[0])
+    starts = [week0 - timedelta(weeks=i) for i in range(weeks - 1, -1, -1)]
+    acc = {
+        k: {w.isoformat(): 0.0 for w in starts}
+        for k in ("run_minutes", "run_miles", "ride_minutes", "ride_miles")
+    }
+    for rdate, sport, minutes, miles in db.execute(
+        select(Ride.date, Ride.sport, Ride.minutes, Ride.miles).where(
+            Ride.user_id == uid, Ride.date >= starts[0], Ride.date <= d
+        )
     ):
-        wk = rdate - timedelta(days=rdate.weekday())
-        miles[wk.isoformat()] = round(miles.get(wk.isoformat(), 0) + m, 1)
-    metrics = defaultdict(dict)
-    for mdate, kind, v in db.execute(
-        select(Metric.date, Metric.kind, Metric.value)
-        .where(Metric.user_id == uid, Metric.date >= start)
+        wk = (rdate - timedelta(days=rdate.weekday())).isoformat()
+        kind = "run" if sport == "run" else "ride"
+        acc[f"{kind}_minutes"][wk] += minutes or 0
+        acc[f"{kind}_miles"][wk] += miles or 0
+    out = {
+        k: [(w, round(v, 1) if "miles" in k else int(v)) for w, v in sorted(series.items())]
+        for k, series in acc.items()
+    }
+    totals = {}
+    for sport in ("run", "ride"):
+        mins, mi = db.execute(
+            select(
+                func.coalesce(func.sum(Ride.minutes), 0), func.coalesce(func.sum(Ride.miles), 0)
+            ).where(
+                Ride.user_id == uid,
+                (Ride.sport == "run") if sport == "run" else (Ride.sport != "run"),
+            )
+        ).one()
+        totals[sport] = {"minutes": int(mins or 0), "miles": round(mi or 0, 1)}
+    out["totals"] = totals
+    return out
+
+
+def insights(db: Db, uid: int, d: date) -> dict:
+    start = d - timedelta(days=83)
+    bw_by_day: dict[str, float] = {}
+    for mdate, v in db.execute(
+        select(Metric.date, Metric.value)
+        .where(Metric.user_id == uid, Metric.kind == "bodyweight", Metric.date >= start)
         .order_by(Metric.id)
     ):
-        metrics[kind][mdate.isoformat()] = v
-    bw = sorted(metrics.get("bodyweight", {}).items())
+        bw_by_day[mdate.isoformat()] = v
+    bw = sorted(bw_by_day.items())
     bw_avg = []
     for i, (k, _) in enumerate(bw):
         kd = date.fromisoformat(k)
@@ -876,37 +993,29 @@ def insights(db: Db, uid: int, d: date) -> dict:
     for i in range(27, -1, -1):
         day = d - timedelta(days=i)
         kinds = acts.get(day, set())
-        main = next(
-            (k for k in ("heavy", "lift", "long_ride", "ride", "recovery", "rest") if k in kinds),
-            "none",
-        )
+        main = next((k for k in CALENDAR_KINDS if k in kinds), "none")
         calendar.append({"date": day.isoformat(), "kind": main, "dow": day.strftime("%a")[0]})
-    totals = {
-        "sessions": db.scalar(
-            select(func.count(Session.id)).where(Session.user_id == uid, Session.status == "done")
-        )
-        or 0,
-        "ride_miles": round(
-            db.scalar(select(func.coalesce(func.sum(Ride.miles), 0)).where(Ride.user_id == uid))
-            or 0,
-            1,
-        ),
-        "active_days_28": sum(1 for c in calendar if c["kind"] not in ("none", "rest")),
-    }
     return {
-        "e1rm": {k: sorted(v.items()) for k, v in e1.items()},
-        "weekly_miles": sorted(miles.items()),
-        "soreness": sorted(metrics.get("soreness", {}).items()),
+        "lifts": lift_progress(db, uid, d),
+        "cardio": weekly_cardio(db, uid, d),
         "bodyweight": bw,
         "bodyweight_avg": bw_avg,
         "calendar": calendar,
-        "totals": totals,
-        "best": {
-            "Squat": best_e1rm(db, uid, SQUAT_KEYS),
-            "Deadlift": best_e1rm(db, uid, DEADLIFT_KEYS),
+        "totals": {
+            "active_days_28": sum(1 for c in calendar if c["kind"] not in ("none", "rest")),
         },
         "streak": asdict(streak(db, uid)),
     }
+
+
+def _metric_label(m: Metric) -> str:
+    return {
+        "soreness": f"Soreness {m.value:g}/10",
+        "bodyweight": f"Bodyweight {m.value:g} lb",
+        "pain": "Pain flagged",
+        "pain_clear": "Pain cleared",
+        "level_forgive": f"Week {m.value:g} counted as done for levels",
+    }.get(m.kind, f"{m.kind.replace('_', ' ').capitalize()} {m.value:g}")
 
 
 def history(db: Db, uid: int, days: int = 30) -> list[dict]:
@@ -971,9 +1080,8 @@ def history(db: Db, uid: int, days: int = 30) -> list[dict]:
             {
                 "kind": "metric",
                 "id": m.id,
-                "label": ("Soreness " if m.kind == "soreness" else "Bodyweight ")
-                + f"{m.value:g}"
-                + (" lb" if m.kind == "bodyweight" else "/10"),
+                "label": _metric_label(m),
+                "deletable": m.kind not in UNDELETABLE_METRICS,
             }
         )
     return [{"date": k, "items": v} for k, v in sorted(items.items(), reverse=True)]
@@ -1158,6 +1266,14 @@ def award_badges(db: Db, uid: int) -> list[str]:
         ),
         best_squat_e1rm=best_e1rm(db, uid, SQUAT_KEYS),
         bike_stage=st.bike_stage,
+        weight_increases=(
+            db.scalar(
+                select(func.count(XpEvent.id)).where(
+                    XpEvent.user_id == uid, XpEvent.source == WEIGHT_INCREASE_SOURCE
+                )
+            )
+            or 0
+        ),
     )
     have = set(db.scalars(select(Badge.key).where(Badge.user_id == uid)))
     new = [k for k in B.BADGES if k in B.earned(facts) and k not in have]

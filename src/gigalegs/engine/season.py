@@ -126,6 +126,31 @@ def effective_level(calendar_week: int, completed_weeks: set[int], lag_until: in
     return min(level, calendar_week)
 
 
+def missed_weeks(calendar_week: int, completed_weeks: set[int], lag_until: int) -> list[int]:
+    """The earlier weeks holding the level back (empty when the calendar rules)."""
+    if calendar_week <= 1 or calendar_week > lag_until:
+        return []
+    return [w for w in range(1, calendar_week) if w not in completed_weeks]
+
+
+HALF_WARN_FROM = 18  # from here, a big run lag means the taper would jump too far (D38)
+HALF_WARN_LAG = 3  # weeks behind; at 1–2 the taper weeks are already below the lagged level
+
+
+def taper_jump_risk(calendar_week: int, completed_weeks: set[int], lag_until: int) -> int:
+    """Weeks behind on runs when that makes the calendar taper an unsafe jump, else 0.
+
+    After `lag_until` the calendar rules, so a big lag means the taper's long run would be
+    far above anything done. The engine can't rescale a half plan; it warns, and the coach
+    re-plans (METHODOLOGY §4).
+    """
+    if not HALF_WARN_FROM <= calendar_week <= lag_until + 3:
+        return 0
+    upto = min(calendar_week, lag_until + 1)
+    behind = sum(1 for w in range(1, upto) if w not in completed_weeks)
+    return behind if behind >= HALF_WARN_LAG else 0
+
+
 def week_slots(season: Season, calendar_week: int, run_level: int, ride_level: int) -> list[Slot]:
     """The checklist for a calendar week: gym from the calendar, runs/long ride from their levels."""
     cal = season.week(calendar_week)
@@ -248,6 +273,7 @@ class SetPerf:
     reps: int | None
     rpe: float | None
     form_ok: bool = True
+    pain: bool = False
 
 
 @dataclass(frozen=True)
@@ -276,8 +302,11 @@ def gym_sets(base: int, week_no: int, tag: str | None, lower: bool) -> int:
     return max(1, n)
 
 
-def _session_result(sets: list[SetPerf], lo: int, hi: int, cap: float) -> str:
-    """'top' (all sets at the top of the range, clean), 'fail', or 'mid'."""
+def session_result(sets: list[SetPerf], lo: int, hi: int, cap: float) -> str:
+    """'top' (all sets at the top of the range, clean), 'fail', 'mid', or 'none'.
+
+    Judged on the sets at the session's working (heaviest) weight, per METHODOLOGY §5.
+    """
     work = [s for s in sets if s.reps is not None]
     if not work:
         return "none"
@@ -290,6 +319,24 @@ def _session_result(sets: list[SetPerf], lo: int, hi: int, cap: float) -> str:
     return "mid"
 
 
+def _working_weight(sets: list[SetPerf]) -> float | None:
+    return max(((s.weight or 0) for s in sets if s.reps is not None), default=0) or None
+
+
+def earned_increase(
+    sets: list[SetPerf], reps: tuple[int, int], cap: float, pain: bool = False
+) -> bool:
+    """Did this session earn a weight increase next time (METHODOLOGY §5, rule 1)?
+
+    True only when every working set hit the top of the range with RPE logged and at or
+    under the cap, form OK, on a loaded exercise, and no pain was reported. This is the
+    exact test `next_gym_weight` uses to add weight, so the XP and the load can't disagree.
+    """
+    if pain or any(s.pain for s in sets) or _working_weight(sets) is None:
+        return False
+    return session_result(sets, reps[0], reps[1], cap) == "top"
+
+
 def next_gym_weight(
     history: list[list[SetPerf]], reps: tuple[int, int], cap: float, inc: float
 ) -> tuple[float | None, str]:
@@ -298,16 +345,17 @@ def next_gym_weight(
     if not sessions:
         return None, "First time: pick a weight that feels like RPE " + f"{cap:g}"
     last = sessions[0]
-    w = max((s.weight or 0) for s in last if s.reps is not None) or None
+    w = _working_weight(last)
     lo, hi = reps
-    result = _session_result(last, lo, hi, cap)
     if w is None:
         return None, "Bodyweight: add reps, then make it harder"
-    if result == "top":
+    if any(s.pain for s in last):
+        return w, "Pain last time: same weight, and tell Claude if it lingers"
+    if earned_increase(last, reps, cap):
         return w + inc, f"Hit {hi} on every set last time: +{inc:g} lb"
-    if result == "fail":
-        if len(sessions) > 1 and _session_result(sessions[1], lo, hi, cap) == "fail":
-            prev_w = max((s.weight or 0) for s in sessions[1] if s.reps is not None)
+    if session_result(last, lo, hi, cap) == "fail":
+        if len(sessions) > 1 and session_result(sessions[1], lo, hi, cap) == "fail":
+            prev_w = _working_weight(sessions[1])
             if prev_w == w:
                 new = round(w * 0.9 / 5) * 5
                 return float(new), "Missed twice at this weight: −10%, build back up"

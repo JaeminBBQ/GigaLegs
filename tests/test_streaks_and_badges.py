@@ -76,6 +76,7 @@ def test_badges_all_keys_with_qualifying_facts():
         smart_rests=1,
         best_squat_e1rm=405.0,
         bike_stage=5,
+        weight_increases=25,
     )
     assert B.earned(facts) == set(B.BADGES)
 

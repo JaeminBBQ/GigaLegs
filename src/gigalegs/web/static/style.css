@@ -12,6 +12,7 @@
   --series-1: #2a78d6;
   --series-2: #eb6834;
   --series-3: #1baf7a;
+  --series-4: #8a5cd6;
   --good: #1f8a4c;
   --warn: #b26b00;
   --bad: #c43b3a;
@@ -34,6 +35,7 @@
     --series-1: #3987e5;
     --series-2: #d95926;
     --series-3: #199e70;
+    --series-4: #9d7be8;
     --good: #4cc37f;
     --warn: #e0a43a;
     --bad: #ee7a78;
@@ -46,7 +48,7 @@
   color-scheme: dark;
   --bg: #111110; --surface: #1a1a19; --surface-2: #242422; --line: #33332f;
   --text: #ffffff; --text-2: #c3c2b7; --muted: #8f8e86; --accent: #3987e5;
-  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #9d7be8;
   --good: #4cc37f; --warn: #e0a43a; --bad: #ee7a78;
   --good-bg: #16301f; --warn-bg: #33270f; --bad-bg: #3a1a19;
 }
@@ -187,6 +189,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .cal .k-heavy, .cal .k-lift { background: var(--series-1); color: #fff; }
 .cal .k-ride, .cal .k-long_ride { background: var(--series-2); color: #fff; }
 .cal .k-recovery { background: var(--series-3); color: #fff; }
+.cal .k-floor { background: var(--series-4); color: #fff; }
 .cal .k-rest { background: transparent; border: 2px solid var(--line); }
 .legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: .8rem; color: var(--text-2); margin-top: 8px; }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
@@ -202,6 +205,14 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   white-space: nowrap; transform: translate(-50%, -110%); display: none; color: var(--text);
 }
 .chart .tip i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+/* lifts */
+.lift { padding: 12px 0; border-top: 1px solid var(--line); }
+.lift:first-of-type { border-top: 0; }
+.lift h3 { margin: 0 0 2px; font-size: 1rem; }
+.lift .facts { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: .85rem; color: var(--text-2); }
+.lift .facts b { color: var(--text); font-variant-numeric: tabular-nums; }
+.lift .up { color: var(--good); font-weight: 650; }
+.lift .chart { height: 110px; margin-top: 6px; }
 .empty { color: var(--muted); font-size: .9rem; padding: 18px 0; text-align: center; }
 details summary { cursor: pointer; color: var(--text-2); font-size: .85rem; margin-top: 8px; }
 

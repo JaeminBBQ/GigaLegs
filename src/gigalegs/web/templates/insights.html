@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% block title %}Insights · GigaLegs{% endblock %}
 {% block main %}
+{% set cardio = data.cardio %}
 <h1>Insights</h1>
 <div class="tiles">
-  <div class="tile"><div class="label">Best squat e1RM</div><div class="value">{{ data.best.Squat|round|int if data.best.Squat else '—' }}{% if data.best.Squat %} <small>lb</small>{% endif %}</div></div>
-  <div class="tile"><div class="label">Best deadlift e1RM</div><div class="value">{{ data.best.Deadlift|round|int if data.best.Deadlift else '—' }}{% if data.best.Deadlift %} <small>lb</small>{% endif %}</div></div>
   <div class="tile"><div class="label">Active days, last 28</div><div class="value">{{ data.totals.active_days_28 }}</div></div>
-  <div class="tile"><div class="label">Ride miles, all time</div><div class="value">{{ data.totals.ride_miles }}</div></div>
+  <div class="tile"><div class="label">Run miles, all time</div><div class="value">{{ cardio.totals.run.miles }}</div></div>
+  <div class="tile"><div class="label">Ride miles, all time</div><div class="value">{{ cardio.totals.ride.miles }}</div></div>
   <div class="tile"><div class="label">Week streak</div><div class="value">🔥 {{ data.streak.weeks }} <small>{{ data.streak.freezes_left }} freezes left</small></div></div>
 </div>
 
@@ -16,60 +16,84 @@
     {% for c in data.calendar %}<div class="k-{{ c.kind }}" title="{{ c.date }}: {{ c.kind|replace('_', ' ') }}">{{ c.date[8:]|int }}</div>{% endfor %}
   </div>
   <div class="legend">
-    <span><i style="background:var(--series-1)"></i>Lift</span>
-    <span><i style="background:var(--series-2)"></i>Ride</span>
+    <span><i style="background:var(--series-1)"></i>Gym</span>
+    <span><i style="background:var(--series-2)"></i>Run / ride</span>
+    <span><i style="background:var(--series-4)"></i>Floor</span>
     <span><i style="background:var(--series-3)"></i>Recovery</span>
     <span><i style="border:2px solid var(--line)"></i>Rest</span>
   </div>
 </section>
 
 <section class="card">
-  <h2>Estimated 1RM</h2>
-  <p><small>From your hardest clean sets (RPE ≥ 7). Paused squats estimate lower than regular squats; that's expected.</small></p>
-  <div class="chart" id="c-e1rm"></div>
-  <div class="legend"><span><i style="background:var(--series-1)"></i>Squat</span><span><i style="background:var(--series-2)"></i>Deadlift</span></div>
-  <details><summary>Table</summary><table><thead><tr><th>Date</th><th>Lift</th><th class="num">e1RM</th></tr></thead><tbody>
-    {% for lift, pts in data.e1rm.items() %}{% for d, v in pts %}<tr><td>{{ d }}</td><td>{{ lift }}</td><td class="num">{{ v }}</td></tr>{% endfor %}{% endfor %}
+  <h2>Lifts</h2>
+  {% if not data.lifts %}
+  <p class="empty">Log a gym session and each exercise's working weight shows up here.</p>
+  {% endif %}
+  {% for l in data.lifts %}
+  <div class="lift">
+    <h3>{{ l.name }}</h3>
+    <div class="facts">
+      {% if l.current is not none %}<span>Now <b>{{ '%g'|format(l.current) }} lb</b></span>{% else %}<span>Bodyweight</span>{% endif %}
+      {% if l.change %}<span class="{{ 'up' if l.change.startswith('+') }}">{{ l.change }}</span>{% endif %}
+      {% if l.target %}
+      <span>Next: {% if l.target.weight is not none %}<b>{{ '%g'|format(l.target.weight) }} lb</b>, {% endif %}{{ l.target.sets }} × {{ l.target.reps[0] }}–{{ l.target.reps[1] }}</span>
+      {% endif %}
+    </div>
+    {% if l.target %}<p><small>{{ l.target.note }}</small></p>{% endif %}
+    {% if l.points|length > 1 %}<div class="chart" id="c-lift-{{ loop.index }}"></div>{% endif %}
+    {% if l.points %}
+    <details><summary>Table</summary><table><thead><tr><th>Date</th><th class="num">Working weight</th></tr></thead><tbody>
+      {% for d, w in l.points %}<tr><td>{{ d }}</td><td class="num">{{ '%g'|format(w) }} lb</td></tr>{% endfor %}
+    </tbody></table></details>
+    {% endif %}
+  </div>
+  {% endfor %}
+</section>
+
+<section class="card">
+  <h2>Weekly run minutes</h2>
+  <div class="chart" id="c-run-min" style="height:160px"></div>
+  <h2>Weekly run miles</h2>
+  <div class="chart" id="c-run-mi" style="height:160px"></div>
+  <details><summary>Table</summary><table><thead><tr><th>Week of</th><th class="num">Minutes</th><th class="num">Miles</th></tr></thead><tbody>
+    {% for w, v in cardio.run_minutes %}<tr><td>{{ w }}</td><td class="num">{{ v }}</td><td class="num">{{ cardio.run_miles[loop.index0][1] }}</td></tr>{% endfor %}
   </tbody></table></details>
 </section>
 
 <section class="card">
-  <h2>Weekly ride miles</h2>
-  <div class="chart" id="c-miles"></div>
-  <details><summary>Table</summary><table><thead><tr><th>Week of</th><th class="num">Miles</th></tr></thead><tbody>
-    {% for d, v in data.weekly_miles %}<tr><td>{{ d }}</td><td class="num">{{ v }}</td></tr>{% endfor %}
+  <h2>Weekly ride minutes</h2>
+  <div class="chart" id="c-ride-min" style="height:160px"></div>
+  <details><summary>Table</summary><table><thead><tr><th>Week of</th><th class="num">Minutes</th><th class="num">Miles</th></tr></thead><tbody>
+    {% for w, v in cardio.ride_minutes %}<tr><td>{{ w }}</td><td class="num">{{ v }}</td><td class="num">{{ cardio.ride_miles[loop.index0][1] }}</td></tr>{% endfor %}
   </tbody></table></details>
 </section>
 
-<section class="card">
-  <h2>Morning leg soreness</h2>
-  <p><small>The on-ramp gate wants ≤ 5 before moving up a week.</small></p>
-  <div class="chart" id="c-sore" style="height:160px"></div>
-</section>
-
+{% if data.bodyweight %}
 <section class="card">
   <h2>Bodyweight</h2>
-  <p><small>Goal: hold steady through the program (7-day average); slow cut afterwards.</small></p>
+  <p><small>Goal: a slow cut, about 0.25–0.75 lb a week on the 7-day average.</small></p>
   <div class="chart" id="c-bw" style="height:160px"></div>
   <div class="legend"><span><i style="background:var(--series-1)"></i>7-day average</span><span><i style="background:var(--series-1);opacity:.55;border-radius:50%"></i>Daily</span></div>
 </section>
+{% endif %}
 {% endblock %}
 {% block scripts %}
 <script src="/static/charts.js"></script>
 <script>
 const D = {{ data_json|safe }};
 function draw() {
-  lineChart(document.getElementById('c-e1rm'), [
-    { name: 'Squat', color: '--series-1', points: D.e1rm.Squat },
-    { name: 'Deadlift', color: '--series-2', points: D.e1rm.Deadlift },
-  ], { unit: ' lb', empty: 'Log a few sets at RPE 7+ and your estimated maxes show up here.' });
-  columnChart(document.getElementById('c-miles'), D.weekly_miles, { unit: ' mi', empty: 'No rides yet.' });
-  lineChart(document.getElementById('c-sore'), [{ name: 'Soreness', color: '--series-1', points: D.soreness }],
-    { unit: '/10', yMin: 0, yMax: 10, empty: 'Log morning soreness on the Today page.' });
-  lineChart(document.getElementById('c-bw'), [
+  D.lifts.forEach((l, i) => {
+    const host = document.getElementById('c-lift-' + (i + 1));
+    if (host) lineChart(host, [{ name: l.name, color: '--series-1', points: l.points }], { unit: ' lb' });
+  });
+  columnChart(document.getElementById('c-run-min'), D.cardio.run_minutes, { unit: ' min', color: '--series-2', empty: 'No runs in the last 12 weeks.' });
+  columnChart(document.getElementById('c-run-mi'), D.cardio.run_miles, { unit: ' mi', color: '--series-2', empty: 'No run miles in the last 12 weeks.' });
+  columnChart(document.getElementById('c-ride-min'), D.cardio.ride_minutes, { unit: ' min', color: '--series-1', empty: 'No rides in the last 12 weeks.' });
+  const bw = document.getElementById('c-bw');
+  if (bw) lineChart(bw, [
     { name: 'Daily', color: '--series-1', points: D.bodyweight, dotsOnly: true },
     { name: '7-day avg', color: '--series-1', points: D.bodyweight_avg },
-  ], { unit: ' lb', empty: 'Log bodyweight on the Today page.' });
+  ], { unit: ' lb' });
 }
 draw();
 let t; addEventListener('resize', () => { clearTimeout(t); t = setTimeout(draw, 150); });

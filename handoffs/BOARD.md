@@ -15,6 +15,12 @@
 | T022 | Engine + glue: suggestion with ordering rules, run/long-ride level lag (D35), double progression, daily streak + freezes, mission XP, week bonus (`missions.py`) | Claude | done 2026-10-21 | T021 |
 | T023 | UI: Today = mission + floor buttons + week checklist (no soreness), run/ride + gym forms, Season page | Claude | done 2026-10-21; phone check by user | T022 |
 | T024 | Later: badges v2 (Never Zero, Nonstop, Half…), level titles, shorthand for runs/floors, weight-increase XP | Claude | planned | T023 |
+| T025 | D36 forgive-week + honest level-lag notice; 9 correctness fixes (pain after clear / on unplanned logs, XP on edits, repeated-slot XP, mission date moves, later-week bonus re-sync, floor/push XP on delete, history labels) | Claude + subagents | done 2026-11-11 | T023 |
+| T026 | Insights v2 (lift progress with engine targets, run/ride minutes, floor counts as active) | Claude + subagent | done 2026-11-11; phone check by user | T023 |
+| T027 | Week recap `/week/N` + Last-week card | Claude + subagent | done 2026-11-11; phone check by user | T025 |
+| T024a | Weight-increase XP + Progress Machine + v2 level titles (D37) | Claude + subagent | done 2026-11-11 | T023 |
+| T028 | D38: pain holds the next load, week levels freeze at first log, taper-jump warning | Claude | done 2026-11-11 | T025 |
+| T029 | Unplanned season run/ride edits still earn v1 ride XP (needs a marker column + migration) | Claude | planned, low | — |
 | D25 | On-ramp accessories by feel (full volume, no cap); gate uses main lifts only | Claude | done | — |
 | T006 | Measure + review the commute route | Claude | done (D18, D22) | — |
 | T007 | Nutrition targets incl. ride days | Claude | done | — |

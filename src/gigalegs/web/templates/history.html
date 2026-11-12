@@ -16,7 +16,7 @@
       <a class="btn ghost small" href="/ride/{{ i.id }}/edit">Edit</a>
       {% elif i.kind == 'day' %}
       <form method="post" action="/day/{{ i.id }}/delete" onsubmit="return confirm('Delete this day log? Its XP will be removed.')"><button class="btn danger small">Delete</button></form>
-      {% elif i.kind == 'metric' %}
+      {% elif i.kind == 'metric' and i.deletable %}
       <form method="post" action="/metric/{{ i.id }}/delete" onsubmit="return confirm('Delete this metric?')"><button class="btn danger small">Delete</button></form>
       {% endif %}
     </li>

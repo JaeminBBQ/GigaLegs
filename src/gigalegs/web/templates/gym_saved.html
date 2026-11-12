@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Saved · GigaLegs{% endblock %}
+{% block main %}
+<section class="card hero">
+  <div class="kicker">Saved · {{ sess.date.strftime('%a %b %-d') }}</div>
+  <h1>{{ mission.title if mission else 'Gym session' }}</h1>
+  {% if not mission %}<p><small>Logged as extra, unplanned work: no mission or weight-increase XP.</small></p>{% endif %}
+  {% for name in increases %}
+  <div class="notice good">{{ name }}: +{{ inc_xp }} · weight increase earned</div>
+  {% endfor %}
+  {% if mission and not increases %}<p><small>No weight increases this time. Same weight next session: clean reps inside the range, at or under the cap.</small></p>{% endif %}
+  <div class="grid2" style="margin-top:12px"><a class="btn ghost" href="/history">History</a><a class="btn" href="/">Today</a></div>
+</section>
+{% endblock %}

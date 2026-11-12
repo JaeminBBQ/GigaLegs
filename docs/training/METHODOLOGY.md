@@ -46,7 +46,7 @@ Base week (exact contents per week in `SEASON_PLAN.md`):
 - Long run and long ride on back-to-back days is fine (the normal weekend). Do the long run first when you can: impact work goes on fresh legs. Never both on the same day.
 - **Gym A (leg-emphasis) is never the day before the long run or tempo run.**
 - At most 2 hard days in a row, where hard = long run, tempo, long ride (> 2 h), or Gym A.
-- **Weeks follow the calendar (Mon–Sun, D35).** Unfinished slots don't carry over. To keep growth safe, **runs and the long ride only move up a level after a week where you did them** (≥ 2 runs; the long ride): miss a week and the next one repeats the level instead of jumping ahead. From the taper (Week 24) and the ride peak's end (Week 31), the calendar rules so race weeks stay put.
+- **Weeks follow the calendar (Mon–Sun, D35).** Unfinished slots don't carry over. To keep growth safe, **runs and the long ride only move up a level after a week where you did them** (≥ 2 runs; the long ride): miss a week and the next one repeats the level instead of jumping ahead. The coach may forgive a week (D36), e.g. an on-ramp week, so it counts as done. A week's run and long-ride levels freeze once its first run / long ride is logged. If you're 3+ weeks behind on runs from Week 18, the app warns that the calendar taper would jump too far and the half plan gets redone (D38). From the taper (Week 24) and the ride peak's end (Week 31), the calendar rules so race weeks stay put.
 
 ## 4. Running
 - **Easy means conversational:** you can speak full sentences. Walk breaks are allowed in any easy run. HR guide: easy ≤ 75% HRmax; the talk test wins if they disagree (D30). Exact bpm is in `athlete/PROFILE.md`.
@@ -96,6 +96,7 @@ Per exercise, per session, using the sets logged at that exercise's working weig
 1. **All sets hit the top of the rep range, at or under the cap, form OK** → add weight next time: +5 lb on upper-body, isolation, and dumbbell lifts (or the next dumbbell up), +10 lb on leg press, hack squat, and barbell lower-body lifts.
 2. **Reps inside the range** → same weight; aim for more reps.
 3. **Any set below the bottom of the range, form flagged, or over the cap** → same weight. Twice in a row → −10% and build back.
+4. **Pain on any set** → same weight next time, whatever the reps (D38).
 4. Swapping the option in a slot starts that exercise fresh (the first session sets the weight by feel).
 
 ### Running and lifting together

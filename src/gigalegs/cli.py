@@ -84,6 +84,24 @@ def cmd_export(args: argparse.Namespace) -> None:
             print(f"{out / name}: {n} rows")
 
 
+def cmd_forgive_week(args: argparse.Namespace) -> None:
+    from . import missions as M
+    from . import services as S
+    from .db import LOCAL_USER_ID, get_sessionmaker
+
+    _migrate()
+    with get_sessionmaker()() as db:
+        S.ensure_user(db, LOCAL_USER_ID)
+        added = M.forgive_week(db, LOCAL_USER_ID, args.week)
+        db.commit()
+        st = M.week_state(db, LOCAL_USER_ID, S.today())
+    print(f"Week {args.week} {'now counts' if added else 'already counted'} as done for levels.")
+    if st:
+        print(
+            f"Week {st.week.week}: runs at Week {st.run_level}, long ride at Week {st.ride_level}."
+        )
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(prog="gigalegs")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -104,6 +122,11 @@ def main() -> None:
     ex = sub.add_parser("export", help="write data/logs/*.jsonl for Claude")
     ex.add_argument("--out")
     ex.set_defaults(fn=cmd_export)
+    fw = sub.add_parser(
+        "forgive-week", help="count a plan week as done for run/long-ride levels (D36)"
+    )
+    fw.add_argument("week", type=int)
+    fw.set_defaults(fn=cmd_forgive_week)
     m = sub.add_parser("migrate", help="apply DB migrations")
     m.set_defaults(fn=lambda a: _migrate())
     args = ap.parse_args()

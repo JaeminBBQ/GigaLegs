@@ -18,7 +18,10 @@ BADGES: dict[str, tuple[str, str]] = {
     "plate_365": ("Plate Collector 365", "Squat e1RM of 365 lb"),
     "plate_405": ("Plate Collector 405", "Squat e1RM of 405 lb"),
     "commuter": ("Commuter", "Reach bike stage 5"),
+    "progress_machine": ("Progress Machine", "Earn 25 weight increases (double progression)"),
 }
+
+PROGRESS_MACHINE_AT = 25
 
 
 @dataclass(frozen=True)
@@ -30,6 +33,7 @@ class BadgeFacts:
     smart_rests: int
     best_squat_e1rm: float | None
     bike_stage: int
+    weight_increases: int = 0
 
 
 def earned(facts: BadgeFacts) -> set[str]:
@@ -46,4 +50,6 @@ def earned(facts: BadgeFacts) -> set[str]:
         out.update(f"plate_{m}" for m in PLATE_MILESTONES if facts.best_squat_e1rm >= m)
     if facts.bike_stage >= 5:
         out.add("commuter")
+    if facts.weight_increases >= PROGRESS_MACHINE_AT:
+        out.add("progress_machine")
     return out

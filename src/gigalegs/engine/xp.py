@@ -23,6 +23,7 @@ PUSH = 20
 PUSHES_PER_WEEK = 2
 WEEK_DONE = 100
 EASY_WEEK_DONE = 200  # down, taper, recovery, and race weeks are worth more
+WEIGHT_INCREASE = 25  # per exercise per planned session, when double progression adds weight
 
 
 def set_xp(
@@ -74,16 +75,15 @@ def level_floor(lvl: int) -> int:
     return 100 * (lvl - 1) ** 2
 
 
+# GAMIFICATION v2: full-body/endurance theme. Same curve as v1; one title per 2 levels.
 LEVEL_TITLES = (
-    "Quad Squire",
-    "Calf Cadet",
-    "Hamstring Knight",
-    "Glute Baron",
-    "Posterior Chain Count",
-    "Squat Duke",
-    "Pull Prince",
-    "Iron Monarch",
-    "Giga Legs",
+    "Rookie",
+    "Regular",
+    "Grinder",
+    "Hybrid",
+    "Engine",
+    "Machine",
+    "Giga",
 )
 
 
