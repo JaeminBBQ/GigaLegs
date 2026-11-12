@@ -1,4 +1,4 @@
-"""Week recap wording: what a week unlocked for run and long-ride levels (D35–D36).
+"""Week recap wording: what a week unlocked for run and long-ride levels (D35–D37).
 
 Pure: callers pass in the levels the engine already computed (`effective_level`) for the
 week and the one after. No new rules live here; it only describes the level lag.

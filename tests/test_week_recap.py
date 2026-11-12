@@ -1,4 +1,4 @@
-"""Week recap (D35–D36): what each week earned and what it unlocked."""
+"""Week recap (D35–D37): what each week earned and what it unlocked."""
 
 from datetime import UTC, date, datetime, timedelta
 

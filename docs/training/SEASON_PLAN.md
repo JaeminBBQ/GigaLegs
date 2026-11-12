@@ -17,23 +17,23 @@ Dates came from organizer and aggregator listings on 2026-10-20; the half was ma
 ## Starter week (Oct 20–25): just build the habit
 - Do **something** every day (any floor option counts).
 - Try **Gym A once and Gym B once** at RPE ≤ 7, to choose your exercise options and find starting weights.
-- One 20-min walk-run: 10 × (1 min run / 1 min walk). If it feels trivially easy, good: Week 1 stays as written anyway.
+- One easy 10-min jog. If it feels trivially easy, good: Week 1 stays as written anyway.
 - One easy ride, 30–45 min.
 - Get running shoes fitted. Bike: check tires and brakes.
 
-## Phase 1: Walk-run base (Weeks 1–8, Oct 26 – Dec 20)
-3 runs/week, all easy, each starting and ending with 5 min of walking. Gym × 3. Rides: 1 easy (30–45 min) + 1 long, both easy.
+## Phase 1: Easy-jog base (Weeks 1–8, Oct 26 – Dec 20)
+3 runs/week, each one steady, easy jog (no walk intervals, D36). The minutes match the running time of the old walk-run ladder, so the load on tendons grows just as slowly; keep the pace conversational. Gym × 3. Rides: 1 easy (30–45 min) + 1 long, both easy.
 
-| Week | Starts | Each of the 3 runs | Long ride |
+| Week | Starts | Each of the 3 runs (steady easy jog) | Long ride |
 |---|---|---|---|
-| 1 | Oct 26 | 10 × (1 min run / 1 min walk) | 45 min |
-| 2 | Nov 2 | 8 × (2 run / 1 walk) | 50 min |
-| 3 | Nov 9 | 6 × (3 run / 1 walk) | 60 min |
-| 4 *down* | Nov 16 | 7 × (2 run / 1 walk) | 45 min |
-| 5 | Nov 23 | 4 × (5 run / 1 walk) | 70 min |
-| 6 | Nov 30 | 3 × (8 run / 1 walk) | 80 min |
-| 7 | Dec 7 | 2 × (12 run / 1 walk) | 90 min |
-| 8 *down* | Dec 14 | 20 min continuous (long run: 25 min) | 60 min |
+| 1 | Oct 26 | 10 min | 45 min |
+| 2 | Nov 2 | 16 min | 50 min |
+| 3 | Nov 9 | 18 min | 60 min |
+| 4 *down* | Nov 16 | 14 min | 45 min |
+| 5 | Nov 23 | 20 min | 70 min |
+| 6 | Nov 30 | 24 min | 80 min |
+| 7 | Dec 7 | 24 min | 90 min |
+| 8 *down* | Dec 14 | 20 min (long run: 25 min) | 60 min |
 
 ## Phase 2: Running base (Weeks 9–12, Dec 21 – Jan 17)
 | Week | Starts | Easy 1 | Easy 2 | Long run | Easy ride | Long ride |

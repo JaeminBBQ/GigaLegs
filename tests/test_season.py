@@ -40,7 +40,7 @@ def test_effective_level_repeats_missed_weeks():
 def test_week_slots_use_level_for_runs_only(season):
     slots = SE.week_slots(season, 5, run_level=3, ride_level=5)
     runs = [s for s in slots if s.kind == "run"]
-    assert all("6 × (3 min run" in s.detail for s in runs)
+    assert all("Easy jog, 18 min" in s.title for s in runs)
     assert sum(s.kind == "gym" for s in slots) == 3
     assert any(s.long and "70 min" in s.title for s in slots if s.kind == "ride")
 
@@ -89,6 +89,24 @@ def test_gym_double_progression():
     assert SE.next_gym_weight([miss, miss], (8, 12), 9, 5)[0] == 90
     over_cap = [SE.SetPerf(100, 12, 9.5)]
     assert SE.next_gym_weight([over_cap], (8, 12), 9, 5)[0] == 100
+
+
+def test_timed_hold_progresses_by_time_not_load():
+    short = [SE.SetPerf(None, 40, 7), SE.SetPerf(None, 35, 7)]
+    full = [SE.SetPerf(None, 60, 7), SE.SetPerf(None, 60, 7)]
+    w, note = SE.next_gym_weight([], (30, 60), 7, 5, timed=True)
+    assert w is None and "hold" in note
+    w, note = SE.next_gym_weight([short], (30, 60), 7, 5, timed=True)
+    assert w is None and "60 s" in note
+    w, note = SE.next_gym_weight([full], (30, 60), 7, 5, timed=True)
+    assert w is None and "harder" in note
+
+
+def test_early_runs_are_steady_jogs(season):
+    for n in range(9):
+        for s in season.week(n).slots:
+            if s.kind == "run":
+                assert "×" not in s.detail and "walk" not in s.detail.lower()
 
 
 def test_gym_caps_and_sets():
@@ -187,6 +205,24 @@ def test_gym_logging_and_progression(c):
     assert "210 lb" in nxt and "+10 lb" in nxt
 
 
+def test_plank_logs_seconds(c):
+    from sqlalchemy import select
+
+    from gigalegs.db import get_sessionmaker
+    from gigalegs.models import SetLog
+
+    page = c.get("/do/gym2?opt_core=Plank").text
+    assert "30–60 s hold" in page and 'name="core_w1"' not in page
+    c.post(
+        "/do/gym2/gym",
+        data={"core_option": "Plank", "core_r1": "45", "core_rpe1": "7", "core_r2": "40"},
+    )
+    with get_sessionmaker()() as db:
+        rows = db.scalars(select(SetLog).where(SetLog.exercise == "plank")).all()
+    assert [(r.seconds, r.reps, r.weight_lb) for r in rows] == [(45, None, None), (40, None, None)]
+    assert "every hold reaches 60 s" in c.get("/do/gym2?opt_core=Plank").text
+
+
 def test_gym_option_switch_starts_fresh(c):
     page = c.get("/do/gym1?opt_squat_pattern=Hack%20squat").text
     assert "<option selected>Hack squat</option>" in page
@@ -230,7 +266,7 @@ def test_missed_runs_repeat_the_level(c, monkeypatch):
     week3 = date(2026, 11, 11)
     monkeypatch.setattr(services, "today", lambda: week3)
     html = c.get("/").text
-    assert "Runs are at Week 1's level, 2 weeks behind" in html and "10 × (1 min run" in html
+    assert "Runs are at Week 1's level, 2 weeks behind" in html and "Easy jog, 10 min" in html
     assert "Weeks 1, 2 were short" in html
     assert "The long ride is at Week 1's length" in html
 
@@ -439,7 +475,7 @@ def test_push_bonus_reawarded_after_delete(c):
     assert sum(1 for e in _events() if e[0] == "push") == 2
 
 
-# ---------- D38 ----------
+# ---------- D39 ----------
 
 
 def test_week_run_slots_lock_once_a_run_is_logged(c, monkeypatch):

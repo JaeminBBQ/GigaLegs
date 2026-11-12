@@ -218,7 +218,14 @@ async def do_gym(
         if sets:
             cap = M.SE.gym_rpe_cap(st.week.week, t["lower"])
             exercises.append(
-                M.LoggedExercise(k, option, cap, sets, form_ok=not form.get(f"{k}_formbad"))
+                M.LoggedExercise(
+                    k,
+                    option,
+                    cap,
+                    sets,
+                    form_ok=not form.get(f"{k}_formbad"),
+                    timed=M.hold_range(t, option) is not None,
+                )
             )
     M.log_gym(
         db,

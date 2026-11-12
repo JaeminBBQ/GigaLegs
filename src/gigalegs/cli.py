@@ -123,7 +123,7 @@ def main() -> None:
     ex.add_argument("--out")
     ex.set_defaults(fn=cmd_export)
     fw = sub.add_parser(
-        "forgive-week", help="count a plan week as done for run/long-ride levels (D36)"
+        "forgive-week", help="count a plan week as done for run/long-ride levels (D37)"
     )
     fw.add_argument("week", type=int)
     fw.set_defaults(fn=cmd_forgive_week)

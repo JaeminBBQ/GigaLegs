@@ -133,7 +133,7 @@ def missed_weeks(calendar_week: int, completed_weeks: set[int], lag_until: int) 
     return [w for w in range(1, calendar_week) if w not in completed_weeks]
 
 
-HALF_WARN_FROM = 18  # from here, a big run lag means the taper would jump too far (D38)
+HALF_WARN_FROM = 18  # from here, a big run lag means the taper would jump too far (D39)
 HALF_WARN_LAG = 3  # weeks behind; at 1–2 the taper weeks are already below the lagged level
 
 
@@ -283,6 +283,7 @@ class GymTarget:
     rpe_cap: float
     weight: float | None  # None = pick by feel
     note: str
+    timed: bool = False  # reps are seconds held (planks)
 
 
 def gym_rpe_cap(week_no: int, lower: bool) -> float:
@@ -338,15 +339,28 @@ def earned_increase(
 
 
 def next_gym_weight(
-    history: list[list[SetPerf]], reps: tuple[int, int], cap: float, inc: float
+    history: list[list[SetPerf]],
+    reps: tuple[int, int],
+    cap: float,
+    inc: float,
+    timed: bool = False,
 ) -> tuple[float | None, str]:
-    """history = previous sessions of this exercise, newest first."""
+    """history = previous sessions of this exercise, newest first.
+
+    timed: reps are seconds held; progression is by time, never by load.
+    """
     sessions = [h for h in history if any(s.reps is not None for s in h)]
+    lo, hi = reps
+    if timed:
+        if not sessions:
+            return None, f"First time: hold with clean form, stop by RPE {cap:g}"
+        if session_result(sessions[0], lo, hi, cap) == "top":
+            return None, f"Held {hi} s every time: make it harder (feet closer, arms farther)"
+        return None, f"Add a few seconds until every hold reaches {hi} s"
     if not sessions:
         return None, "First time: pick a weight that feels like RPE " + f"{cap:g}"
     last = sessions[0]
     w = _working_weight(last)
-    lo, hi = reps
     if w is None:
         return None, "Bodyweight: add reps, then make it harder"
     if any(s.pain for s in last):

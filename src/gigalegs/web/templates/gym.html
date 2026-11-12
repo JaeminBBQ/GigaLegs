@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ slot.title }} · GigaLegs{% endblock %}
 {% block main %}
-<form method="post" action="/do/{{ slot.key }}/gym">
+<form id="gymform" method="post" action="/do/{{ slot.key }}/gym">
 <section class="card">
   <div class="kicker">{{ st.week.label }}{{ ' · ' ~ st.week.tag ~ ' week' if st.week.tag }}</div>
   <h1>{{ slot.title }}</h1>
@@ -12,10 +12,10 @@
 {% for t in targets %}
 {% set k = t.slot_key %}
 {% set extra = 1 if push_text and not t.lower else 0 %}
-<section class="card exercise">
+<section class="card exercise" data-slot="{{ k }}">
   <div class="row">
     <div class="grow">
-      <div class="kicker">{{ t.slot_name }} · {{ t.target.sets }} × {{ t.target.reps[0] }}–{{ t.target.reps[1] }} · RPE ≤ {{ t.target.rpe_cap|num }}</div>
+      <div class="kicker">{{ t.slot_name }} · {{ t.target.sets }} × {{ t.target.reps[0] }}–{{ t.target.reps[1] }}{{ ' s hold' if t.target.timed }} · RPE ≤ {{ t.target.rpe_cap|num }}</div>
       <select name="{{ k }}_option" aria-label="{{ t.slot_name }} exercise" onchange="pick('{{ k }}', this.value)" style="margin-top:6px">
         {% for o in t.options %}<option {{ 'selected' if o == t.option }}>{{ o }}</option>{% endfor %}
       </select>
@@ -25,8 +25,13 @@
   {% for i in range(1, t.target.sets + extra + 1) %}
   <div class="setrow">
     <span class="idx">{{ i }}</span>
+    {% if t.target.timed %}
+    <input name="{{ k }}_r{{ i }}" type="number" inputmode="numeric" placeholder="{{ t.target.reps[1] }} sec" aria-label="Set {{ i }} seconds held">
+    <span></span>
+    {% else %}
     <input name="{{ k }}_w{{ i }}" type="number" step="0.5" inputmode="decimal" placeholder="lb" aria-label="Set {{ i }} weight" value="{{ t.target.weight|num if t.target.weight }}">
     <input name="{{ k }}_r{{ i }}" type="number" inputmode="numeric" placeholder="{{ t.target.reps[1] }} reps" aria-label="Set {{ i }} reps">
+    {% endif %}
     <input name="{{ k }}_rpe{{ i }}" type="number" step="0.5" min="1" max="10" inputmode="decimal" placeholder="RPE" aria-label="Set {{ i }} RPE">
     <span class="idx">{% if i > t.target.sets %}<small>push</small>{% endif %}</span>
   </div>
@@ -48,7 +53,41 @@
 </section>
 </form>
 <script>
+// Draft: the exercise dropdown reloads the page (the server picks the new target weight),
+// so keep typed entries in sessionStorage and put them back after the reload.
+const form = document.getElementById('gymform');
+const draftKey = 'gym-draft:' + location.pathname + ':' + document.getElementById('day').value;
+function readDraft() {
+  try { return JSON.parse(sessionStorage.getItem(draftKey)) || {}; } catch (e) { return {}; }
+}
+let leaving = false;  // set by pick(): don't let the bubbling change event re-save the old exercise
+function saveDraft() {
+  if (leaving) return;
+  const data = {};
+  for (const el of form.elements) {
+    if (!el.name || el.tagName === 'SELECT') continue;  // exercise choice lives in the URL
+    data[el.name] = el.type === 'checkbox' ? el.checked : el.value;
+  }
+  try { sessionStorage.setItem(draftKey, JSON.stringify(data)); } catch (e) {}
+}
+(function restore() {
+  const data = readDraft();
+  for (const el of form.elements) {
+    if (!(el.name in data)) continue;
+    if (el.type === 'checkbox') el.checked = data[el.name]; else el.value = data[el.name];
+  }
+})();
+form.addEventListener('input', saveDraft);
+form.addEventListener('change', saveDraft);
+form.addEventListener('submit', () => { try { sessionStorage.removeItem(draftKey); } catch (e) {} });
 function pick(slot, option) {
+  // Keep every other exercise's entries; the switched one starts fresh (new exercise, new target).
+  saveDraft();
+  const data = readDraft();
+  const card = form.querySelector('[data-slot="' + slot + '"]');
+  for (const el of card.querySelectorAll('[name]')) delete data[el.name];
+  try { sessionStorage.setItem(draftKey, JSON.stringify(data)); } catch (e) {}
+  leaving = true;
   const u = new URL(location.href);
   u.searchParams.set('opt_' + slot, option);
   location.href = u.toString();

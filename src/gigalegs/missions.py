@@ -59,7 +59,7 @@ LEVEL_FORGIVE = "level_forgive"  # Metric kind: value = a plan week counted as d
 
 
 def forgiven_weeks(db: Db, uid: int) -> set[int]:
-    """Weeks the coach chose to count as done for run/ride levels (D36), e.g. an on-ramp miss."""
+    """Weeks the coach chose to count as done for run/ride levels (D37), e.g. an on-ramp miss."""
     vals = db.scalars(
         select(Metric.value).where(Metric.user_id == uid, Metric.kind == LEVEL_FORGIVE)
     )
@@ -106,7 +106,7 @@ def _levels(
 
     `run_asof` / `ride_asof` freeze a level as it stood when that week's first run / long
     ride was logged, so a later backdate or forgive can't swap the week's slots under
-    sessions already done (D38).
+    sessions already done (D39).
     """
     ms = [m for m in _missions(db, uid, season.week(1).start, date.max) if m.plan_week < cal]
     run_weeks: dict[int, int] = {}
@@ -299,8 +299,9 @@ def _exercise_history(
     for s, sid, sdate in rows:
         if before is not None and (sdate, sid) >= (before.date, before.id):
             continue
+        done = s.reps if s.reps is not None else s.seconds
         out.setdefault(sid, []).append(
-            SE.SetPerf(s.weight_lb, s.reps, s.rpe, s.form_ok, bool(s.pain))
+            SE.SetPerf(s.weight_lb, done, s.rpe, s.form_ok, bool(s.pain))
         )
     return list(out.values())[:limit]
 
@@ -312,6 +313,12 @@ def _last_option(db: Db, uid: int, slot_key: str) -> str | None:
         .where(Session.user_id == uid, Session.phase == "season", SetLog.category == slot_key)
         .order_by(Session.date.desc(), Session.id.desc())
     )
+
+
+def hold_range(slot: dict, option: str) -> tuple[int, int] | None:
+    """Seconds range if this option is a timed hold (e.g. plank), else None."""
+    r = slot.get("holds", {}).get(option)
+    return (int(r[0]), int(r[1])) if r else None
 
 
 def gym_targets(
@@ -326,9 +333,10 @@ def gym_targets(
         last = _last_option(db, uid, t["key"])
         option = picked if picked in t["options"] else names.get(last or "", t["options"][0])
         cap = SE.gym_rpe_cap(week.week, t["lower"])
-        reps = (int(t["reps"][0]), int(t["reps"][1]))
+        hold = hold_range(t, option)
+        reps = hold or (int(t["reps"][0]), int(t["reps"][1]))
         weight, note = SE.next_gym_weight(
-            _exercise_history(db, uid, slug(option)), reps, cap, float(t["inc"])
+            _exercise_history(db, uid, slug(option)), reps, cap, float(t["inc"]), timed=bool(hold)
         )
         out.append(
             ExerciseTarget(
@@ -343,6 +351,7 @@ def gym_targets(
                     cap,
                     weight,
                     note,
+                    timed=bool(hold),
                 ),
             )
         )
@@ -531,8 +540,9 @@ class LoggedExercise:
     slot_key: str
     option: str
     rpe_cap: float
-    sets: list[tuple[float | None, int | None, float | None]]  # weight, reps, rpe
+    sets: list[tuple[float | None, int | None, float | None]]  # weight, reps (or seconds), rpe
     form_ok: bool = True
+    timed: bool = False  # the reps column holds seconds
 
 
 def _rep_range(m: Mission, exercise_slot: str) -> tuple[int, int] | None:
@@ -669,8 +679,9 @@ def log_gym(
                 category=ex.slot_key,
                 set_index=i,
                 rpe_cap=ex.rpe_cap,
-                weight_lb=w,
-                reps=reps,
+                weight_lb=None if ex.timed else w,
+                reps=None if ex.timed else reps,
+                seconds=reps if ex.timed else None,
                 rpe=rpe,
                 form_ok=ex.form_ok,
                 pain=pain,
@@ -747,7 +758,7 @@ class RecapDay:
 
 @dataclass
 class WeekRecap:
-    """What one plan week earned and what it unlocked (D35–D36)."""
+    """What one plan week earned and what it unlocked (D35–D37)."""
 
     state: WeekState
     status: str  # past | current | future

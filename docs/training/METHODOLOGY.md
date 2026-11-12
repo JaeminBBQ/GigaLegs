@@ -46,13 +46,13 @@ Base week (exact contents per week in `SEASON_PLAN.md`):
 - Long run and long ride on back-to-back days is fine (the normal weekend). Do the long run first when you can: impact work goes on fresh legs. Never both on the same day.
 - **Gym A (leg-emphasis) is never the day before the long run or tempo run.**
 - At most 2 hard days in a row, where hard = long run, tempo, long ride (> 2 h), or Gym A.
-- **Weeks follow the calendar (Mon–Sun, D35).** Unfinished slots don't carry over. To keep growth safe, **runs and the long ride only move up a level after a week where you did them** (≥ 2 runs; the long ride): miss a week and the next one repeats the level instead of jumping ahead. The coach may forgive a week (D36), e.g. an on-ramp week, so it counts as done. A week's run and long-ride levels freeze once its first run / long ride is logged. If you're 3+ weeks behind on runs from Week 18, the app warns that the calendar taper would jump too far and the half plan gets redone (D38). From the taper (Week 24) and the ride peak's end (Week 31), the calendar rules so race weeks stay put.
+- **Weeks follow the calendar (Mon–Sun, D35).** Unfinished slots don't carry over. To keep growth safe, **runs and the long ride only move up a level after a week where you did them** (≥ 2 runs; the long ride): miss a week and the next one repeats the level instead of jumping ahead. The coach may forgive a week (D37), e.g. an on-ramp week, so it counts as done. A week's run and long-ride levels freeze once its first run / long ride is logged. If you're 3+ weeks behind on runs from Week 18, the app warns that the calendar taper would jump too far and the half plan gets redone (D39). From the taper (Week 24) and the ride peak's end (Week 31), the calendar rules so race weeks stay put.
 
 ## 4. Running
 - **Easy means conversational:** you can speak full sentences. Walk breaks are allowed in any easy run. HR guide: easy ≤ 75% HRmax; the talk test wins if they disagree (D30). Exact bpm is in `athlete/PROFILE.md`.
 - **Tempo:** "comfortably hard", 80–88% HRmax; you can speak a few words.
 - **Volume grows ≤ ~10% per week** by time, and **every 4th week is a down week** (≈ −25%). The `SEASON_PLAN.md` table already follows this; the engine never adds to it.
-- **Start with walk-run** even though cardio fitness will feel ahead of it. Strong lifters' muscles and lungs outrun their tendons and bones, and that gap is where shin splints and Achilles trouble come from.
+- **Start with short steady jogs** (10 min in Week 1, D36) even though cardio fitness will feel ahead of them. Strong lifters' muscles and lungs outrun their tendons and bones, and that gap is where shin splints and Achilles trouble come from. The minutes, not the pace, are what's capped.
 - **Shoes:** get fitted at a running store before Week 1 runs feel serious.
 - **Pain rules:** any sharp or joint pain, or pain that changes how you run → stop, walk home, log it. Next run waits until a pain-free walk and 10 pain-free hops on that leg. Shin pain that's sore to press on a specific spot, or pain lasting > 1 week → see a professional. Normal muscle soreness is fine.
 
@@ -84,7 +84,7 @@ Each line is a **slot**: pick any listed option (variety keeps it fun) and stick
 | Shoulder press | DB shoulder press*, machine shoulder press | 2 × 8–12 |
 | Hamstrings | leg curl (seated* or lying) | 2 × 10–15 |
 | Triceps | cable pushdown*, overhead cable extension, dips | 2 × 10–15 |
-| Core | plank*, dead bug, hanging knee raise, cable crunch | 2 sets |
+| Core | plank*, dead bug, hanging knee raise, cable crunch | 2 × 10–15 (plank: 2 × 30–60 s holds) |
 
 ### Effort (RPE, same scale as v1: 10 = nothing left, 8 = 2–3 reps left)
 - **Weeks 1–2:** cap RPE 7 on everything. Pick starting weights by feel in the session; nobody types in a number in advance. This avoids the DOMS crater that would also wreck the first runs (the v1 on-ramp lesson).
@@ -96,7 +96,7 @@ Per exercise, per session, using the sets logged at that exercise's working weig
 1. **All sets hit the top of the rep range, at or under the cap, form OK** → add weight next time: +5 lb on upper-body, isolation, and dumbbell lifts (or the next dumbbell up), +10 lb on leg press, hack squat, and barbell lower-body lifts.
 2. **Reps inside the range** → same weight; aim for more reps.
 3. **Any set below the bottom of the range, form flagged, or over the cap** → same weight. Twice in a row → −10% and build back.
-4. **Pain on any set** → same weight next time, whatever the reps (D38).
+4. **Pain on any set** → same weight next time, whatever the reps (D39).
 4. Swapping the option in a slot starts that exercise fresh (the first session sets the weight by feel).
 
 ### Running and lifting together
